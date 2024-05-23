@@ -7,6 +7,12 @@
   <!-- -*- extra stuff goes here -*- -->
 
     <permission
+        id="udala.tablon.AddDocumentoTablon"
+        title="udala.tablon: Add DocumentoTablon"
+    />
+
+
+    <permission
         id="udala.tablon.AddTablon"
         title="udala.tablon: Add Tablon"
     />

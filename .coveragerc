@@ -1,0 +1,6 @@
+[report]
+include =
+    src/udala/*
+omit =
+    */test*
+    */upgrades/*

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from cs.accreditedfile.subscriber import getPublicationAccreditation
+from udala.tablon.subscriber import getPublicationAccreditation
 from udala.tablon.file_utils import get_file
 from udala.tablon.utils import get_documents
 from plone import api

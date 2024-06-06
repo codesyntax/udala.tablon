@@ -14,7 +14,7 @@
 
   <property name="allow_discussion">False</property>
   <property name="factory">DocumentoTablon</property>
-  <property name="icon_expr"></property>
+  <property name="icon_expr">string:contenttype/document</property>
   <property name="link_target"></property>
 
   <!-- Hierarchy control -->
@@ -52,7 +52,7 @@
     <!--<element value="plone.richtext"/>-->
     <!--<element value="plone.tableofcontents"/>-->
     <!--<element value="plone.versioning" />-->
-    <!--<element value="plone.translatable" />-->
+    <element value="plone.translatable" />
     <!--<element value="plone.nextprevioustoggle" />-->
     <!--<element value="plone.nextpreviousenabled" />-->
     <!--<element value="plone.navigationroot" />-->

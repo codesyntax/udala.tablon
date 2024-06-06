@@ -9,6 +9,15 @@
   <browser:page
     name="view"
     for="*"
+    class=".documento_tablon_view.DocumentoTablonView"
+    template="documento_tablon_view.pt"
+    permission="zope2.View"
+    layer="udala.tablon.interfaces.IUdalaTablonLayer"
+    />
+
+  <browser:page
+    name="view"
+    for="*"
     class=".tablon_view.TablonView"
     template="tablon_view.pt"
     permission="zope2.View"

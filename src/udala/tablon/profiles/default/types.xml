@@ -4,4 +4,5 @@
   <!--<object name="example_ct" meta_type="Dexterity FTI"/>-->
   <object name="Tablon" meta_type="Dexterity FTI"/>
   <object name="DocumentoTablon" meta_type="Dexterity FTI"/>
+  <object name="AcreditedFile" meta_type="Dexterity FTI"/>
 </object>

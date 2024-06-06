@@ -7,6 +7,12 @@
   <!-- -*- extra stuff goes here -*- -->
 
     <permission
+        id="udala.tablon.AddAcreditedFile"
+        title="udala.tablon: Add AcreditedFile"
+    />
+
+
+    <permission
         id="udala.tablon.AddDocumentoTablon"
         title="udala.tablon: Add DocumentoTablon"
     />

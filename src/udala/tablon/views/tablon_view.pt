@@ -1,9 +1,7 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:tal="http://xml.zope.org/namespaces/tal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      i18n:domain="udala.tablon"
-      metal:use-macro="context/main_template/macros/master">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:metal="http://xml.zope.org/namespaces/metal"
+  xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  i18n:domain="udala.tablon" metal:use-macro="context/main_template/macros/master">
+
 <body>
 
   <metal:custom_title fill-slot="content-title">
@@ -23,13 +21,63 @@
   </metal:custom_description>
 
   <metal:content-core fill-slot="content-core">
-  <metal:block define-macro="content-core">
+    <metal:block define-macro="content-core">
 
-    <h2>Main content</h2>
-    <!--<div tal:replace="view/my_custom_view_method" />-->
-    <!--<div tal:replace="context/my_custom_field" />-->
+      <div id="parent-fieldname-text" tal:define="toc context/table_of_contents|nothing;" tal:condition="context/text"
+        tal:content="structure python:context.text.output_relative_to(view.context)"
+        tal:attributes="class python: toc and 'pat-autotoc' or ''">
+      </div>
 
-  </metal:block>
+      <tal:content define="Batch python:modules['Products.CMFPlone'].Batch;
+                            b_size python:int(request.get('b_size', 20));
+                            b_start python:int(request.get('b_start', 0));
+                          results python:context.restrictedTraverse('@@folderListing')(sort_on='effective', sort_order='reverse', batch=True, b_size=b_size, b_start=b_start);
+                          batch python:Batch(results, b_size, b_start)">
+        <table class="listing" tal:define="toLocalizedTime nocall:here/@@plone/toLocalizedTime">
+          <thead>
+            <tr>
+              <th i18n:translate="">Document number</th>
+              <th i18n:translate="">Description</th>
+              <th i18n:translate="">Origin</th>
+              <th i18n:translate="">Publication date</th>
+              <th i18n:translate="">Expiration date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr tal:repeat="item batch">
+              <tal:obj define="obj python:item.getObject()">
+                <td>
+                  <a href="" tal:attributes="href item/getURL" tal:content="item/Title">
+                    Titlt</a>
+                </td>
+                <td>
+                  <span tal:replace="obj/Description" />
+                </td>
+                <td>
+                  <span tal:replace="obj/origin_department" />
+                </td>
+                <td>
+                  <span tal:replace="python:toLocalizedTime(obj.EffectiveDate())" />
+                </td>
+                <td>
+                  <span tal:replace="python:toLocalizedTime(obj.ExpirationDate())" />
+                </td>
+              </tal:obj>
+            </tr>
+          </tbody>
+        </table>
+
+        <div metal:use-macro="context/batch_macros/macros/navigation" />
+      </tal:content>
+
+      <div id="parent-fieldname-sponsors-text" tal:define="toc context/table_of_contents|nothing;"
+        tal:condition="context/sponsors"
+        tal:content="structure python:context.sponsors.output_relative_to(view.context)"
+        tal:attributes="class python: toc and 'pat-autotoc' or ''">
+      </div>
+
+    </metal:block>
   </metal:content-core>
 </body>
+
 </html>

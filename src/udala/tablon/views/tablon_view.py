@@ -18,6 +18,4 @@ class TablonView(BrowserView):
     # the configure.zcml registration of this view.
     # template = ViewPageTemplateFile('tablon_view.pt')
 
-    def __call__(self):
-        # Implement your own actions:
-        return self.index()
+    pass

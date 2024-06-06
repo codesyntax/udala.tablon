@@ -1,35 +1,66 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:tal="http://xml.zope.org/namespaces/tal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      i18n:domain="udala.tablon"
-      metal:use-macro="context/main_template/macros/master">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:metal="http://xml.zope.org/namespaces/metal"
+  xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  i18n:domain="udala.tablon" metal:use-macro="context/main_template/macros/master">
+
 <body>
 
   <metal:custom_title fill-slot="content-title">
-    <h1 tal:replace="structure context/@@title" />
-
-    <!-- @@title view template: -->
-    <!--
-    <h1 tal:define="title context/Title" tal:condition="title" tal:content="title">
-      Title or id
-    </h1>
-    -->
-
+    <p tal:replace="structure context/@@description" />
   </metal:custom_title>
 
   <metal:custom_description fill-slot="content-description">
-    <p tal:replace="structure context/@@description" />
   </metal:custom_description>
 
   <metal:content-core fill-slot="content-core">
-  <metal:block define-macro="content-core">
+    <metal:block define-macro="content-core">
 
-    <h2>Main content</h2>
-    <!--<div tal:replace="view/my_custom_view_method" />-->
-    <!--<div tal:replace="context/my_custom_field" />-->
+      <dl tal:define="plone nocall:context/@@plone">
+        <dt i18n:translate="">record number</dt>
+        <dd tal:content="context/Title">origin</dd>
 
-  </metal:block>
+        <dt i18n:translate="">Publication start</dt>
+        <dd tal:content="python:plone.toLocalizedTime(context.EffectiveDate())">
+          origin_department
+        </dd>
+
+        <dt i18n:translate="">Publication end</dt>
+        <dd tal:content="python:plone.toLocalizedTime(context.ExpirationDate())">
+          origin_department
+        </dd>
+
+        <dt i18n:translate="">origin_department</dt>
+        <dd>
+          <span tal:content="context/origin_department" /> -
+          <span tal:content="context/origin_details" />
+        </dd>
+
+        <tal:files define="files view/files" condition="files">
+          <dt i18n:translate="files">files</dt>
+
+          <dd>
+            <ul>
+              <li tal:repeat="file files">
+                <a href="" tal:attributes="href file/url" tal:content="file/file_title">
+                  title
+                </a>
+                &nbsp; &nbsp; &nbsp;
+                <a tal:condition="python:file['file_accreditation_url'] and file['file_accreditation_url'].startswith('http')"
+                  class="btn btn-default" href="" tal:attributes="href file/file_accreditation_url"
+                  i18n:translate="">Publication accreditation by IZENPE</a>
+              </li>
+            </ul>
+          </dd>
+        </tal:files>
+      </dl>
+
+      <div id="parent-fieldname-sponsors-text" tal:define="toc context/table_of_contents|nothing;"
+        tal:condition="context/aq_parent/sponsors"
+        tal:content="structure python:context.aq_parent.sponsors.output_relative_to(view.context.aq_parent)"
+        tal:attributes="class python: toc and 'pat-autotoc' or ''">
+      </div>
+
+    </metal:block>
   </metal:content-core>
 </body>
+
 </html>

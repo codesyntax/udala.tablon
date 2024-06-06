@@ -4,7 +4,12 @@
 from Products.Five.browser import BrowserView
 from zope.interface import implementer
 from zope.interface import Interface
-
+from udala.tablon.utils import (
+    get_document_by_uid_and_lang,
+    get_documents,
+)
+from udala.tablon.file_utils import get_file_by_uid_and_lang, get_file
+from plone import api
 
 # from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
@@ -18,6 +23,29 @@ class DocumentoTablonView(BrowserView):
     # the configure.zcml registration of this view.
     # template = ViewPageTemplateFile('documento_tablon_view.pt')
 
-    def __call__(self):
-        # Implement your own actions:
-        return self.index()
+    def files(self):
+        portal = api.portal.get()
+        portal_url = portal.absolute_url()
+        language = self.context.Language()
+        items = []
+        document_key = get_document_by_uid_and_lang(
+            self.context.UID(), language
+        )
+        document = get_documents(document_key)
+        language_files = document.get("files_{}".format(language))
+
+        for language_file in language_files:
+            file = get_file(language_file)
+            file_language_uid = file.get(language)
+            file_object = api.content.get(UID=file_language_uid)
+            if file_object:
+                items.append(
+                    {
+                        "url": "{}/@tablon/{}/{}".format(
+                            portal_url, document_key, language_file
+                        ),
+                        "file_title": file_object.Title(),
+                        "file_accreditation_url": file_object.getUrl(),
+                    }
+                )
+        return items

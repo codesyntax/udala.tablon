@@ -8,7 +8,7 @@
 
   <browser:page
     name="view"
-    for="*"
+    for="udala.tablon.content.documento_tablon.IDocumentoTablon"
     class=".documento_tablon_view.DocumentoTablonView"
     template="documento_tablon_view.pt"
     permission="zope2.View"
@@ -17,11 +17,18 @@
 
   <browser:page
     name="view"
-    for="*"
+    for="udala.tablon.content.tablon.ITablon"
     class=".tablon_view.TablonView"
     template="tablon_view.pt"
     permission="zope2.View"
     layer="udala.tablon.interfaces.IUdalaTablonLayer"
     />
+
+  <browser:page
+      name="@tablon"
+      for="plone.base.interfaces.siterootIPloneSiteRoot"
+      class=".file_download_view.FileDownloadView"
+      permission="zope2.View"
+      />
 
 </configure>

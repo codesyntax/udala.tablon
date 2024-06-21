@@ -12,7 +12,7 @@ from plone.restapi.services import Service
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import alsoProvides
-from collective.taskqueue import taskqueue
+#from collective.taskqueue import taskqueue
 from plone.app.multilingual.interfaces import ITranslationManager
 from plone.namedfile.file import NamedBlobFile
 
@@ -243,11 +243,11 @@ def get_accreditation(document_id, file_id):
         "/VirtualHostBase/https/www.eibar.eus:443/Plone/VirtualHostRoot"
     )
 
-    taskqueue.add(
-        "{}/@tablon/{}/{}/get_external_accreditation".format(
-            url, document_id, file_id
-        )
-    )
+    # taskqueue.add(
+    #     "{}/@tablon/{}/{}/get_external_accreditation".format(
+    #         url, document_id, file_id
+    #     )
+    # )
 
 
 DOCUMENT_FIELD_VALIDATION = {

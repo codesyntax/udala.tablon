@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.serializer.atcontent import SerializeToJson
+from plone.restapi.serializer.dxcontent import SerializeToJson
 from plone.restapi.interfaces import ISerializeToJson
 from zope.interface import Interface, implementer
 from zope.component import adapter

@@ -7,7 +7,7 @@
   <plone:service
       method="POST"
       factory=".post.TablonPost"
-      for="plone.base.interfaces.siterootIPloneSiteRoot"
+      for="plone.base.interfaces.siteroot.IPloneSiteRoot"
       permission="cmf.AddPortalContent"
       name="@tablon"
       />
@@ -15,7 +15,7 @@
   <plone:service
       method="GET"
       factory=".get.TablonGet"
-      for="plone.base.interfaces.siterootIPloneSiteRoot"
+      for="plone.base.interfaces.siteroot.IPloneSiteRoot"
       permission="zope2.View"
       name="@tablon"
       />
@@ -23,7 +23,7 @@
   <plone:service
       method="DELETE"
       factory=".delete.TablonDelete"
-      for="plone.base.interfaces.siterootIPloneSiteRoot"
+      for="plone.base.interfaces.siteroot.IPloneSiteRoot"
       permission="cmf.ModifyPortalContent"
       name="@tablon"
       />
@@ -31,7 +31,7 @@
   <plone:service
       method="GET"
       factory=".get.TablonExpiredGet"
-      for="plone.base.interfaces.siterootIPloneSiteRoot"
+      for="plone.base.interfaces.siteroot.IPloneSiteRoot"
       permission="cmf.ModifyPortalContent"
       name="@tablon-expired"
       />

@@ -26,7 +26,7 @@
 
   <browser:page
       name="@tablon"
-      for="plone.base.interfaces.siterootIPloneSiteRoot"
+      for="plone.base.interfaces.siteroot.IPloneSiteRoot"
       class=".file_download_view.FileDownloadView"
       permission="zope2.View"
       />

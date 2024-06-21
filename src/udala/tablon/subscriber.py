@@ -9,7 +9,6 @@ from Acquisition import aq_parent
 from udala.tablon import _
 from DateTime import DateTime
 from plone.registry.interfaces import IRegistry
-from Products.ATContentTypes.utils import DT2dt
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import safe_unicode
 from zope.component import getUtility

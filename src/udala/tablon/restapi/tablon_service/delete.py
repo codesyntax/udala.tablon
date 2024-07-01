@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-from udala.tablon.utils import delete_document, get_documents
 from plone import api
 from plone.restapi.services import Service
+from udala.tablon.utils import delete_document
+from udala.tablon.utils import get_documents
 from zope.interface import implementer
-from zope.publisher.interfaces import IPublishTraverse, NotFound
+from zope.publisher.interfaces import IPublishTraverse
+from zope.publisher.interfaces import NotFound
 
 
 @implementer(IPublishTraverse)

@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import uuid
-from datetime import datetime
-
 from BTrees.OOBTree import OOBTree
+from datetime import datetime
 from plone import api
 from zope.annotation.interfaces import IAnnotations
+
+import uuid
+
 
 ANNOTATION_KEY = "eibarkoudala.tablon.archivo_tablon"
 

@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
-from udala.tablon.subscriber import getPublicationAccreditation
 from DateTime import DateTime
-from udala.tablon.file_utils import get_file
-from udala.tablon.utils import (
-    get_document_by_uid_and_lang,
-    get_documents,
-)
 from plone import api
 from plone.protect.interfaces import IDisableCSRFProtection
-from plone.restapi.services import Service
-from zope.i18n import translate
-from zope.interface import alsoProvides, implementer
-from zope.publisher.interfaces import IPublishTraverse, NotFound
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.services import Service
+from udala.tablon.file_utils import get_file
+from udala.tablon.subscriber import getPublicationAccreditation
+from udala.tablon.utils import get_documents
 from zope.component import getMultiAdapter
+from zope.i18n import translate
+from zope.interface import alsoProvides
+from zope.interface import implementer
+from zope.publisher.interfaces import IPublishTraverse
+from zope.publisher.interfaces import NotFound
 
 
 @implementer(IPublishTraverse)

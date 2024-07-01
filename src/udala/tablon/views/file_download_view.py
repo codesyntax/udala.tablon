@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
-from udala.tablon.subscriber import getPublicationAccreditation
-from udala.tablon.file_utils import get_file
-from udala.tablon.utils import get_documents
 from plone import api
 from plone.protect.interfaces import IDisableCSRFProtection
 from Products.Five.browser import BrowserView
+from udala.tablon.file_utils import get_file
+from udala.tablon.subscriber import getPublicationAccreditation
+from udala.tablon.utils import get_documents
 from zope.i18n import translate
-from zope.interface import alsoProvides, implementer
-from zope.publisher.interfaces import IPublishTraverse, NotFound
+from zope.interface import alsoProvides
+from zope.interface import implementer
+from zope.publisher.interfaces import IPublishTraverse
+from zope.publisher.interfaces import NotFound
 
 
 @implementer(IPublishTraverse)

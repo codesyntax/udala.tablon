@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-import base64
-import uuid
-from datetime import datetime
-
-import requests
 from BTrees.OOBTree import OOBTree
+from datetime import datetime
 from plone import api
 from zope.annotation.interfaces import IAnnotations
+
+import base64
+import requests
+import uuid
+
 
 ANNOTATION_KEY = "eibarkoudala.tablon.documento_tablon"
 
@@ -79,5 +80,8 @@ def get_file_contents(url):
             if data.ok:
                 return base64.urlsafe_b64encode(data.content)
         except Exception as e:
-            pass
+            from logging import getLogger
+
+            log = getLogger(__name__)
+            log.info(e)
     return ""

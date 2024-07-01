@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
-from plone import api
 from plone.app.multilingual.interfaces import ITranslationManager
 from plone.app.testing import login
-from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import createContentInContainer
-from udala.tablon.testing import UDALA_TABLON_FUNCTIONAL_TESTING
 from udala.tablon.testing import UDALA_TABLON_INTEGRATION_TESTING
 from udala.tablon.utils import ANNOTATION_KEY
 from udala.tablon.utils import delete_document
@@ -15,10 +10,9 @@ from udala.tablon.utils import get_document_by_uid_and_lang
 from udala.tablon.utils import get_documents
 from udala.tablon.utils import register_documents
 from zope.annotation.interfaces import IAnnotations
-from zope.component import getMultiAdapter
-from zope.interface.interfaces import ComponentLookupError
 
 import unittest
+import uuid
 
 
 class TestAnnotationUtils(unittest.TestCase):
@@ -92,6 +86,31 @@ class TestAnnotationUtils(unittest.TestCase):
         self.assertIn(self.eu_tablon.doc1.file_doc1.UID(), documents["files_eu"])
         self.assertIn(self.es_tablon.doc1.file_doc1.UID(), documents["files_es"])
 
+    def test_get_inexistent_document(self):
+        document1 = get_document_by_uid_and_lang(uuid.uuid4().hex, "eu")
+        self.assertEqual(document1, None)
+
+        document2 = get_document_by_uid_and_lang(uuid.uuid4().hex, "es")
+        self.assertEqual(document2, None)
+
+    def test_get_inexistent_language(self):
+        document1 = get_document_by_uid_and_lang(uuid.uuid4().hex, "fr")
+        self.assertEqual(document1, None)
+
+        document2 = get_document_by_uid_and_lang(uuid.uuid4().hex, "en")
+        self.assertEqual(document2, None)
+
+    def test_get_existing_document_in_inexisting_language(self):
+        register_documents(
+            self.eu_tablon.doc1.UID(),
+            self.es_tablon.doc1.UID(),
+            [self.eu_tablon.doc1.file_doc1.UID()],
+            [self.es_tablon.doc1.file_doc1.UID()],
+        )
+
+        eu_document = get_document_by_uid_and_lang(self.eu_tablon.doc1.UID(), "fr")
+        self.assertEqual(eu_document, None)
+
     def test_get_document_by_uid_and_lang(self):
         created_uuid = register_documents(
             self.eu_tablon.doc1.UID(),
@@ -105,3 +124,25 @@ class TestAnnotationUtils(unittest.TestCase):
 
         es_document = get_document_by_uid_and_lang(self.es_tablon.doc1.UID(), "es")
         self.assertEqual(es_document, created_uuid)
+
+    def test_delete_unexisting_document(self):
+        generated_uuid = uuid.uuid4().hex
+
+        result_delete = delete_document(generated_uuid)
+        self.assertFalse(result_delete)
+
+    def test_delete_document(self):
+        created_uuid = register_documents(
+            self.eu_tablon.doc1.UID(),
+            self.es_tablon.doc1.UID(),
+            [self.eu_tablon.doc1.file_doc1.UID()],
+            [self.es_tablon.doc1.file_doc1.UID()],
+        )
+
+        result_delete = delete_document(created_uuid)
+        self.assertTrue(result_delete)
+
+        annotated = IAnnotations(self.portal)
+        annotations = annotated.get(ANNOTATION_KEY, [])
+        self.assertNotIn(created_uuid, annotations)
+        self.assertEqual(len(annotations), 0)

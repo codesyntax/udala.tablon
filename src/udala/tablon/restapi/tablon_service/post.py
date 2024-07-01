@@ -1,21 +1,19 @@
 # -*- coding: utf-8 -*-
-from DateTime import DateTime
 from datetime import datetime
-
-from udala.tablon import _
-from udala.tablon.utils import register_documents
-from udala.tablon.file_utils import register_file
+from DateTime import DateTime
 from plone import api
+from plone.app.multilingual.interfaces import ITranslationManager
+from plone.namedfile.file import NamedBlobFile
 from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
+from udala.tablon import _
+from udala.tablon.file_utils import register_file
+from udala.tablon.utils import register_documents
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import alsoProvides
 
-# from collective.taskqueue import taskqueue
-from plone.app.multilingual.interfaces import ITranslationManager
-from plone.namedfile.file import NamedBlobFile
 
 OK = 1
 ACCEPTED_ORIGIN_VALUES = ["external", "internal"]
@@ -226,13 +224,14 @@ def get_accreditation(document_id, file_id):
     # service will be localhost:8080 instead of the real URL of the
     # object, thus avoiding the accreditor service to reach the
     # files
-    url = "/VirtualHostBase/https/www.eibar.eus:443/Plone/VirtualHostRoot"
+    # url = "/VirtualHostBase/https/www.eibar.eus:443/Plone/VirtualHostRoot"
 
     # taskqueue.add(
     #     "{}/@tablon/{}/{}/get_external_accreditation".format(
     #         url, document_id, file_id
     #     )
     # )
+    return 1
 
 
 DOCUMENT_FIELD_VALIDATION = {

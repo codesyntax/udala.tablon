@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.serializer.dxcontent import SerializeToJson
-from plone.restapi.interfaces import ISerializeToJson
-from zope.interface import Interface, implementer
-from zope.component import adapter
-from plone.restapi.interfaces import ISerializeToJson
-
-from udala.tablon.utils import (
-    get_document_by_uid_and_lang,
-    get_documents,
-    get_file_contents,
-)
-from udala.tablon.file_utils import get_file
-from udala.tablon.content.documento_tablon import IDocumentoTablon
 from plone import api
-from DateTime import DateTime
+from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.serializer.dxcontent import SerializeToJson
+from udala.tablon.content.documento_tablon import IDocumentoTablon
+from udala.tablon.file_utils import get_file
+from udala.tablon.utils import get_document_by_uid_and_lang
+from udala.tablon.utils import get_documents
+from udala.tablon.utils import get_file_contents
+from zope.component import adapter
+from zope.interface import implementer
+from zope.interface import Interface
 
 
 TRANSLATION_LANGUAGES = {"eu": "es", "es": "eu"}

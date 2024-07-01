@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
-from plone import api
-import os
-import socket
-import tempfile
-
-import requests
 from Acquisition import aq_parent
-from udala.tablon import _
-from DateTime import DateTime
+from logging import getLogger
+from plone import api
 from plone.registry.interfaces import IRegistry
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import safe_unicode
+from udala.tablon import _
 from zope.component import getUtility
-from logging import getLogger
+
+import os
+import requests
+import socket
+import tempfile
 
 
 def createTemporaryFile(contents):
@@ -69,7 +68,11 @@ def get_accreditation_for_url(url, title, f_extension, f_revision, language):
     pkcs_12_file_pass = registry["cs.accreditedfile.pkcs12_file_password"]
     try:
         ip = socket.gethostbyaddr(url.split("/")[2])[2][0]
-    except:
+    except Exception as e:
+        from logging import getLogger
+
+        log = getLogger(__name__)
+        log.info(e)
         ip = "127.0.0.1"
 
     data = requests.post(
@@ -121,7 +124,11 @@ def getPublicationAccreditation(object):
             return
     try:
         result, message = accreditation(object)
-    except:
+    except Exception as e:
+        from logging import getLogger
+
+        log = getLogger(__name__)
+        log.info(e)
         message = "Errorea ziurtagiria lortzean"
         send_mail(message, object)
         return

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from plone import api
+from plone.app.multilingual.interfaces import ITranslationManager
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.serializer.dxcontent import SerializeToJson
 from udala.tablon.content.documento_tablon import IDocumentoTablon
@@ -10,6 +11,8 @@ from udala.tablon.utils import get_file_contents
 from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import Interface
+
+import base64
 
 
 TRANSLATION_LANGUAGES = {"eu": "es", "es": "eu"}
@@ -24,7 +27,7 @@ class DocumentoTablonSerializeToJson(SerializeToJson):
             self.context.UID(), self.context.Language()
         )
 
-        translated_context = self.context.getTranslation(
+        translated_context = ITranslationManager(self.context).get_translation(
             TRANSLATION_LANGUAGES.get(self.context.Language())
         )
 
@@ -45,53 +48,37 @@ class DocumentoTablonSerializeToJson(SerializeToJson):
                 if file_object is not None:
                     documents.append(
                         {
-                            "@id": "{}/@tablon/{}/{}".format(
-                                portal_url, document_key, file_id
-                            ),
+                            "@id": f"{portal_url}/@tablon/{document_key}/{file_id}",
                             "uuid": file_id,
                             "title": file_object.Title(),
-                            "filename": file_object.getField("file")
-                            .get(file_object)
-                            .filename,
-                            "contents": file_object.getField("file")
-                            .get(file_object)
-                            .data.encode("base64"),
-                            "izenpe_url": file_object.getUrl(),
-                            "izenpe_content": get_file_contents(file_object.getUrl()),
+                            "filename": file_object.file.filename,
+                            "contents": base64.urlsafe_b64encode(
+                                file_object.file.data
+                            ).decode(),
+                            "izenpe_url": file_object.url,
+                            "izenpe_content": get_file_contents(file_object.url),
                         }
                     )
 
+        language = self.context.Language()
+        translated_language = translated_context.Language()
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
-            "@id": "{}/@tablon/{}".format(portal_url, document_key),
+            "@id": f"{portal_url}/@tablon/{document_key}",
             "uuid": document_key,
             # "date_start": DateTime(self.context.EffectiveDate()).ISO8601(),
             # "date_end": DateTime(self.context.ExpirationDate()).ISO8601(),
             "date_start": self.context.effective().toZone("UTC").ISO8601(),
             "date_end": self.context.expires().toZone("UTC").ISO8601(),
             "origin": self.context.origin,
-            "origin_department_{}".format(
-                self.context.Language()
-            ): self.context.origin_department,
-            "origin_department_{}".format(
-                translated_context.Language()
-            ): translated_context.origin_department,
-            "origin_details_{}".format(
-                self.context.Language()
-            ): self.context.origin_details,
-            "origin_details_{}".format(
-                translated_context.Language()
-            ): translated_context.origin_details,
-            "description_{}".format(self.context.Language()): self.context.description,
-            "description_{}".format(
-                translated_context.Language()
-            ): translated_context.description,
-            "publication_url_{}".format(
-                translated_context.Language()
-            ): self.context.publication_url,
-            "publication_url_{}".format(
-                self.context.Language()
-            ): translated_context.publication_url,
+            f"origin_department_{language}": self.context.origin_department,
+            f"origin_department_{translated_language}": translated_context.origin_department,
+            f"origin_details_{language}": self.context.origin_details,
+            f"origin_details_{translated_language}": translated_context.origin_details,
+            f"description_{language}": self.context.description,
+            f"description_{translated_language}": translated_context.description,
+            f"publication_url_{language}": self.context.publication_url,
+            f"publication_url_{translated_language}": translated_context.publication_url,
             "documents": documents,
         }
 

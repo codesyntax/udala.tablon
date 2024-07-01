@@ -30,20 +30,21 @@ class DocumentoTablonView(BrowserView):
         items = []
         document_key = get_document_by_uid_and_lang(self.context.UID(), language)
         document = get_documents(document_key)
-        language_files = document.get("files_{}".format(language))
+        if document:
+            language_files = document.get("files_{}".format(language))
 
-        for language_file in language_files:
-            file = get_file(language_file)
-            file_language_uid = file.get(language)
-            file_object = api.content.get(UID=file_language_uid)
-            if file_object:
-                items.append(
-                    {
-                        "url": "{}/@tablon/{}/{}".format(
-                            portal_url, document_key, language_file
-                        ),
-                        "file_title": file_object.Title(),
-                        "file_accreditation_url": file_object.getUrl(),
-                    }
-                )
+            for language_file in language_files:
+                file = get_file(language_file)
+                file_language_uid = file.get(language)
+                file_object = api.content.get(UID=file_language_uid)
+                if file_object:
+                    items.append(
+                        {
+                            "url": "{}/@tablon/{}/{}".format(
+                                portal_url, document_key, language_file
+                            ),
+                            "file_title": file_object.Title(),
+                            "file_accreditation_url": file_object.getUrl(),
+                        }
+                    )
         return items

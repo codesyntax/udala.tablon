@@ -67,6 +67,7 @@ class UdalaTablonLayer(PloneSandboxLayer):
         if portal.portal_setup.profileExists("plone.app.multilingual:default"):
             applyProfile(portal, "plone.app.multilingual:default")
         set_available_languages()
+        portal.portal_workflow.setDefaultChain("simple_publication_workflow")
 
 
 UDALA_TABLON_FIXTURE = UdalaTablonLayer()

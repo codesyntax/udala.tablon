@@ -13,6 +13,7 @@ from udala.tablon.utils import register_documents
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import alsoProvides
+import base64
 
 
 OK = 1
@@ -355,13 +356,14 @@ class TablonPost(Service):
                 # Create EU
                 file_eu = api.content.create(
                     container=documento_eu,
-                    type="AccreditedFile",
+                    type="AcreditedFile",
                     title=file.get("name_eu"),
                     effectiveDate=date_start,
                     expirationDate=date_end,
                 )
                 file_eu.file = NamedBlobFile(
-                    file.get("contents").decode("base64"), filename=file.get("filename")
+                    base64.urlsafe_b64decode(file.get("contents")),
+                    filename=file.get("filename"),
                 )
 
                 # Translate into ES
@@ -377,13 +379,14 @@ class TablonPost(Service):
                 # EU
                 file_eu = api.content.create(
                     container=documento_eu,
-                    type="AccreditedFile",
+                    type="AcreditedFile",
                     title=file.get("name_eu"),
                     effectiveDate=date_start,
                     expirationDate=date_end,
                 )
                 file_eu.file = NamedBlobFile(
-                    file.get("contents").decode("base64"), filename=file.get("filename")
+                    base64.urlsafe_b64decode(file.get("contents")),
+                    filename=file.get("filename"),
                 )
 
                 file_eu_id = register_file(file_eu.UID(), None)
@@ -393,13 +396,14 @@ class TablonPost(Service):
                 # ES
                 file_es = api.content.create(
                     container=documento_es,
-                    type="AccreditedFile",
+                    type="AcreditedFile",
                     title=file.get("name_es"),
                     effectiveDate=date_start,
                     expirationDate=date_end,
                 )
                 file_es.file = NamedBlobFile(
-                    file.get("contents").decode("base64"), filename=file.get("filename")
+                    base64.urlsafe_b64decode(file.get("contents")),
+                    filename=file.get("filename"),
                 )
 
                 file_es_id = register_file(None, file_es.UID())
@@ -413,7 +417,7 @@ class TablonPost(Service):
             get_accreditation(document_id, file_id)
 
         portal_url = api.portal.get().absolute_url()
-        document_uri = "{}/@tablon/{}".format(portal_url, document_id)
+        document_uri = f"{portal_url}/@tablon/{document_id}"
         self.request.response.setStatus(201)
         self.request.response.setHeader("Location", document_uri)
 

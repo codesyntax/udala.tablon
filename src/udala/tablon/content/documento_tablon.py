@@ -18,11 +18,17 @@ class IDocumentoTablon(model.Schema):
 
     origin = schema.TextLine(title=_("Origen del documento"))
 
-    origin_department = schema.TextLine(title=_("Departamento origen del documento"))
+    origin_department = schema.TextLine(
+        title=_("Departamento origen del documento"), required=False
+    )
 
-    origin_details = schema.TextLine(title=_("Detalles del origen del documento"))
+    origin_details = schema.TextLine(
+        title=_("Detalles del origen del documento"), required=False
+    )
 
-    publication_url = schema.TextLine(title=_("URL de publicacion del documento"))
+    publication_url = schema.TextLine(
+        title=_("URL de publicacion del documento"), required=False
+    )
 
 
 @implementer(IDocumentoTablon)

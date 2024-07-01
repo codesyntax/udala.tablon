@@ -17,7 +17,7 @@ class IAcreditedFile(model.Schema):
 
     file = NamedBlobFile(title="File", required=True)
 
-    url = schema.TextLine(title=_("Accreditation URL"))
+    url = schema.TextLine(title=_("Accreditation URL"), required=False)
 
 
 @implementer(IAcreditedFile)

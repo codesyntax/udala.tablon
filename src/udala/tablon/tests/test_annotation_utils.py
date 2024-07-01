@@ -35,6 +35,15 @@ class TestAnnotationUtils(unittest.TestCase):
         )
         ITranslationManager(self.eu_tablon).register_translation("es", self.es_tablon)
 
+        for doc in ["doc1", "doc2"]:
+            mydoc_eu = createContentInContainer(
+                self.eu_tablon, "DocumentoTablon", title=doc
+            )
+            mydoc_es = createContentInContainer(
+                self.es_tablon, "DocumentoTablon", title=doc
+            )
+            ITranslationManager(mydoc_eu).register_translation("es", mydoc_es)
+
     def test_empty_tablon(self):
         self.assertEqual(len(self.eu_tablon.values()), 0)
         self.assertEqual(len(self.es_tablon.values()), 0)

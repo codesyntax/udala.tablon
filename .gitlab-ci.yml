@@ -26,7 +26,7 @@ stages:
   - test
   - report
 
-# before_script:
+before_script:
 #   - echo "deb http://ftp.de.debian.org/debian/ stretch main contrib non-free" >> /etc/apt/sources.list
 #   - apt-get update
 #   - apt-get install -y firefoxdriver
@@ -41,6 +41,7 @@ stages:
 #   - pip install -r requirements.txt
 #   - buildout bootstrap
 #   - bin/buildout -n -c buildout.cfg
+  - pip install tox
 
 code-analysis:
   stage: test

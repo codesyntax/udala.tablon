@@ -77,7 +77,7 @@ def get_file_contents(url):
         try:
             data = requests.get(url, verify=False)
             if data.ok:
-                return base64.encodestring(data.content)
+                return base64.urlsafe_b64encode(data.content)
         except Exception as e:
             pass
     return ""

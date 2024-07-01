@@ -19,13 +19,15 @@ class UdalaTablonLayer(PloneSandboxLayer):
         # The z3c.autoinclude feature is disabled in the Plone fixture base
         # layer.
         import plone.app.dexterity
+
         self.loadZCML(package=plone.app.dexterity)
         import plone.restapi
+
         self.loadZCML(package=plone.restapi)
         self.loadZCML(package=udala.tablon)
 
     def setUpPloneSite(self, portal):
-        applyProfile(portal, 'udala.tablon:default')
+        applyProfile(portal, "udala.tablon:default")
 
 
 UDALA_TABLON_FIXTURE = UdalaTablonLayer()
@@ -33,13 +35,13 @@ UDALA_TABLON_FIXTURE = UdalaTablonLayer()
 
 UDALA_TABLON_INTEGRATION_TESTING = IntegrationTesting(
     bases=(UDALA_TABLON_FIXTURE,),
-    name='UdalaTablonLayer:IntegrationTesting',
+    name="UdalaTablonLayer:IntegrationTesting",
 )
 
 
 UDALA_TABLON_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(UDALA_TABLON_FIXTURE,),
-    name='UdalaTablonLayer:FunctionalTesting',
+    name="UdalaTablonLayer:FunctionalTesting",
 )
 
 
@@ -49,5 +51,5 @@ UDALA_TABLON_ACCEPTANCE_TESTING = FunctionalTesting(
         REMOTE_LIBRARY_BUNDLE_FIXTURE,
         z2.ZSERVER_FIXTURE,
     ),
-    name='UdalaTablonLayer:AcceptanceTesting',
+    name="UdalaTablonLayer:AcceptanceTesting",
 )

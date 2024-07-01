@@ -94,6 +94,7 @@ def get_accreditation_for_url(url, title, f_extension, f_revision, language):
         return results.get("status"), results.get("url"), results.get("message")
     else:
         from logging import getLogger
+
         log = getLogger(__name__)
         log.info(data.status_code)
         log.info(data.text)
@@ -121,13 +122,13 @@ def getPublicationAccreditation(object):
     try:
         result, message = accreditation(object)
     except:
-        message = 'Errorea ziurtagiria lortzean'
+        message = "Errorea ziurtagiria lortzean"
         send_mail(message, object)
         return
 
     if result == 1:
         putils.addPortalMessage(_("Accreditation correct"), type="info")
-        message = 'Ziurtagiri zuzena'
+        message = "Ziurtagiri zuzena"
         send_mail(message, object)
 
     else:
@@ -139,13 +140,20 @@ def getPublicationAccreditation(object):
             % {"errorcode": result},
             type="warning",
         )
-        message = 'Errorea ziurtagiria lortzean'
+        message = "Errorea ziurtagiria lortzean"
         send_mail(message, object)
 
 
-
 def send_mail(message, object):
-    mailhost = api.portal.get_tool('MailHost')
+    mailhost = api.portal.get_tool("MailHost")
     portal = api.portal.get()
-    messageText = 'Izenperekin konexioaren emaitza: %s. Dokumentua:%s' % (message, object.absolute_url())
-    mailhost.send(messageText, mto='mlarreategi@codesyntax.com', mfrom=portal.email_from_address, subject='Izenpe emaitza')
+    messageText = "Izenperekin konexioaren emaitza: %s. Dokumentua:%s" % (
+        message,
+        object.absolute_url(),
+    )
+    mailhost.send(
+        messageText,
+        mto="mlarreategi@codesyntax.com",
+        mfrom=portal.email_from_address,
+        subject="Izenpe emaitza",
+    )

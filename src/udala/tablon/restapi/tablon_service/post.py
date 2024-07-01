@@ -12,7 +12,8 @@ from plone.restapi.services import Service
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import alsoProvides
-#from collective.taskqueue import taskqueue
+
+# from collective.taskqueue import taskqueue
 from plone.app.multilingual.interfaces import ITranslationManager
 from plone.namedfile.file import NamedBlobFile
 
@@ -32,9 +33,7 @@ def _validate_record_number(value):
     if _validate_not_empty(value) is OK:
         return OK
 
-    return translate(
-        _("The field record_number is mandatory"), context=getRequest()
-    )
+    return translate(_("The field record_number is mandatory"), context=getRequest())
 
 
 def _validate_date(value):
@@ -96,9 +95,7 @@ def _validate_origin_details_eu(value):
     if _validate_not_empty(value) is OK:
         return OK
 
-    return translate(
-        _("The field origin_details_eu mandatory"), context=getRequest()
-    )
+    return translate(_("The field origin_details_eu mandatory"), context=getRequest())
 
 
 def _validate_origin_details_es(value):
@@ -114,18 +111,14 @@ def _validate_description_eu(value):
     if _validate_not_empty(value) is OK:
         return OK
 
-    return translate(
-        _("The field description_eu is mandatory"), context=getRequest()
-    )
+    return translate(_("The field description_eu is mandatory"), context=getRequest())
 
 
 def _validate_description_es(value):
     if _validate_not_empty(value) is OK:
         return OK
 
-    return translate(
-        _("The field description_es is mandatory"), context=getRequest()
-    )
+    return translate(_("The field description_es is mandatory"), context=getRequest())
 
 
 def _validate_url(value):
@@ -143,10 +136,7 @@ def _validate_publication_url_eu(value):
         return OK
 
     return translate(
-        _(
-            "The value if the field publication_url_eu description_es is"
-            " mandatory"
-        ),
+        _("The value if the field publication_url_eu description_es is" " mandatory"),
         context=getRequest(),
     )
 
@@ -156,10 +146,7 @@ def _validate_publication_url_es(value):
         return OK
 
     return translate(
-        _(
-            "The value if the field publication_url_es description_es is"
-            " mandatory"
-        ),
+        _("The value if the field publication_url_es description_es is" " mandatory"),
         context=getRequest(),
     )
 
@@ -239,9 +226,7 @@ def get_accreditation(document_id, file_id):
     # service will be localhost:8080 instead of the real URL of the
     # object, thus avoiding the accreditor service to reach the
     # files
-    url = (
-        "/VirtualHostBase/https/www.eibar.eus:443/Plone/VirtualHostRoot"
-    )
+    url = "/VirtualHostBase/https/www.eibar.eus:443/Plone/VirtualHostRoot"
 
     # taskqueue.add(
     #     "{}/@tablon/{}/{}/get_external_accreditation".format(
@@ -277,9 +262,7 @@ FIELD_VALIDATION = {
 class TablonPost(Service):
     def get_tablon(self, lang="eu"):
         portal = api.portal.get()
-        brains = api.content.find(
-            context=portal, Language="eu", portal_type="Tablon"
-        )
+        brains = api.content.find(context=portal, Language="eu", portal_type="Tablon")
         for brain in brains:
             return brain.getObject()
         return None
@@ -337,17 +320,17 @@ class TablonPost(Service):
 
         api.content.transition(obj=documento_eu, transition="publish")
 
-        ITranslationManager(documento_eu).add_translation('es')
-        documento_es = ITranslationManager(documento_eu).get_translation('es')
+        ITranslationManager(documento_eu).add_translation("es")
+        documento_es = ITranslationManager(documento_eu).get_translation("es")
 
-        documento_es.title=data.get("record_number")
-        documento_es.origin=data.get("origin")
-        documento_es.origin_department=data.get("origin_department_es")
-        documento_es.origin_details=data.get("origin_details_es")
-        documento_es.publication_url=data.get("publication_url_es")
-        documento_es.description=data.get("description_es")
-        documento_es.effectiveDate=date_start
-        documento_es.expirationDate=date_end
+        documento_es.title = data.get("record_number")
+        documento_es.origin = data.get("origin")
+        documento_es.origin_department = data.get("origin_department_es")
+        documento_es.origin_details = data.get("origin_details_es")
+        documento_es.publication_url = data.get("publication_url_es")
+        documento_es.description = data.get("description_es")
+        documento_es.effectiveDate = date_start
+        documento_es.expirationDate = date_end
         # documento_es = documento_eu.addTranslation(
         #     language="es",
         #     title=data.get("record_number"),
@@ -378,11 +361,13 @@ class TablonPost(Service):
                     effectiveDate=date_start,
                     expirationDate=date_end,
                 )
-                file_eu.file = NamedBlobFile(file.get("contents").decode("base64"), filename=file.get("filename"))
+                file_eu.file = NamedBlobFile(
+                    file.get("contents").decode("base64"), filename=file.get("filename")
+                )
 
                 # Translate into ES
-                ITranslationManager(file_eu).add_translation('es')
-                file_es = ITranslationManager(file_eu).get_translation('es')
+                ITranslationManager(file_eu).add_translation("es")
+                file_es = ITranslationManager(file_eu).get_translation("es")
                 file_es.title = file.get("name_es")
 
                 file_eu_id = register_file(file_eu.UID(), file_es.UID())
@@ -398,7 +383,9 @@ class TablonPost(Service):
                     effectiveDate=date_start,
                     expirationDate=date_end,
                 )
-                file_eu.file = NamedBlobFile(file.get("contents").decode("base64"), filename=file.get("filename"))
+                file_eu.file = NamedBlobFile(
+                    file.get("contents").decode("base64"), filename=file.get("filename")
+                )
 
                 file_eu_id = register_file(file_eu.UID(), None)
                 eu_files.append(file_eu_id)
@@ -412,7 +399,9 @@ class TablonPost(Service):
                     effectiveDate=date_start,
                     expirationDate=date_end,
                 )
-                file_es.file = NamedBlobFile(file.get("contents").decode("base64"), filename=file.get("filename"))
+                file_es.file = NamedBlobFile(
+                    file.get("contents").decode("base64"), filename=file.get("filename")
+                )
 
                 file_es_id = register_file(None, file_es.UID())
                 es_files.append(file_es_id)

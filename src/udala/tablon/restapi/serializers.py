@@ -61,9 +61,7 @@ class DocumentoTablonSerializeToJson(SerializeToJson):
                             .get(file_object)
                             .data.encode("base64"),
                             "izenpe_url": file_object.getUrl(),
-                            "izenpe_content": get_file_contents(
-                                file_object.getUrl()
-                            ),
+                            "izenpe_content": get_file_contents(file_object.getUrl()),
                         }
                     )
 
@@ -88,9 +86,7 @@ class DocumentoTablonSerializeToJson(SerializeToJson):
             "origin_details_{}".format(
                 translated_context.Language()
             ): translated_context.origin_details,
-            "description_{}".format(
-                self.context.Language()
-            ): self.context.description,
+            "description_{}".format(self.context.Language()): self.context.description,
             "description_{}".format(
                 translated_context.Language()
             ): translated_context.description,

@@ -50,9 +50,7 @@ class TablonGet(Service):
                 eu_uid = document.get("eu")
                 eu_document = api.content.get(UID=eu_uid)
 
-                adapter = getMultiAdapter(
-                    (eu_document, self.request), ISerializeToJson
-                )
+                adapter = getMultiAdapter((eu_document, self.request), ISerializeToJson)
 
                 return adapter()
 
@@ -75,10 +73,7 @@ class TablonGet(Service):
 
                 return adapter()
 
-        elif (
-            len(self.params) == 3
-            and self.params[2] == "get_external_accreditation"
-        ):
+        elif len(self.params) == 3 and self.params[2] == "get_external_accreditation":
             file_id = self._get_file_id
             file = get_file(file_id)
             file_uid = file.get("eu")

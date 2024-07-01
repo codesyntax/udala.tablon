@@ -15,15 +15,11 @@ from zope.interface import implementer
 
 
 class ITablon(model.Schema):
-    """ Marker interface and Dexterity Python Schema for Tablon
-    """
-    sponsors = RichText(
-        title=_(u'Sponsors'),
-        required=False
-    )
+    """Marker interface and Dexterity Python Schema for Tablon"""
+
+    sponsors = RichText(title=_("Sponsors"), required=False)
 
 
 @implementer(ITablon)
 class Tablon(Container):
-    """ Content-type class for ITablon
-    """
+    """Content-type class for ITablon"""

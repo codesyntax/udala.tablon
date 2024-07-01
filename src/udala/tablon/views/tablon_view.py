@@ -8,8 +8,9 @@ from zope.interface import Interface
 
 # from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
+
 class ITablonView(Interface):
-    """ Marker Interface for ITablonView"""
+    """Marker Interface for ITablonView"""
 
 
 @implementer(ITablonView)

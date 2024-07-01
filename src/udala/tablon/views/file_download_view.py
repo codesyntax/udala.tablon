@@ -25,17 +25,13 @@ class FileDownloadView(BrowserView):
     @property
     def _get_doc_id(self):
         if len(self.params) not in [2, 3]:
-            raise Exception(
-                "Must supply exactly two parameters (doc id, file_id)"
-            )
+            raise Exception("Must supply exactly two parameters (doc id, file_id)")
         return self.params[0]
 
     @property
     def _get_file_id(self):
         if len(self.params) not in [2, 3]:
-            raise Exception(
-                "Must supply exactly two parameters (doc id, file_id)"
-            )
+            raise Exception("Must supply exactly two parameters (doc id, file_id)")
         return self.params[1]
 
     def __call__(self):

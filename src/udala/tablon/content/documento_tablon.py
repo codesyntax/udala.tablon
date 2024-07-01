@@ -14,20 +14,17 @@ from zope.interface import implementer
 
 
 class IDocumentoTablon(model.Schema):
-    """ Marker interface and Dexterity Python Schema for DocumentoTablon
-    """
-    origin = schema.TextLine(title=_(u"Origen del documento"))
+    """Marker interface and Dexterity Python Schema for DocumentoTablon"""
 
-    origin_department = schema.TextLine(title=_(u"Departamento origen del documento"))
+    origin = schema.TextLine(title=_("Origen del documento"))
 
-    origin_details = schema.TextLine(title=_(u"Detalles del origen del documento"))
+    origin_department = schema.TextLine(title=_("Departamento origen del documento"))
 
-    publication_url = schema.TextLine(title=_(u"URL de publicacion del documento"))
+    origin_details = schema.TextLine(title=_("Detalles del origen del documento"))
 
-
+    publication_url = schema.TextLine(title=_("URL de publicacion del documento"))
 
 
 @implementer(IDocumentoTablon)
 class DocumentoTablon(Container):
-    """ Content-type class for IDocumentoTablon
-    """
+    """Content-type class for IDocumentoTablon"""

@@ -13,8 +13,9 @@ from plone import api
 
 # from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
+
 class IDocumentoTablonView(Interface):
-    """ Marker Interface for IDocumentoTablonView"""
+    """Marker Interface for IDocumentoTablonView"""
 
 
 @implementer(IDocumentoTablonView)
@@ -28,9 +29,7 @@ class DocumentoTablonView(BrowserView):
         portal_url = portal.absolute_url()
         language = self.context.Language()
         items = []
-        document_key = get_document_by_uid_and_lang(
-            self.context.UID(), language
-        )
+        document_key = get_document_by_uid_and_lang(self.context.UID(), language)
         document = get_documents(document_key)
         language_files = document.get("files_{}".format(language))
 

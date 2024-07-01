@@ -13,15 +13,13 @@ from zope.interface import implementer
 
 
 class IAcreditedFile(model.Schema):
-    """ Marker interface and Dexterity Python Schema for AcreditedFile
-    """
+    """Marker interface and Dexterity Python Schema for AcreditedFile"""
+
     file = NamedBlobFile(title="File", required=True)
 
-    url = schema.TextLine(title=_(u"Accreditation URL"))
-
+    url = schema.TextLine(title=_("Accreditation URL"))
 
 
 @implementer(IAcreditedFile)
 class AcreditedFile(Container):
-    """ Content-type class for IAcreditedFile
-    """
+    """Content-type class for IAcreditedFile"""

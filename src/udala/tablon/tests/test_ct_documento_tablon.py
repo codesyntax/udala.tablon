@@ -17,78 +17,72 @@ class DocumentoTablonIntegrationTest(unittest.TestCase):
 
     def setUp(self):
         """Custom shared utility setup for tests."""
-        self.portal = self.layer['portal']
-        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        self.portal = self.layer["portal"]
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
         self.parent = self.portal
 
     def test_ct_documento_tablon_schema(self):
-        fti = queryUtility(IDexterityFTI, name='DocumentoTablon')
+        fti = queryUtility(IDexterityFTI, name="DocumentoTablon")
         schema = fti.lookupSchema()
         self.assertEqual(IDocumentoTablon, schema)
 
     def test_ct_documento_tablon_fti(self):
-        fti = queryUtility(IDexterityFTI, name='DocumentoTablon')
+        fti = queryUtility(IDexterityFTI, name="DocumentoTablon")
         self.assertTrue(fti)
 
     def test_ct_documento_tablon_factory(self):
-        fti = queryUtility(IDexterityFTI, name='DocumentoTablon')
+        fti = queryUtility(IDexterityFTI, name="DocumentoTablon")
         factory = fti.factory
         obj = createObject(factory)
 
         self.assertTrue(
             IDocumentoTablon.providedBy(obj),
-            u'IDocumentoTablon not provided by {0}!'.format(
+            "IDocumentoTablon not provided by {0}!".format(
                 obj,
             ),
         )
 
     def test_ct_documento_tablon_adding(self):
-        setRoles(self.portal, TEST_USER_ID, ['Contributor'])
+        setRoles(self.portal, TEST_USER_ID, ["Contributor"])
         obj = api.content.create(
             container=self.portal,
-            type='DocumentoTablon',
-            id='documento_tablon',
+            type="DocumentoTablon",
+            id="documento_tablon",
         )
 
         self.assertTrue(
             IDocumentoTablon.providedBy(obj),
-            u'IDocumentoTablon not provided by {0}!'.format(
+            "IDocumentoTablon not provided by {0}!".format(
                 obj.id,
             ),
         )
 
         parent = obj.__parent__
-        self.assertIn('documento_tablon', parent.objectIds())
+        self.assertIn("documento_tablon", parent.objectIds())
 
         # check that deleting the object works too
         api.content.delete(obj=obj)
-        self.assertNotIn('documento_tablon', parent.objectIds())
+        self.assertNotIn("documento_tablon", parent.objectIds())
 
     def test_ct_documento_tablon_globally_addable(self):
-        setRoles(self.portal, TEST_USER_ID, ['Contributor'])
-        fti = queryUtility(IDexterityFTI, name='DocumentoTablon')
-        self.assertTrue(
-            fti.global_allow,
-            u'{0} is not globally addable!'.format(fti.id)
-        )
+        setRoles(self.portal, TEST_USER_ID, ["Contributor"])
+        fti = queryUtility(IDexterityFTI, name="DocumentoTablon")
+        self.assertTrue(fti.global_allow, "{0} is not globally addable!".format(fti.id))
 
     def test_ct_documento_tablon_filter_content_type_false(self):
-        setRoles(self.portal, TEST_USER_ID, ['Contributor'])
-        fti = queryUtility(IDexterityFTI, name='DocumentoTablon')
+        setRoles(self.portal, TEST_USER_ID, ["Contributor"])
+        fti = queryUtility(IDexterityFTI, name="DocumentoTablon")
         portal_types = self.portal.portal_types
         parent_id = portal_types.constructContent(
             fti.id,
             self.portal,
-            'documento_tablon_id',
-            title='DocumentoTablon container',
+            "documento_tablon_id",
+            title="DocumentoTablon container",
         )
         self.parent = self.portal[parent_id]
         obj = api.content.create(
             container=self.parent,
-            type='Document',
-            title='My Content',
+            type="Document",
+            title="My Content",
         )
-        self.assertTrue(
-            obj,
-            u'Cannot add {0} to {1} container!'.format(obj.id, fti.id)
-        )
+        self.assertTrue(obj, "Cannot add {0} to {1} container!".format(obj.id, fti.id))

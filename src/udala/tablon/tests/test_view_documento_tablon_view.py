@@ -18,7 +18,7 @@ class ViewsIntegrationTest(unittest.TestCase):
     def setUp(self):
         self.portal = self.layer['portal']
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
-        api.content.create(self.portal, 'Folder', 'other-folder')
+        api.content.create(self.portal, 'DocumentoTablon', 'other-folder')
         api.content.create(self.portal, 'Document', 'front-page')
 
     def test_view_is_registered(self):

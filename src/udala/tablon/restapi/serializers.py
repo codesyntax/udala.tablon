@@ -63,14 +63,15 @@ class DocumentoTablonSerializeToJson(SerializeToJson):
 
         language = self.context.Language()
         translated_language = translated_context.Language()
+
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
             "@id": f"{portal_url}/@tablon/{document_key}",
             "uuid": document_key,
             # "date_start": DateTime(self.context.EffectiveDate()).ISO8601(),
             # "date_end": DateTime(self.context.ExpirationDate()).ISO8601(),
-            "date_start": self.context.effective().toZone("UTC").ISO8601(),
-            "date_end": self.context.expires().toZone("UTC").ISO8601(),
+            "date_start": self.context.effective.toZone("UTC").ISO8601(),
+            "date_end": self.context.expires.toZone("UTC").ISO8601(),
             "origin": self.context.origin,
             f"origin_department_{language}": self.context.origin_department,
             f"origin_department_{translated_language}": translated_context.origin_department,

@@ -315,8 +315,8 @@ class TablonPost(Service):
             origin_details=data.get("origin_details_eu"),
             publication_url=data.get("publication_url_eu"),
             description=data.get("description_eu"),
-            effectiveDate=date_start,
-            expirationDate=date_end,
+            effective=date_start,
+            expires=date_end,
         )
 
         api.content.transition(obj=documento_eu, transition="publish")
@@ -359,8 +359,8 @@ class TablonPost(Service):
                     container=documento_eu,
                     type="AcreditedFile",
                     title=file.get("name_eu"),
-                    effectiveDate=date_start,
-                    expirationDate=date_end,
+                    effective=date_start,
+                    expires=date_end,
                 )
                 file_eu.file = NamedBlobFile(
                     base64.urlsafe_b64decode(file.get("contents")),
@@ -382,8 +382,8 @@ class TablonPost(Service):
                     container=documento_eu,
                     type="AcreditedFile",
                     title=file.get("name_eu"),
-                    effectiveDate=date_start,
-                    expirationDate=date_end,
+                    effective=date_start,
+                    expires=date_end,
                 )
                 file_eu.file = NamedBlobFile(
                     base64.urlsafe_b64decode(file.get("contents")),
@@ -399,8 +399,8 @@ class TablonPost(Service):
                     container=documento_es,
                     type="AcreditedFile",
                     title=file.get("name_es"),
-                    effectiveDate=date_start,
-                    expirationDate=date_end,
+                    effective=date_start,
+                    expires=date_end,
                 )
                 file_es.file = NamedBlobFile(
                     base64.urlsafe_b64decode(file.get("contents")),

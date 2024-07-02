@@ -26,14 +26,15 @@ from plone.restapi.testing import RelativeSession
 from udala.tablon.file_utils import register_file
 from udala.tablon.testing import UDALA_TABLON_FUNCTIONAL_TESTING
 from udala.tablon.utils import register_documents
+from DateTime import DateTime
 
 import transaction
 import unittest
 import uuid
 
 
-EFFECTIVE_DATE = "1995-07-31T13:45:00"
-EXPIRATION_DATE = "1995-10-31T13:45:00"
+EFFECTIVE_DATE = DateTime("1995-07-31T13:45:00")
+EXPIRATION_DATE = DateTime("1995-10-31T13:45:00")
 
 
 class TestRESTAPIEndpoints(unittest.TestCase):
@@ -45,18 +46,12 @@ class TestRESTAPIEndpoints(unittest.TestCase):
         login(self.portal, SITE_OWNER_NAME)
 
         self.eu_tablon = createContentInContainer(
-            self.portal.eu,
-            "Tablon",
-            title="Iragarki Ohola",
-            effective=EFFECTIVE_DATE,
-            expires=EXPIRATION_DATE,
+            self.portal.eu, "Tablon", title="Iragarki Ohola"
         )
         self.es_tablon = createContentInContainer(
             self.portal.es,
             "Tablon",
             title="Tablón de Anuncios",
-            effective=EFFECTIVE_DATE,
-            expires=EXPIRATION_DATE,
         )
         ITranslationManager(self.eu_tablon).register_translation("es", self.es_tablon)
 
@@ -66,7 +61,11 @@ class TestRESTAPIEndpoints(unittest.TestCase):
 
         for doc in ["doc1", "doc2"]:
             mydoc_eu = createContentInContainer(
-                self.eu_tablon, "DocumentoTablon", title=doc
+                self.eu_tablon,
+                "DocumentoTablon",
+                title=doc,
+                effective=EFFECTIVE_DATE,
+                expires=EXPIRATION_DATE,
             )
 
             file_eu = createContentInContainer(
@@ -75,7 +74,11 @@ class TestRESTAPIEndpoints(unittest.TestCase):
                 title=f"file_{doc}",
             )
             mydoc_es = createContentInContainer(
-                self.es_tablon, "DocumentoTablon", title=doc
+                self.es_tablon,
+                "DocumentoTablon",
+                title=doc,
+                effective=EFFECTIVE_DATE,
+                expires=EXPIRATION_DATE,
             )
             file_es = createContentInContainer(
                 mydoc_es,
@@ -308,3 +311,15 @@ class TestRESTAPIEndpoints(unittest.TestCase):
             "/@tablon",
         )
         self.assertEqual(response.status_code, 404)
+
+    def test_get_expired_today(self):
+        response = self.api_session.get("/@tablon-expired")
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_expired_in_a_given_day(self):
+        response = self.api_session.get("/@tablon-expired?date=1995-10-31")
+
+        self.assertEqual(response.status_code, 200)
+        response_json = response.json()
+
+        self.assertEqual(len(response_json), 2)

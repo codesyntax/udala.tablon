@@ -106,6 +106,7 @@ class TablonGet(Service):
 
 class TablonExpiredGet(Service):
     def reply(self):
+
         date = self.request.get("date", None)
         if date is None:
             date = DateTime()

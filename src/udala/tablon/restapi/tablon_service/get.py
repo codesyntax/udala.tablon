@@ -41,7 +41,6 @@ class TablonGet(Service):
 
     def reply(self):
         if len(self.params) == 1:
-
             doc_id = self._get_doc_id
             document = get_documents(doc_id)
 
@@ -66,11 +65,15 @@ class TablonGet(Service):
                     file_uid = file.get("es")
 
                 if file_uid is None:
+                    raise NotFound(self.context, "", self.request)
+
+                file_object = api.content.get(UID=file_uid)
+                if file_object is not None:
                     adapter = getMultiAdapter(
-                        (eu_document, self.request), ISerializeToJson
+                        (file_object, self.request), ISerializeToJson
                     )
 
-                return adapter()
+                    return adapter()
 
         elif len(self.params) == 3 and self.params[2] == "get_external_accreditation":
             file_id = self._get_file_id

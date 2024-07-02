@@ -60,8 +60,9 @@ class TestRESTAPIEndpoints(unittest.TestCase):
         )
         ITranslationManager(self.eu_tablon).register_translation("es", self.es_tablon)
 
-        self.file_data = []
+        self.file_data = {}
         self.document_data = []
+        self.file_annotation_ids = []
 
         for doc in ["doc1", "doc2"]:
             mydoc_eu = createContentInContainer(
@@ -84,16 +85,15 @@ class TestRESTAPIEndpoints(unittest.TestCase):
 
             ITranslationManager(mydoc_eu).register_translation("es", mydoc_es)
             ITranslationManager(file_eu).register_translation("es", file_es)
-
-            self.file_data.append(register_file(file_eu.UID(), file_es.UID()))
-            self.document_data.append(
-                register_documents(
-                    mydoc_eu.UID(),
-                    mydoc_es.UID(),
-                    [file_eu.UID()],
-                    [file_es.UID()],
-                )
+            key = register_documents(
+                mydoc_eu.UID(),
+                mydoc_es.UID(),
+                [file_eu.UID()],
+                [file_es.UID()],
             )
+            self.document_data.append(key)
+            self.file_annotation_ids.append(register_file(file_eu.UID(), file_es.UID()))
+            self.file_data[key] = [file_eu.UID(), file_es.UID()]
 
         self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
@@ -135,13 +135,15 @@ class TestRESTAPIEndpoints(unittest.TestCase):
     def test_get_document(self):
         generated_uuid_1 = uuid.uuid4().hex
         response = self.api_session.get(f"/@tablon/{self.document_data[0]}")
+
         self.assertEqual(response.status_code, 200)
 
     def test_get_file_in_document(self):
         generated_uuid_1 = uuid.uuid4().hex
         response = self.api_session.get(
-            f"/@tablon/{self.document_data[0]}/{self.file_data[0]}"
+            f"/@tablon/{self.document_data[0]}/{self.file_annotation_ids[0]}"
         )
+
         self.assertEqual(response.status_code, 200)
 
     def test_post_document_invalid_urls(self):
@@ -214,3 +216,24 @@ class TestRESTAPIEndpoints(unittest.TestCase):
 
         response = self.api_session.get(f"/@tablon/{generated_uuid}")
         self.assertEqual(response.status_code, 200)
+
+    def test_get_with_3_params(self):
+        generated_uuid_1 = uuid.uuid4().hex
+        generated_uuid_2 = uuid.uuid4().hex
+        generated_uuid_3 = uuid.uuid4().hex
+        response = self.api_session.get(
+            f"/@tablon/{generated_uuid_1}/{generated_uuid_2}/{generated_uuid_3}"
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_with_4_params(self):
+        generated_uuid_1 = uuid.uuid4().hex
+        generated_uuid_2 = uuid.uuid4().hex
+        generated_uuid_3 = uuid.uuid4().hex
+        generated_uuid_4 = uuid.uuid4().hex
+        response = self.api_session.get(
+            f"/@tablon/{generated_uuid_1}/{generated_uuid_2}/{generated_uuid_3}/{generated_uuid_4}"
+        )
+
+        self.assertEqual(response.status_code, 404)

@@ -75,7 +75,7 @@ class FileDownloadView(BrowserView):
 
                     else:
 
-                        blob = file_object.getField("file").get(file_object)
+                        blob = file_object.file.data
 
                         self.request.RESPONSE.setHeader(
                             "Content-Type", blob.content_type

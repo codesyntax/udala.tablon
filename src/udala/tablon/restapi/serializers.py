@@ -39,26 +39,27 @@ class DocumentoTablonSerializeToJson(SerializeToJson):
 
         for file_id in set(files_eu + files_es):
             file_uid_data = get_file(file_id)
-            file_uid = file_uid_data.get("eu", None)
-            if file_uid is None:
-                file_uid = file_uid_data.get("es", None)
+            if file_uid_data is not None:
+                file_uid = file_uid_data.get("eu", None)
+                if file_uid is None:
+                    file_uid = file_uid_data.get("es", None)
 
-            if file_uid is not None:
-                file_object = api.content.get(UID=file_uid)
-                if file_object is not None:
-                    documents.append(
-                        {
-                            "@id": f"{portal_url}/@tablon/{document_key}/{file_id}",
-                            "uuid": file_id,
-                            "title": file_object.Title(),
-                            "filename": file_object.file.filename,
-                            "contents": base64.urlsafe_b64encode(
-                                file_object.file.data
-                            ).decode(),
-                            "izenpe_url": file_object.url,
-                            "izenpe_content": get_file_contents(file_object.url),
-                        }
-                    )
+                if file_uid is not None:
+                    file_object = api.content.get(UID=file_uid)
+                    if file_object is not None:
+                        documents.append(
+                            {
+                                "@id": f"{portal_url}/@tablon/{document_key}/{file_id}",
+                                "uuid": file_id,
+                                "title": file_object.Title(),
+                                "filename": file_object.file.filename,
+                                "contents": base64.urlsafe_b64encode(
+                                    file_object.file.data
+                                ).decode(),
+                                "izenpe_url": file_object.url,
+                                "izenpe_content": get_file_contents(file_object.url),
+                            }
+                        )
 
         language = self.context.Language()
         translated_language = translated_context.Language()

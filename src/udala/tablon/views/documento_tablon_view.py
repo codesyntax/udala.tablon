@@ -31,7 +31,7 @@ class DocumentoTablonView(BrowserView):
         document_key = get_document_by_uid_and_lang(self.context.UID(), language)
         document = get_documents(document_key)
         if document:
-            language_files = document.get("files_{}".format(language))
+            language_files = document.get(f"files_{language}")
 
             for language_file in language_files:
                 file = get_file(language_file)
@@ -40,9 +40,7 @@ class DocumentoTablonView(BrowserView):
                 if file_object:
                     items.append(
                         {
-                            "url": "{}/@tablon/{}/{}".format(
-                                portal_url, document_key, language_file
-                            ),
+                            "url": f"{portal_url}/@tablon/{document_key}/{language_file}",
                             "file_title": file_object.Title(),
                             "file_accreditation_url": file_object.getUrl(),
                         }

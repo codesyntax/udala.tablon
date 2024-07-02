@@ -88,15 +88,18 @@ class TestRESTAPIEndpoints(unittest.TestCase):
 
             ITranslationManager(mydoc_eu).register_translation("es", mydoc_es)
             ITranslationManager(file_eu).register_translation("es", file_es)
+
+            file_key = register_file(file_eu.UID(), file_es.UID())
+
             key = register_documents(
                 mydoc_eu.UID(),
                 mydoc_es.UID(),
-                [file_eu.UID()],
-                [file_es.UID()],
+                [file_key],
+                [file_key],
             )
             self.document_data.append(key)
-            self.file_annotation_ids.append(register_file(file_eu.UID(), file_es.UID()))
-            self.file_data[key] = [file_eu.UID(), file_es.UID()]
+            self.file_annotation_ids.append(file_key)
+            self.file_data[key] = [file_key]
 
         self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
@@ -137,7 +140,6 @@ class TestRESTAPIEndpoints(unittest.TestCase):
 
     def test_get_document(self):
         response = self.api_session.get(f"/@tablon/{self.document_data[0]}")
-
         self.assertEqual(response.status_code, 200)
 
     def test_get_file_in_document(self):

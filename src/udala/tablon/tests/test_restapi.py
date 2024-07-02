@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
+from .example_data import correct_document_different_documents_per_language
 from .example_data import correct_document_files_and_urls
 from .example_data import correct_document_no_files
 from .example_data import correct_document_no_urls
+from .example_data import document_error_in_forms_empty_record_number
+from .example_data import document_error_in_forms_invalid_end_date
+from .example_data import document_error_in_forms_invalid_start_date
+from .example_data import document_error_in_forms_no_description_es
+from .example_data import document_error_in_forms_no_description_eu
 from .example_data import document_error_in_forms_no_origin
 from .example_data import document_error_in_forms_no_origin_department_es
 from .example_data import document_error_in_forms_no_origin_department_eu
-from .example_data import document_error_in_forms_no_description_eu
-from .example_data import document_error_in_forms_no_description_es
 from .example_data import document_error_in_forms_no_origin_details_es
 from .example_data import document_error_in_forms_no_origin_details_eu
+from .example_data import document_error_in_forms_no_record_number
 from .example_data import document_to_publish_at_midnight
 from .example_data import invalid_url
 from .example_data import wrong_origin
@@ -20,12 +25,7 @@ from plone.dexterity.utils import createContentInContainer
 from plone.restapi.testing import RelativeSession
 from udala.tablon.file_utils import register_file
 from udala.tablon.testing import UDALA_TABLON_FUNCTIONAL_TESTING
-from udala.tablon.utils import ANNOTATION_KEY
-from udala.tablon.utils import delete_document
-from udala.tablon.utils import get_document_by_uid_and_lang
-from udala.tablon.utils import get_documents
 from udala.tablon.utils import register_documents
-from zope.annotation.interfaces import IAnnotations
 
 import transaction
 import unittest
@@ -133,13 +133,11 @@ class TestRESTAPIEndpoints(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_get_document(self):
-        generated_uuid_1 = uuid.uuid4().hex
         response = self.api_session.get(f"/@tablon/{self.document_data[0]}")
 
         self.assertEqual(response.status_code, 200)
 
     def test_get_file_in_document(self):
-        generated_uuid_1 = uuid.uuid4().hex
         response = self.api_session.get(
             f"/@tablon/{self.document_data[0]}/{self.file_annotation_ids[0]}"
         )
@@ -165,12 +163,6 @@ class TestRESTAPIEndpoints(unittest.TestCase):
     def test_post_document_error_no_description_eu(self):
         response = self.api_session.post(
             "/@tablon", json=document_error_in_forms_no_description_eu
-        )
-        self.assertEqual(response.status_code, 400)
-
-    def test_post_document_error_no_description_es(self):
-        response = self.api_session.post(
-            "/@tablon", json=document_error_in_forms_no_description_es
         )
         self.assertEqual(response.status_code, 400)
 
@@ -217,6 +209,65 @@ class TestRESTAPIEndpoints(unittest.TestCase):
         response = self.api_session.get(f"/@tablon/{generated_uuid}")
         self.assertEqual(response.status_code, 200)
 
+    def test_post_document_invalid_start_date(self):
+        response = self.api_session.post(
+            "/@tablon", json=document_error_in_forms_invalid_start_date
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_post_document_invalid_end_date(self):
+        response = self.api_session.post(
+            "/@tablon", json=document_error_in_forms_invalid_end_date
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_post_document_no_record_number(self):
+        response = self.api_session.post(
+            "/@tablon", json=document_error_in_forms_no_record_number
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_post_document_emtpy_record_number(self):
+        response = self.api_session.post(
+            "/@tablon", json=document_error_in_forms_empty_record_number
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_post_document_different_languages_files(self):
+
+        response = self.api_session.post(
+            "/@tablon", json=correct_document_different_documents_per_language
+        )
+        self.assertEqual(response.status_code, 201)
+
+    def test_post_document_no_origin_department_es(self):
+        response = self.api_session.post(
+            "/@tablon", json=document_error_in_forms_no_origin_department_es
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_post_document_no_origin_department_eu(self):
+        response = self.api_session.post(
+            "/@tablon", json=document_error_in_forms_no_origin_department_eu
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_post_document_no_origin_details_eu(self):
+        response = self.api_session.post(
+            "/@tablon", json=document_error_in_forms_no_origin_details_eu
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_post_document_no_origin_details_es(self):
+        response = self.api_session.post(
+            "/@tablon", json=document_error_in_forms_no_origin_details_es
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_post_document_wrong_origin(self):
+        response = self.api_session.post("/@tablon", json=wrong_origin)
+        self.assertEqual(response.status_code, 400)
+
     def test_get_with_3_params(self):
         generated_uuid_1 = uuid.uuid4().hex
         generated_uuid_2 = uuid.uuid4().hex
@@ -236,4 +287,24 @@ class TestRESTAPIEndpoints(unittest.TestCase):
             f"/@tablon/{generated_uuid_1}/{generated_uuid_2}/{generated_uuid_3}/{generated_uuid_4}"
         )
 
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_existing_document(self):
+        response = self.api_session.delete(
+            f"/@tablon/{self.document_data[0]}",
+        )
+        self.assertEqual(response.status_code, 204)
+
+    def test_delete_unexisting_document(self):
+        generated_uuid_1 = uuid.uuid4().hex
+
+        response = self.api_session.delete(
+            f"/@tablon/{generated_uuid_1}",
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_error_request(self):
+        response = self.api_session.delete(
+            "/@tablon",
+        )
         self.assertEqual(response.status_code, 404)

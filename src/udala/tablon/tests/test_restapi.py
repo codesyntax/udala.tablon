@@ -17,6 +17,7 @@ from .example_data import document_error_in_forms_no_record_number
 from .example_data import document_to_publish_at_midnight
 from .example_data import invalid_url
 from .example_data import wrong_origin
+from DateTime import DateTime
 from plone.app.multilingual.interfaces import ITranslationManager
 from plone.app.testing import login
 from plone.app.testing import SITE_OWNER_NAME
@@ -26,7 +27,6 @@ from plone.restapi.testing import RelativeSession
 from udala.tablon.file_utils import register_file
 from udala.tablon.testing import UDALA_TABLON_FUNCTIONAL_TESTING
 from udala.tablon.utils import register_documents
-from DateTime import DateTime
 
 import transaction
 import unittest

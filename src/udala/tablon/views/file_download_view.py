@@ -43,7 +43,6 @@ class FileDownloadView(BrowserView):
 
             file_id = self._get_file_id
             file = get_file(file_id)
-
             if documents and file:
                 file_uid = file.get("eu")
                 if file_uid is None:
@@ -74,12 +73,14 @@ class FileDownloadView(BrowserView):
                         return 1
 
                     else:
+                        if file_object.file is not None:
+                            blob = file_object.file.data
 
-                        blob = file_object.file.data
+                            self.request.RESPONSE.setHeader(
+                                "Content-Type", blob.content_type
+                            )
+                            return blob.data
 
-                        self.request.RESPONSE.setHeader(
-                            "Content-Type", blob.content_type
-                        )
-                        return blob.data
+                        return ""
 
         raise NotFound(self.context, "", self.request)

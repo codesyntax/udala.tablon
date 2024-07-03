@@ -2,15 +2,19 @@
 from plone.app.multilingual.interfaces import ITranslationManager
 from plone.app.testing import login
 from plone.app.testing import SITE_OWNER_NAME
+from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.dexterity.utils import createContentInContainer
+from plone.testing.z2 import Browser
 from udala.tablon.file_utils import register_file
 from udala.tablon.testing import UDALA_TABLON_FUNCTIONAL_TESTING
 from udala.tablon.utils import register_documents
+from zExceptions import NotFound
 from zope.component import getMultiAdapter
 from zope.globalrequest import getRequest
 
 import transaction
 import unittest
+import uuid
 
 
 class TestViews(unittest.TestCase):
@@ -18,6 +22,7 @@ class TestViews(unittest.TestCase):
 
     def setUp(self):
         self.portal = self.layer["portal"]
+        self.portal_url = self.portal.absolute_url()
 
         login(self.portal, SITE_OWNER_NAME)
 
@@ -28,6 +33,9 @@ class TestViews(unittest.TestCase):
             self.portal.es, "Tablon", title="Tablón de Anuncios"
         )
         ITranslationManager(self.eu_tablon).register_translation("es", self.es_tablon)
+
+        self.file_keys = []
+        self.document_keys = []
 
         for doc in ["doc1", "doc2"]:
             mydoc_eu = createContentInContainer(
@@ -48,17 +56,26 @@ class TestViews(unittest.TestCase):
                 title=f"file_{doc}",
             )
 
-            file_key = register_file(file_eu.UID(), file_es.UID())
+            self.file_keys.append(register_file(file_eu.UID(), file_es.UID()))
 
-            register_documents(
-                mydoc_eu.UID(),
-                mydoc_es.UID(),
-                [file_key],
-                [file_key],
+            self.document_keys.append(
+                register_documents(
+                    mydoc_eu.UID(),
+                    mydoc_es.UID(),
+                    [self.file_keys[-1]],
+                    [self.file_keys[-1]],
+                )
             )
 
             ITranslationManager(mydoc_eu).register_translation("es", mydoc_es)
             ITranslationManager(file_eu).register_translation("es", file_es)
+
+        # Set up browser
+        self.browser = Browser(self.layer["app"])
+        self.browser.handleErrors = False
+        self.browser.addHeader(
+            "Authorization", f"Basic {SITE_OWNER_NAME}:{SITE_OWNER_PASSWORD}"
+        )
 
         transaction.commit()
 
@@ -87,3 +104,24 @@ class TestViews(unittest.TestCase):
         list_of_files = view.files()
 
         self.assertEqual(len(list_of_files), 1)
+
+    def test_file_download_view_inexisting_file(self):
+        generated_uuid1 = uuid.uuid4().hex
+        generated_uuid2 = uuid.uuid4().hex
+        with self.assertRaises(NotFound):
+            self.portal.restrictedTraverse(
+                f"@tablon/{generated_uuid1}/{generated_uuid2}"
+            )
+
+    def test_file_download_view_inexisting_file_of_existing_document(self):
+        generated_uuid2 = uuid.uuid4().hex
+        with self.assertRaises(NotFound):
+            self.portal.restrictedTraverse(
+                f"@tablon/{self.document_keys[0]}/{generated_uuid2}"
+            )
+
+    def test_file_download_view(self):
+        self.browser.open(
+            f"{self.portal_url}/@tablon/{self.document_keys[-1]}/{self.file_keys[-1]}"
+        )
+        self.assertTrue(self.browser.headers.get("Status").startswith("20"))

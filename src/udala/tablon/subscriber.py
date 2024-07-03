@@ -33,17 +33,6 @@ def accreditation(object):
     field = object.file
     extension = field.filename.rsplit(".")[-1]
     url = object.absolute_url()
-    if not url.startswith("http"):
-        # XXX
-        # Testing shows that calling this
-        # method from async processes does not
-        # add the http beforehand, so we have
-        # to add it manually, removing the part
-        # corresponding to the plone-site id
-        registry = getUtility(IRegistry)
-        siteurl = registry["cs.accreditedfile.plonesiteurl"]
-        plonesiteid = registry["cs.accreditedfile.plonesiteid"]
-        url = siteurl + url.split(plonesiteid)[-1]
 
     result, accredited_url, message = get_accreditation_for_url(
         url, object.Title(), extension, date, object.Language()

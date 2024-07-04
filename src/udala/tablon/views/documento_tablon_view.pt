@@ -47,6 +47,13 @@
                 <a tal:condition="python:file['file_accreditation_url'] and file['file_accreditation_url'].startswith('http')"
                   class="btn btn-default" href="" tal:attributes="href file/file_accreditation_url"
                   i18n:translate="">Publication accreditation by IZENPE</a>
+
+                <tal:notaccredited condition="python:not file['file_accreditation_url'] and checkPermission('Manage portal', context)">
+                <a class="btn btn-default" href="" tal:attributes="href string:${file/url}/get_external_accreditation"
+                  i18n:translate="">Get accreditation from IZENPE</a>
+                </tal:notaccredited>
+
+
               </li>
             </ul>
           </dd>

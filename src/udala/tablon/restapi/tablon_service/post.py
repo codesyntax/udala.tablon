@@ -2,6 +2,7 @@
 from datetime import datetime
 from DateTime import DateTime
 from plone import api
+from plone.app.dexterity.behaviors.metadata import IPublication
 from plone.app.multilingual.interfaces import ITranslationManager
 from plone.namedfile.file import NamedBlobFile
 from plone.protect.interfaces import IDisableCSRFProtection
@@ -9,12 +10,13 @@ from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from udala.tablon import _
 from udala.tablon.file_utils import register_file
+from udala.tablon.tasks import schedule_browser_view_with_traversal
 from udala.tablon.utils import register_documents
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import alsoProvides
-from udala.tablon.tasks import schedule_browser_view_with_traversal
 
+import pytz
 import base64
 
 
@@ -137,7 +139,7 @@ def _validate_publication_url_eu(value):
         return OK
 
     return translate(
-        _("The value if the field publication_url_eu description_es is" " mandatory"),
+        _("The format of the field publication_url_eu is not correct"),
         context=getRequest(),
     )
 
@@ -147,7 +149,7 @@ def _validate_publication_url_es(value):
         return OK
 
     return translate(
-        _("The value if the field publication_url_es description_es is" " mandatory"),
+        _("The format of the field publication_url_es is not correct"),
         context=getRequest(),
     )
 
@@ -217,23 +219,18 @@ def _validate_filename(value):
     )
 
 
-def get_accreditation(document_id, file_id):
-    # Request the accreditation of the file
-    # using an async process
-    # We need to mask the real URL of the item, adding the relevant
-    # VHM keywords
-    # Otherwise the process will create a 'localhost' URL to call
-    # the view and in such a case the URL sent to the accreditor
-    # service will be localhost:8080 instead of the real URL of the
-    # object, thus avoiding the accreditor service to reach the
-    # files
-    # url = "/VirtualHostBase/https/www.eibar.eus:443/Plone/VirtualHostRoot"
+def set_dates(content_item, effective, expiration):
+    """set the effective and expiration date to a dexterity content item"""
+    publication = IPublication(content_item)
+    publication.effective = effective
+    publication.expires = expiration
 
-    # taskqueue.add(
-    #     "{}/@tablon/{}/{}/get_external_accreditation".format(
-    #         url, document_id, file_id
-    #     )
-    # )
+
+def get_accreditation(document_id, file_id):
+    """
+    Request the accreditation of the file
+    using an async process
+    """
 
     schedule_browser_view_with_traversal(
         view_name="@tablon",
@@ -297,11 +294,24 @@ class TablonPost(Service):
                     }
                 }
 
+        # We first get the strings coming from the REST API request
         date_start = data.get("date_start")
         date_end = data.get("date_end")
 
-        date_start = DateTime(date_start).toZone("Europe/Madrid")
-        date_end = DateTime(date_end).toZone("Europe/Madrid")
+        # We get UTC time zones, so when creating python datetime objects
+        # it is not enough to do it using `fromisoformat` because that would
+        # create naive datetimes, so we first create these naive datetime
+        # objects and then replace its timezone using UTC
+        date_start = datetime.fromisoformat(date_start)
+        date_end = datetime.fromisoformat(date_end)
+
+        date_start = date_start.replace(tzinfo=pytz.timezone("UTC"))
+        date_end = date_end.replace(tzinfo=pytz.timezone("UTC"))
+
+        # Now that we have proper datetimes with timezones, we change its
+        # timezone to be that from Madrid
+        date_start = date_start.astimezone(pytz.timezone("Europe/Madrid"))
+        date_end = date_end.astimezone(pytz.timezone("Europe/Madrid"))
 
         tablon_eu = self.get_tablon(lang="eu")
         if not tablon_eu:
@@ -325,9 +335,10 @@ class TablonPost(Service):
             origin_details=data.get("origin_details_eu"),
             publication_url=data.get("publication_url_eu"),
             description=data.get("description_eu"),
-            effective=date_start,
-            expires=date_end,
+            # effective=date_start,
+            # expires=date_end,
         )
+        set_dates(documento_eu, date_start, date_end)
 
         api.content.transition(obj=documento_eu, transition="publish")
 
@@ -369,13 +380,15 @@ class TablonPost(Service):
                     container=documento_eu,
                     type="AcreditedFile",
                     title=file.get("name_eu"),
-                    effective=date_start,
-                    expires=date_end,
+                    # effective=date_start,
+                    # expires=date_end,
                 )
                 file_eu.file = NamedBlobFile(
                     base64.urlsafe_b64decode(file.get("contents")),
                     filename=file.get("filename"),
                 )
+
+                set_dates(file_eu, date_start, date_end)
 
                 # Translate into ES
                 ITranslationManager(file_eu).add_translation("es")
@@ -392,9 +405,11 @@ class TablonPost(Service):
                     container=documento_eu,
                     type="AcreditedFile",
                     title=file.get("name_eu"),
-                    effective=date_start,
-                    expires=date_end,
+                    # effective=date_start,
+                    # expires=date_end,
                 )
+                set_dates(file_eu, date_start, date_end)
+
                 file_eu.file = NamedBlobFile(
                     base64.urlsafe_b64decode(file.get("contents")),
                     filename=file.get("filename"),
@@ -409,9 +424,11 @@ class TablonPost(Service):
                     container=documento_es,
                     type="AcreditedFile",
                     title=file.get("name_es"),
-                    effective=date_start,
-                    expires=date_end,
+                    # effective=date_start,
+                    # expires=date_end,
                 )
+                set_dates(file_es, date_start, date_end)
+
                 file_es.file = NamedBlobFile(
                     base64.urlsafe_b64decode(file.get("contents")),
                     filename=file.get("filename"),

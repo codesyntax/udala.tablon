@@ -19,12 +19,12 @@
         <dd tal:content="context/Title">origin</dd>
 
         <dt i18n:translate="">Publication start</dt>
-        <dd tal:content="python:plone.toLocalizedTime(context.EffectiveDate())">
+        <dd tal:content="python:plone.toLocalizedTime(context.effective_date)">
           origin_department
         </dd>
 
         <dt i18n:translate="">Publication end</dt>
-        <dd tal:content="python:plone.toLocalizedTime(context.ExpirationDate())">
+        <dd tal:content="python:plone.toLocalizedTime(context.expiration_date)">
           origin_department
         </dd>
 

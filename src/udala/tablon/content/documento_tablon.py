@@ -16,18 +16,22 @@ from zope.interface import implementer
 class IDocumentoTablon(model.Schema):
     """Marker interface and Dexterity Python Schema for DocumentoTablon"""
 
-    origin = schema.TextLine(title=_("Origen del documento"))
+    origin = schema.TextLine(title=_("Origin of the document"))
 
     origin_department = schema.TextLine(
-        title=_("Departamento origen del documento"), required=False
+        title=_("Origin department of the document"), required=False
     )
 
     origin_details = schema.TextLine(
-        title=_("Detalles del origen del documento"), required=False
+        title=_("Details about the origin of the document"), required=False
     )
 
     publication_url = schema.TextLine(
-        title=_("URL de publicacion del documento"), required=False
+        title=_("Document publication URL"),
+        description=_(
+            "The document can be external, thus you can provide its URL here"
+        ),
+        required=False,
     )
 
 

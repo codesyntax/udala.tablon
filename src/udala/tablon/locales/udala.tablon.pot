@@ -1,0 +1,219 @@
+#--- PLEASE EDIT THE LINES BELOW CORRECTLY ---
+#SOME DESCRIPTIVE TITLE.
+#FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-07-04 06:58+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: udala.tablon\n"
+
+#: ../content/acredited_file.py:20
+msgid "Accreditation URL"
+msgstr ""
+
+#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:15
+msgid "Accrediter endpoint URL"
+msgstr ""
+
+#: ../profiles/default/types/AcreditedFile.xml
+msgid "AcreditedFile"
+msgstr ""
+
+#: ../views/tablon_view.pt:40
+msgid "Description"
+msgstr ""
+
+#: ../content/documento_tablon.py:26
+msgid "Details about the origin of the document"
+msgstr ""
+
+#: ../views/tablon_view.pt:39
+msgid "Document number"
+msgstr ""
+
+#: ../content/documento_tablon.py:30
+msgid "Document publication URL"
+msgstr ""
+
+#: ../profiles/default/types/DocumentoTablon.xml
+msgid "DocumentoTablon"
+msgstr ""
+
+#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:59
+msgid "Email address where accreditation notifications will be sent"
+msgstr ""
+
+#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:48
+msgid "Enter the full domain (with https) of the site. "
+msgstr ""
+
+#: ../views/tablon_view.pt:43
+msgid "Expiration date"
+msgstr ""
+
+#: ../views/documento_tablon_view.pt:52
+msgid "Get accreditation from IZENPE"
+msgstr ""
+
+#: ../configure.zcml:25
+msgid "Installs the udala.tablon add-on."
+msgstr ""
+
+#: ../views/tablon_view.pt:41
+msgid "Origin"
+msgstr ""
+
+#: ../content/documento_tablon.py:22
+msgid "Origin department of the document"
+msgstr ""
+
+#: ../content/documento_tablon.py:19
+msgid "Origin of the document"
+msgstr ""
+
+#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:37
+msgid "Password of the pkcs12 file"
+msgstr ""
+
+#: ../views/documento_tablon_view.pt:47
+msgid "Publication accreditation by IZENPE"
+msgstr ""
+
+#: ../views/tablon_view.pt:42
+msgid "Publication date"
+msgstr ""
+
+#: ../views/documento_tablon_view.pt:26
+msgid "Publication end"
+msgstr ""
+
+#: ../views/documento_tablon_view.pt:21
+msgid "Publication start"
+msgstr ""
+
+#: ../content/tablon.py:20
+msgid "Sponsors"
+msgstr ""
+
+#: ../profiles/default/types/Tablon.xml
+msgid "Tablon"
+msgstr ""
+
+#: ../content/documento_tablon.py:31
+msgid "The document can be external, thus you can provide its URL here"
+msgstr ""
+
+#: ../restapi/tablon_service/post.py:124
+msgid "The field description_es is mandatory"
+msgstr ""
+
+#: ../restapi/tablon_service/post.py:117
+msgid "The field description_eu is mandatory"
+msgstr ""
+
+#: ../restapi/tablon_service/post.py:76
+msgid "The field origin is mandatory"
+msgstr ""
+
+#: ../restapi/tablon_service/post.py:93
+msgid "The field origin_department_es is mandatory"
+msgstr ""
+
+#: ../restapi/tablon_service/post.py:84
+msgid "The field origin_department_eu is mandatory"
+msgstr ""
+
+#: ../restapi/tablon_service/post.py:109
+msgid "The field origin_details_es is mandatory"
+msgstr ""
+
+#: ../restapi/tablon_service/post.py:101
+msgid "The field origin_details_eu mandatory"
+msgstr ""
+
+#: ../restapi/tablon_service/post.py:39
+msgid "The field record_number is mandatory"
+msgstr ""
+
+#: ../restapi/tablon_service/post.py:67
+msgid "The format of field date_end is not correct"
+msgstr ""
+
+#: ../restapi/tablon_service/post.py:57
+msgid "The format of field date_start is not correct"
+msgstr ""
+
+#: ../restapi/tablon_service/post.py:152
+msgid "The format of the field publication_url_es is not correct"
+msgstr ""
+
+#: ../restapi/tablon_service/post.py:142
+msgid "The format of the field publication_url_eu is not correct"
+msgstr ""
+
+#: ../restapi/tablon_service/post.py:167
+msgid "The value of a single document is not correct"
+msgstr ""
+
+#: ../restapi/tablon_service/post.py:207
+msgid "The value of contents in a single document is mandatory"
+msgstr ""
+
+#: ../restapi/tablon_service/post.py:217
+msgid "The value of filename in a single document is mandatory"
+msgstr ""
+
+#: ../restapi/tablon_service/post.py:187
+msgid "The value of name_es in a single document is mandatory"
+msgstr ""
+
+#: ../restapi/tablon_service/post.py:197
+msgid "The value of name_eu in a single document is mandatory"
+msgstr ""
+
+#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:74
+#: ../profiles/default/controlpanel.xml
+msgid "Udala Tablon Control Panel"
+msgstr ""
+
+#: ../configure.zcml:34
+msgid "Uninstalls the udala.tablon add-on."
+msgstr ""
+
+#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:51
+msgid "We need to pass this as a configuration item because when running async processes we do not have access to the real URL of the object"
+msgstr ""
+
+#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:26
+msgid "base64 encoded pkcs12 file"
+msgstr ""
+
+#: ../views/documento_tablon_view.pt:38
+msgid "files"
+msgstr ""
+
+#: ../views/documento_tablon_view.pt:31
+msgid "origin_department"
+msgstr ""
+
+#: ../views/documento_tablon_view.pt:18
+msgid "record number"
+msgstr ""
+
+#: ../configure.zcml:25
+msgid "udala.tablon"
+msgstr ""
+
+#: ../configure.zcml:34
+msgid "udala.tablon (uninstall)"
+msgstr ""

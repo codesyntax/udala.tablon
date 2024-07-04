@@ -57,10 +57,10 @@
                   <span tal:replace="obj/origin_department" />
                 </td>
                 <td>
-                  <span tal:replace="python:toLocalizedTime(obj.EffectiveDate())" />
+                  <span tal:replace="python:toLocalizedTime(obj.effective_date)" />
                 </td>
                 <td>
-                  <span tal:replace="python:toLocalizedTime(obj.ExpirationDate())" />
+                  <span tal:replace="python:toLocalizedTime(obj.expiration_date)" />
                 </td>
               </tal:obj>
             </tr>

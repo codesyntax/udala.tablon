@@ -2,23 +2,13 @@
 from Acquisition import aq_parent
 from logging import getLogger
 from plone import api
-from plone.registry.interfaces import IRegistry
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import safe_unicode
+from Products.CMFPlone.utils import safe_text
 from udala.tablon import _
-from zope.component import getUtility
+from udala.tablon.ws_utils import post_document_to_izenpe
 
-import os
 import requests
 import socket
-import tempfile
-
-
-def createTemporaryFile(contents):
-    filehandle, filepath = tempfile.mkstemp()
-    os.write(filehandle, contents)
-    os.close(filehandle)
-    return filepath
 
 
 def accreditation(object):
@@ -27,16 +17,26 @@ def accreditation(object):
     with the given extension and url and expiration date
     """
     log = getLogger(__name__)
-    date = object.expires().toZone("UTC").ISO8601()
+    date = object.expires.toZone("UTC").ISO8601()
     # field = object.getField("file")
     # extension = field.getFilename(object).rsplit(".")[-1]
     field = object.file
     extension = field.filename.rsplit(".")[-1]
     url = object.absolute_url()
 
+    if not url.startswith("http"):
+        # We need to manipulate the URL because when calling from an
+        # async process we are not getting the correct URL
+        domain = api.portal.get_registry_record(
+            "udala.tablon.udala_tablon_control_panel.domain"
+        )
+        portal_path = "/".join(api.portal.get().getPhysicalPath())[1:]
+        url = url.replace(portal_path, domain)
+
     result, accredited_url, message = get_accreditation_for_url(
         url, object.Title(), extension, date, object.Language()
     )
+
     if result and accredited_url:
         if result == 1:
             object.url(accredited_url)
@@ -51,65 +51,55 @@ def accreditation(object):
 
 
 def get_accreditation_for_url(url, title, f_extension, f_revision, language):
-    registry = getUtility(IRegistry)
-    endpointurl = registry["cs.accreditedfile.accrediterendpointurl"]
-    pkcs_12_file_contents_b64 = registry["cs.accreditedfile.pkcs12_file_content_b64"]
-    pkcs_12_file_pass = registry["cs.accreditedfile.pkcs12_file_password"]
-    try:
-        ip = socket.gethostbyaddr(url.split("/")[2])[2][0]
-    except Exception as e:
-        from logging import getLogger
+    """
+    Send the document to the accreditation service and return the status,
+    the url of the accreditation file
+    and any other message that the service returns
+    """
+    log = getLogger(__name__)
 
-        log = getLogger(__name__)
-        log.info(e)
-        ip = "127.0.0.1"
-
-    data = requests.post(
-        endpointurl,
-        json={
-            "url": url,
-            "ip": ip,
-            "port": url.startswith("https:") and 443 or 80,
-            "security": url.startswith("https:"),
-            "title": safe_unicode(title).encode("utf-8"),
-            "revision_date": f_revision,
-            "extension": f_extension,
-            "language": language,
-            "p12filecontents": pkcs_12_file_contents_b64,
-            "p12filepassword": pkcs_12_file_pass,
-        },
-        timeout=50,
+    endpointurl = api.portal.get_registry_record(
+        "udala.tablon.udala_tablon_control_panel.accrediterendpointurl"
     )
-    if data.ok:
-        results = data.json()
+    pkcs_12_file_contents_b64 = api.portal.get_registry_record(
+        "udala.tablon.udala_tablon_control_panel.pkcs12_file_content_b64"
+    )
+    pkcs_12_file_pass = api.portal.get_registry_record(
+        "udala.tablon.udala_tablon_control_panel.pkcs12_file_password"
+    )
 
-        return results.get("status"), results.get("url"), results.get("message")
-    else:
-        from logging import getLogger
+    try:
+
+        data = post_document_to_izenpe(
+            url=url,
+            title=safe_text(title),
+            revision_date=f_revision,
+            extension=f_extension,
+            language=language,
+        )
+
+        if data:
+            return data.get("status"), data.get("url"), data.get("message")
 
         log = getLogger(__name__)
         log.info(data.status_code)
         log.info(data.text)
         return 0, None, ""
 
+    except requests.exceptions.Timeout:
+        log = getLogger(__name__)
+        log.info("Timeout when accessing %s", endpointurl)
+        return 0, None, ""
 
-def getPublicationAccreditation(object):
-    putils = getToolByName(object, "plone_utils")
-    if object.expiration_date is None:
+
+def get_publication_accreditation(object):
+    message = ""
+    if object.expires is None:
         # No expiration date, try finding it in parent
         parent = aq_parent(object)
-        if parent.expiration_date is not None:
-            object.expiration_date = parent.expiration_date
+        if parent.expires is not None:
+            object.expires = parent.expires
         else:
-            # Uff, show error message
-            putils.addPortalMessage(
-                _(
-                    "You have not set an expiration date for this file. Set"
-                    " it first and then try to get the accreditation using"
-                    " the menu"
-                ),
-                type="warning",
-            )
             return
     try:
         result, message = accreditation(object)
@@ -118,29 +108,32 @@ def getPublicationAccreditation(object):
 
         log = getLogger(__name__)
         log.info(e)
-        message = "Errorea ziurtagiria lortzean"
-        send_mail(message, object)
+        our_message = "Errorea ziurtagiria lortzean: "
+        send_mail(our_message + message, object)
         return
 
     if result == 1:
-        putils.addPortalMessage(_("Accreditation correct"), type="info")
-        message = "Ziurtagiri zuzena"
-        send_mail(message, object)
+        # putils.addPortalMessage(_("Accreditation correct"), type="info")
+        our_message = "Ziurtagiri zuzena: "
+        send_mail(our_message + message, object)
 
     else:
-        putils.addPortalMessage(
-            _(
-                "An error occurred getting the accreditation. Try again with"
-                " the menu option: %(errorcode)s"
-            )
-            % {"errorcode": result},
-            type="warning",
-        )
-        message = "Errorea ziurtagiria lortzean"
-        send_mail(message, object)
+        # putils.addPortalMessage(
+        #     _(
+        #         "An error occurred getting the accreditation. Try again with"
+        #         " the menu option: %(errorcode)s"
+        #     )
+        #     % {"errorcode": result},
+        #     type="warning",
+        # )
+        our_message = "Errorea ziurtagiria lortzean: "
+        send_mail(our_message + message, object)
 
 
 def send_mail(message, object):
+    email = api.portal.get_registry_record(
+        "udala.tablon.udala_tablon_control_panel.admin_email"
+    )
     mailhost = api.portal.get_tool("MailHost")
     portal = api.portal.get()
     messageText = "Izenperekin konexioaren emaitza: %s. Dokumentua:%s" % (
@@ -149,7 +142,7 @@ def send_mail(message, object):
     )
     mailhost.send(
         messageText,
-        mto="mlarreategi@codesyntax.com",
-        mfrom=portal.email_from_address,
+        mto=email,
+        mfrom=api.portal.get_registry_record("plone.email_from_address"),
         subject="Izenpe emaitza",
     )

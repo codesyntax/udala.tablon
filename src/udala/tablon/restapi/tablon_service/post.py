@@ -13,6 +13,7 @@ from udala.tablon.utils import register_documents
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import alsoProvides
+from udala.tablon.tasks import schedule_browser_view_with_traversal
 
 import base64
 
@@ -233,6 +234,15 @@ def get_accreditation(document_id, file_id):
     #         url, document_id, file_id
     #     )
     # )
+
+    schedule_browser_view_with_traversal(
+        view_name="@tablon",
+        context_path="/".join(api.portal.get().getPhysicalPath()),
+        site_path="/".join(api.portal.get().getPhysicalPath()),
+        username=api.user.get_current().getId(),
+        params={},
+        traversal=f"{document_id}/{file_id}/get_external_accreditation",
+    )
     return 1
 
 

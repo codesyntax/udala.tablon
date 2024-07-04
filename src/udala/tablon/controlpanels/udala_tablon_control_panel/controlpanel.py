@@ -11,15 +11,59 @@ from zope.interface import Interface
 
 
 class IUdalaTablonControlPanel(Interface):
-    myfield_name = schema.TextLine(
+    accrediterendpointurl = schema.TextLine(
         title=_(
-            "This is an example field for this control panel",
+            "Accrediter endpoint URL",
+        ),
+        description=_(
+            "",
+        ),
+        default="https://epublicacion.izenpe.com:8445/constancia_publicacion/services/IzenpeConstanciaPubDes?wsdl",
+        required=True,
+        readonly=False,
+    )
+    pkcs12_file_content_b64 = schema.Text(
+        title=_(
+            "base64 encoded pkcs12 file",
         ),
         description=_(
             "",
         ),
         default="",
-        required=False,
+        required=True,
+        readonly=False,
+    )
+    pkcs12_file_password = schema.TextLine(
+        title=_(
+            "Password of the pkcs12 file",
+        ),
+        description=_(
+            "",
+        ),
+        default="",
+        required=True,
+        readonly=False,
+    )
+    domain = schema.TextLine(
+        title=_(
+            "Enter the full domain (with https) of the site. ",
+        ),
+        description=_(
+            "We need to pass this as a configuration item because when running async processes we do not have access to the real URL of the object",
+        ),
+        default="",
+        required=True,
+        readonly=False,
+    )
+    admin_email = schema.TextLine(
+        title=_(
+            "Email address where accreditation notifications will be sent",
+        ),
+        description=_(
+            "",
+        ),
+        default="",
+        required=True,
         readonly=False,
     )
 

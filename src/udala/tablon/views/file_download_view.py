@@ -3,7 +3,7 @@ from plone import api
 from plone.protect.interfaces import IDisableCSRFProtection
 from Products.Five.browser import BrowserView
 from udala.tablon.file_utils import get_file
-from udala.tablon.subscriber import getPublicationAccreditation
+from udala.tablon.subscriber import get_publication_accreditation
 from udala.tablon.utils import get_documents
 from zope.i18n import translate
 from zope.interface import alsoProvides
@@ -66,9 +66,8 @@ class FileDownloadView(BrowserView):
                         len(self.params) == 3
                         and self.params[2] == "get_external_accreditation"
                     ):
-
                         alsoProvides(self.request, IDisableCSRFProtection)
-                        getPublicationAccreditation(file_object)
+                        get_publication_accreditation(file_object)
 
                         return 1
 

@@ -5,7 +5,7 @@ from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from udala.tablon.file_utils import get_file
-from udala.tablon.subscriber import getPublicationAccreditation
+from udala.tablon.subscriber import get_publication_accreditation
 from udala.tablon.utils import get_documents
 from zope.component import getMultiAdapter
 from zope.i18n import translate
@@ -97,7 +97,7 @@ class TablonGet(Service):
             file_object = api.content.get(UID=file_uid)
             if file_object is not None:
                 alsoProvides(self.request, IDisableCSRFProtection)
-                getPublicationAccreditation(file_object)
+                get_publication_accreditation(file_object)
 
                 return {"status": "ok"}
 

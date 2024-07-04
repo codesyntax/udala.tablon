@@ -6,11 +6,6 @@ from plone import api
 from requests_pkcs12 import get as pkcs12_get
 from requests_pkcs12 import post as pkcs12_post
 from suds.client import Client
-from suds.options import Options
-from suds.transport import Reply
-from suds.transport import TransportError
-from suds.transport.http import HttpAuthenticated
-from suds.transport.https import HttpTransport
 
 import base64
 import functools

@@ -2,7 +2,6 @@
 from collective.taskqueue2.huey_config import huey_taskqueue
 from collective.taskqueue2.huey_logger import LOG
 from plone import api
-from Products.CMFPlone.utils import safe_text
 from Testing.makerequest import makerequest
 from zope.component.hooks import setSite
 
@@ -59,7 +58,8 @@ def schedule_browser_view_with_traversal(
 
                 t.commit()
                 LOG.info("Transaction committed")
-            except:
+            except Exception as e:
+                LOG.exception(e)
                 t.abort()
                 LOG.error("Transaction aborted", exc_info=True)
                 raise

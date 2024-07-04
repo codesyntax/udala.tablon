@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-from DateTime import DateTime
 from plone import api
 from plone.app.dexterity.behaviors.metadata import IPublication
 from plone.app.multilingual.interfaces import ITranslationManager
@@ -16,8 +15,8 @@ from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import alsoProvides
 
-import pytz
 import base64
+import pytz
 
 
 OK = 1

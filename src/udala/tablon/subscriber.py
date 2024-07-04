@@ -6,7 +6,6 @@ from Products.CMFPlone.utils import safe_text
 from udala.tablon.ws_utils import post_document_to_izenpe
 
 import requests
-import socket
 
 
 def accreditation(object):

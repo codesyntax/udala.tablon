@@ -2,9 +2,7 @@
 from Acquisition import aq_parent
 from logging import getLogger
 from plone import api
-from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import safe_text
-from udala.tablon import _
 from udala.tablon.ws_utils import post_document_to_izenpe
 
 import requests
@@ -61,12 +59,6 @@ def get_accreditation_for_url(url, title, f_extension, f_revision, language):
     endpointurl = api.portal.get_registry_record(
         "udala.tablon.udala_tablon_control_panel.accrediterendpointurl"
     )
-    pkcs_12_file_contents_b64 = api.portal.get_registry_record(
-        "udala.tablon.udala_tablon_control_panel.pkcs12_file_content_b64"
-    )
-    pkcs_12_file_pass = api.portal.get_registry_record(
-        "udala.tablon.udala_tablon_control_panel.pkcs12_file_password"
-    )
 
     try:
 
@@ -81,18 +73,16 @@ def get_accreditation_for_url(url, title, f_extension, f_revision, language):
         if data:
             return data.get("status"), data.get("url"), data.get("message")
 
-        log = getLogger(__name__)
-        log.info(data.status_code)
-        log.info(data.text)
         return 0, None, ""
 
     except requests.exceptions.Timeout:
-        log = getLogger(__name__)
         log.info("Timeout when accessing %s", endpointurl)
         return 0, None, ""
 
 
 def get_publication_accreditation(object):
+    """given a Plone object, get the accreditation for it"""
+    log = getLogger(__name__)
     message = ""
     if object.expires is None:
         # No expiration date, try finding it in parent
@@ -104,44 +94,33 @@ def get_publication_accreditation(object):
     try:
         result, message = accreditation(object)
     except Exception as e:
-        from logging import getLogger
-
-        log = getLogger(__name__)
         log.info(e)
         our_message = "Errorea ziurtagiria lortzean: "
         send_mail(our_message + message, object)
         return
 
     if result == 1:
-        # putils.addPortalMessage(_("Accreditation correct"), type="info")
         our_message = "Ziurtagiri zuzena: "
         send_mail(our_message + message, object)
 
     else:
-        # putils.addPortalMessage(
-        #     _(
-        #         "An error occurred getting the accreditation. Try again with"
-        #         " the menu option: %(errorcode)s"
-        #     )
-        #     % {"errorcode": result},
-        #     type="warning",
-        # )
         our_message = "Errorea ziurtagiria lortzean: "
         send_mail(our_message + message, object)
 
 
 def send_mail(message, object):
+    """send the given message by email to the admin"""
     email = api.portal.get_registry_record(
         "udala.tablon.udala_tablon_control_panel.admin_email"
     )
     mailhost = api.portal.get_tool("MailHost")
-    portal = api.portal.get()
-    messageText = "Izenperekin konexioaren emaitza: %s. Dokumentua:%s" % (
+
+    message_text = "Izenperekin konexioaren emaitza: %s. Dokumentua:%s" % (
         message,
         object.absolute_url(),
     )
     mailhost.send(
-        messageText,
+        message_text,
         mto=email,
         mfrom=api.portal.get_registry_record("plone.email_from_address"),
         subject="Izenpe emaitza",

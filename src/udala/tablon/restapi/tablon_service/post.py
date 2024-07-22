@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+import base64
 from datetime import datetime
+
+import pytz
 from plone import api
 from plone.app.dexterity.behaviors.metadata import IPublication
 from plone.app.multilingual.interfaces import ITranslationManager
@@ -8,16 +11,13 @@ from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from udala.tablon import _
+from udala.tablon.config import TASK_DEFAULT_DELAY
 from udala.tablon.file_utils import register_file
 from udala.tablon.tasks import schedule_browser_view_with_traversal
 from udala.tablon.utils import register_documents
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import alsoProvides
-
-import base64
-import pytz
-
 
 OK = 1
 ACCEPTED_ORIGIN_VALUES = ["external", "internal"]
@@ -231,13 +231,16 @@ def get_accreditation(document_id, file_id):
     using an async process
     """
 
-    schedule_browser_view_with_traversal(
-        view_name="@tablon",
-        context_path="/".join(api.portal.get().getPhysicalPath()),
-        site_path="/".join(api.portal.get().getPhysicalPath()),
-        username=api.user.get_current().getId(),
-        params={},
-        traversal=f"{document_id}/{file_id}/get_external_accreditation",
+    schedule_browser_view_with_traversal.schedule(
+        delay=TASK_DEFAULT_DELAY,
+        kwargs=dict(
+            view_name="@tablon",
+            context_path="/".join(api.portal.get().getPhysicalPath()),
+            site_path="/".join(api.portal.get().getPhysicalPath()),
+            username=api.user.get_current().getId(),
+            params={},
+            traversal=f"{document_id}/{file_id}/get_external_accreditation",
+        ),
     )
     return 1
 

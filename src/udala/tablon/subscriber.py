@@ -14,7 +14,7 @@ def accreditation(object):
     with the given extension and url and expiration date
     """
     log = getLogger(__name__)
-    date = object.expires.toZone("UTC").ISO8601()
+    date = object.expires().toZone("UTC").ISO8601()
     # field = object.getField("file")
     # extension = field.getFilename(object).rsplit(".")[-1]
     field = object.file

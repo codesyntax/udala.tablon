@@ -103,6 +103,7 @@ def get_publication_accreditation(object):
         send_mail(our_message + message, object)
 
     else:
+        log.info(result)
         our_message = "Errorea ziurtagiria lortzean: "
         send_mail(our_message + message, object)
 

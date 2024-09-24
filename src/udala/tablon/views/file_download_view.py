@@ -73,10 +73,10 @@ class FileDownloadView(BrowserView):
 
                     else:
                         if file_object.file is not None:
-                            blob = file_object.file.data
+                            blob = file_object.file
 
                             self.request.RESPONSE.setHeader(
-                                "Content-Type", blob.content_type
+                                "Content-Type", blob.contentType
                             )
                             return blob.data
 

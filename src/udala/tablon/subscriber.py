@@ -36,7 +36,7 @@ def accreditation(object):
 
     if result and accredited_url:
         if result == 1:
-            object.url(accredited_url)
+            object.url = accredited_url
             log.info("OK Izenpe: url: %s message: %s", url, message)
             return 1, message
         else:

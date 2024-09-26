@@ -18,6 +18,7 @@ from udala.tablon.utils import register_documents
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import alsoProvides
+from udala.tablon.cache import purge_urls
 
 OK = 1
 ACCEPTED_ORIGIN_VALUES = ["external", "internal"]
@@ -456,6 +457,13 @@ class TablonPost(Service):
         document_uri = f"{portal_url}/@tablon/{document_id}"
         self.request.response.setStatus(201)
         self.request.response.setHeader("Location", document_uri)
+
+        tablon_es = ITranslationManager(tablon_eu).get_translation('es')
+        purge_urls([
+            tablon_eu.absolute_url(),
+            tablon_es.absolute_url(),
+        ])
+
 
         return {
             "@id": document_uri,

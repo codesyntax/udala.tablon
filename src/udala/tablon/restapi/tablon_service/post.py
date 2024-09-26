@@ -391,11 +391,15 @@ class TablonPost(Service):
                 )
 
                 set_dates(file_eu, date_start, date_end)
+                api.content.transition(obj=file_eu, transition="publish")
 
                 # Translate into ES
                 ITranslationManager(file_eu).add_translation("es")
                 file_es = ITranslationManager(file_eu).get_translation("es")
                 file_es.title = file.get("name_es")
+
+                api.content.transition(obj=file_es, transition="publish")
+
 
                 file_eu_id = register_file(file_eu.UID(), file_es.UID())
                 eu_files.append(file_eu_id)
@@ -416,6 +420,7 @@ class TablonPost(Service):
                     base64.urlsafe_b64decode(file.get("contents")),
                     filename=file.get("filename"),
                 )
+                api.content.transition(obj=file_eu, transition="publish")
 
                 file_eu_id = register_file(file_eu.UID(), None)
                 eu_files.append(file_eu_id)
@@ -435,6 +440,7 @@ class TablonPost(Service):
                     base64.urlsafe_b64decode(file.get("contents")),
                     filename=file.get("filename"),
                 )
+                api.content.transition(obj=file_es, transition="publish")
 
                 file_es_id = register_file(None, file_es.UID())
                 es_files.append(file_es_id)

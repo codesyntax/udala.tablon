@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
-# from plone.app.textfield import RichText
-# from plone.autoform import directives
+from plone.app.multilingual.dx.interfaces import ILanguageIndependentField
 from plone.dexterity.content import Container
 from plone.namedfile.field import NamedBlobFile
 from plone.supermodel import model
 from udala.tablon import _
-
-# from plone.supermodel.directives import fieldset
-# from z3c.form.browser.radio import RadioFieldWidget
 from zope import schema
-from zope.interface import implementer
+from zope.interface import alsoProvides, implementer
 
 
 class IAcreditedFile(model.Schema):
@@ -18,6 +14,9 @@ class IAcreditedFile(model.Schema):
     file = NamedBlobFile(title="File", required=True)
 
     url = schema.TextLine(title=_("Accreditation URL"), required=False)
+
+
+alsoProvides(IAcreditedFile["url"], ILanguageIndependentField)
 
 
 @implementer(IAcreditedFile)

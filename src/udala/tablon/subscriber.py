@@ -95,17 +95,17 @@ def get_publication_accreditation(object):
     except Exception as e:
         log.info(e)
         our_message = "Errorea ziurtagiria lortzean: "
-        send_mail(our_message + message, object)
+        send_mail(our_message + str(message), object)
         return
 
     if result == 1:
         our_message = "Ziurtagiri zuzena: "
-        send_mail(our_message + message, object)
+        send_mail(our_message + str(message), object)
 
     else:
         log.info(result)
         our_message = "Errorea ziurtagiria lortzean: "
-        send_mail(our_message + message, object)
+        send_mail(our_message + str(message), object)
 
 
 def send_mail(message, object):

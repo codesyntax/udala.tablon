@@ -24,6 +24,25 @@
     layer="udala.tablon.interfaces.IUdalaTablonLayer"
     />
 
+  <!-- Keep old view name -->
+  <browser:page
+    name="accreditedfile_view"
+    for="udala.tablon.content.acredited_file.IAcreditedFile"
+    class=".acredited_file_view.AcreditedFileView"
+    permission="zope2.View"
+    layer="udala.tablon.interfaces.IUdalaTablonLayer"
+    />
+
+  <!-- New view name -->
+  <browser:page
+    name="view"
+    for="udala.tablon.content.acredited_file.IAcreditedFile"
+    class=".acredited_file_view.AcreditedFileView"
+    permission="zope2.View"
+    layer="udala.tablon.interfaces.IUdalaTablonLayer"
+    />
+
+
   <browser:page
       name="@tablon"
       for="plone.base.interfaces.siteroot.IPloneSiteRoot"

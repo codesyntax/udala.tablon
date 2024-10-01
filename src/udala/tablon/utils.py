@@ -3,6 +3,7 @@ from BTrees.OOBTree import OOBTree
 from datetime import datetime
 from plone import api
 from zope.annotation.interfaces import IAnnotations
+from Products.CMFPlone.utils import safe_text
 
 import base64
 import requests
@@ -78,7 +79,7 @@ def get_file_contents(url):
         try:
             data = requests.get(url, verify=False)
             if data.ok:
-                return base64.urlsafe_b64encode(data.content)
+                return safe_text(base64.urlsafe_b64encode(data.content))
         except Exception as e:
             from logging import getLogger
 

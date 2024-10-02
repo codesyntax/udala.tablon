@@ -17,6 +17,7 @@ class IAcreditedFile(model.Schema):
 
 
 alsoProvides(IAcreditedFile["url"], ILanguageIndependentField)
+alsoProvides(IAcreditedFile["file"], ILanguageIndependentField)
 
 
 @implementer(IAcreditedFile)

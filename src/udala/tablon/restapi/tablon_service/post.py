@@ -342,6 +342,7 @@ class TablonPost(Service):
             # expires=date_end,
         )
         set_dates(documento_eu, date_start, date_end)
+        documento_eu.reindexObject()
 
         api.content.transition(obj=documento_eu, transition="publish")
 
@@ -369,6 +370,7 @@ class TablonPost(Service):
         # )
 
         set_dates(documento_es, date_start, date_end)
+        documento_es.reindexObject()
 
         api.content.transition(obj=documento_es, transition="publish")
 
@@ -394,6 +396,7 @@ class TablonPost(Service):
                 )
 
                 set_dates(file_eu, date_start, date_end)
+                file_eu.reindexObject()
                 # api.content.transition(obj=file_eu, transition="publish")
 
                 # Translate into ES
@@ -402,6 +405,7 @@ class TablonPost(Service):
                 file_es.title = file.get("name_es")
 
                 set_dates(file_es, date_start, date_end)
+                file_es.reindexObject()
 
 
                 # api.content.transition(obj=file_es, transition="publish")
@@ -425,6 +429,7 @@ class TablonPost(Service):
                     base64.urlsafe_b64decode(file.get("contents")),
                     filename=file.get("filename"),
                 )
+                file_eu.reindexObject()
                 # api.content.transition(obj=file_eu, transition="publish")
 
                 file_eu_id = register_file(file_eu.UID(), None)
@@ -446,7 +451,8 @@ class TablonPost(Service):
                     filename=file.get("filename"),
                 )
                 # api.content.transition(obj=file_es, transition="publish")
-
+                file_es.reindexObject()
+                
                 file_es_id = register_file(None, file_es.UID())
                 es_files.append(file_es_id)
 

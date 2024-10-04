@@ -1,73 +1,105 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:metal="http://xml.zope.org/namespaces/metal"
-  xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-  i18n:domain="udala.tablon" metal:use-macro="context/main_template/macros/master">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="udala.tablon"
+>
 
-<body>
+  <body>
 
-  <metal:custom_title fill-slot="content-title">
-    <p tal:replace="structure context/@@description" />
-  </metal:custom_title>
+    <metal:custom_title fill-slot="content-title">
+      <p tal:replace="structure context/@@description"></p>
+    </metal:custom_title>
 
-  <metal:custom_description fill-slot="content-description">
-  </metal:custom_description>
+    <metal:custom_description fill-slot="content-description">
+    </metal:custom_description>
 
-  <metal:content-core fill-slot="content-core">
-    <metal:block define-macro="content-core">
+    <metal:content-core fill-slot="content-core">
+      <metal:block define-macro="content-core">
 
-      <dl tal:define="plone nocall:context/@@plone">
-        <dt i18n:translate="">record number</dt>
-        <dd tal:content="context/Title">origin</dd>
+        <dl tal:define="
+              plone nocall:context/@@plone;
+            ">
+          <dt i18n:translate="">record number</dt>
+          <dd tal:content="context/Title">origin</dd>
 
-        <dt i18n:translate="">Publication start</dt>
-        <dd tal:content="python:plone.toLocalizedTime(context.effective_date)">
+          <dt i18n:translate="">Publication start</dt>
+          <dd tal:content="python:plone.toLocalizedTime(context.effective_date)">
           origin_department
-        </dd>
-
-        <dt i18n:translate="">Publication end</dt>
-        <dd tal:content="python:plone.toLocalizedTime(context.expiration_date)">
-          origin_department
-        </dd>
-
-        <dt i18n:translate="">origin_department</dt>
-        <dd>
-          <span tal:content="context/origin_department" /> -
-          <span tal:content="context/origin_details" />
-        </dd>
-
-        <tal:files define="files view/files" condition="files">
-          <dt i18n:translate="files">files</dt>
-
-          <dd>
-            <ul>
-              <li tal:repeat="file files">
-                <a href="" tal:attributes="href file/url" tal:content="file/file_title">
-                  title
-                </a>
-                &nbsp; &nbsp; &nbsp;
-                <a tal:condition="python:file['file_accreditation_url'] and file['file_accreditation_url'].startswith('http')"
-                  class="btn btn-default" href="" tal:attributes="href file/file_accreditation_url"
-                  i18n:translate="">Publication accreditation by IZENPE</a>
-
-                <tal:notaccredited condition="python:not file['file_accreditation_url'] and checkPermission('Manage portal', context)">
-                <a class="btn btn-default" href="" tal:attributes="href string:${file/url}/get_external_accreditation"
-                  i18n:translate="">Get accreditation from IZENPE</a>
-                </tal:notaccredited>
-
-
-              </li>
-            </ul>
           </dd>
-        </tal:files>
-      </dl>
 
-      <div id="parent-fieldname-sponsors-text" tal:define="toc context/table_of_contents|nothing;"
-        tal:condition="context/aq_parent/sponsors"
-        tal:content="structure python:context.aq_parent.sponsors.output_relative_to(view.context.aq_parent)"
-        tal:attributes="class python: toc and 'pat-autotoc' or ''">
-      </div>
+          <dt i18n:translate="">Publication end</dt>
+          <dd tal:content="python:plone.toLocalizedTime(context.expiration_date)">
+          origin_department
+          </dd>
 
-    </metal:block>
-  </metal:content-core>
-</body>
+          <dt i18n:translate="">origin_department</dt>
+          <dd>
+            <span tal:content="context/origin_department"></span>
+             -
+            <span tal:content="context/origin_details"></span>
+          </dd>
+
+          <tal:files define="
+                       files view/files;
+                     "
+                     condition="files"
+          >
+            <dt i18n:translate="files">files</dt>
+
+            <dd>
+              <ul>
+                <li tal:repeat="file files">
+                  <a href=""
+                     tal:content="file/file_title"
+                     tal:attributes="
+                       href file/url;
+                     "
+                  >
+                  title
+                  </a>
+                &nbsp; &nbsp; &nbsp;
+                  <a class="btn btn-default"
+                     href=""
+                     tal:condition="python:file['file_accreditation_url'] and file['file_accreditation_url'].startswith('http')"
+                     tal:attributes="
+                       href file/file_accreditation_url;
+                     "
+                     i18n:translate=""
+                  >Publication accreditation by IZENPE</a>
+
+                  <tal:notaccredited condition="python:not file['file_accreditation_url'] and checkPermission('Manage portal', context)">
+                    <a class="btn btn-default"
+                       href=""
+                       tal:attributes="
+                         href string:${file/url}/get_external_accreditation;
+                       "
+                       i18n:translate=""
+                    >Get accreditation from IZENPE</a>
+                  </tal:notaccredited>
+
+
+                </li>
+              </ul>
+            </dd>
+          </tal:files>
+        </dl>
+
+        <div id="parent-fieldname-sponsors-text"
+             tal:define="
+               toc context/table_of_contents|nothing;
+             "
+             tal:condition="context/aq_parent/sponsors"
+             tal:content="structure python:context.aq_parent.sponsors.output_relative_to(view.context.aq_parent)"
+             tal:attributes="
+               class python: toc and 'pat-autotoc' or '';
+             "
+        >
+        </div>
+
+      </metal:block>
+    </metal:content-core>
+  </body>
 
 </html>

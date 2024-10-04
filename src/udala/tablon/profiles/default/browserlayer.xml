@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <layers>
-  <layer
-      name="udala.tablon"
-      interface="udala.tablon.interfaces.IUdalaTablonLayer"
-      />
+  <layer interface="udala.tablon.interfaces.IUdalaTablonLayer"
+         name="udala.tablon"
+  />
 </layers>

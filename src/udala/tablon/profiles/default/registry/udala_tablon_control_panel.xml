@@ -1,12 +1,13 @@
-<?xml version="1.0"?>
-<registry
-    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-    i18n:domain="udala.tablon">
+<?xml version="1.0" encoding="utf-8"?>
+<registry xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+          i18n:domain="udala.tablon"
+>
 
-<!-- -*- extra stuff goes here -*- -->
+  <!-- -*- extra stuff goes here -*- -->
 
   <records interface="udala.tablon.controlpanels.udala_tablon_control_panel.controlpanel.IUdalaTablonControlPanel"
-           prefix="udala.tablon.udala_tablon_control_panel" />
+           prefix="udala.tablon.udala_tablon_control_panel"
+  />
 
 
 </registry>

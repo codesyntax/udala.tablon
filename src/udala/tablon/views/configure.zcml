@@ -2,45 +2,46 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:plone="http://namespaces.plone.org/plone"
-    i18n_domain="udala.tablon">
+    i18n_domain="udala.tablon"
+    >
 
- <!-- -*- extra stuff goes here -*- -->
-
-  <browser:page
-    name="view"
-    for="udala.tablon.content.documento_tablon.IDocumentoTablon"
-    class=".documento_tablon_view.DocumentoTablonView"
-    template="documento_tablon_view.pt"
-    permission="zope2.View"
-    layer="udala.tablon.interfaces.IUdalaTablonLayer"
-    />
+  <!-- -*- extra stuff goes here -*- -->
 
   <browser:page
-    name="view"
-    for="udala.tablon.content.tablon.ITablon"
-    class=".tablon_view.TablonView"
-    template="tablon_view.pt"
-    permission="zope2.View"
-    layer="udala.tablon.interfaces.IUdalaTablonLayer"
-    />
+      name="view"
+      for="udala.tablon.content.documento_tablon.IDocumentoTablon"
+      class=".documento_tablon_view.DocumentoTablonView"
+      template="documento_tablon_view.pt"
+      permission="zope2.View"
+      layer="udala.tablon.interfaces.IUdalaTablonLayer"
+      />
+
+  <browser:page
+      name="view"
+      for="udala.tablon.content.tablon.ITablon"
+      class=".tablon_view.TablonView"
+      template="tablon_view.pt"
+      permission="zope2.View"
+      layer="udala.tablon.interfaces.IUdalaTablonLayer"
+      />
 
   <!-- Keep old view name -->
   <browser:page
-    name="accreditedfile_view"
-    for="udala.tablon.content.acredited_file.IAcreditedFile"
-    class=".acredited_file_view.AcreditedFileView"
-    permission="zope2.View"
-    layer="udala.tablon.interfaces.IUdalaTablonLayer"
-    />
+      name="accreditedfile_view"
+      for="udala.tablon.content.acredited_file.IAcreditedFile"
+      class=".acredited_file_view.AcreditedFileView"
+      permission="zope2.View"
+      layer="udala.tablon.interfaces.IUdalaTablonLayer"
+      />
 
   <!-- New view name -->
   <browser:page
-    name="view"
-    for="udala.tablon.content.acredited_file.IAcreditedFile"
-    class=".acredited_file_view.AcreditedFileView"
-    permission="zope2.View"
-    layer="udala.tablon.interfaces.IUdalaTablonLayer"
-    />
+      name="view"
+      for="udala.tablon.content.acredited_file.IAcreditedFile"
+      class=".acredited_file_view.AcreditedFileView"
+      permission="zope2.View"
+      layer="udala.tablon.interfaces.IUdalaTablonLayer"
+      />
 
 
   <browser:page

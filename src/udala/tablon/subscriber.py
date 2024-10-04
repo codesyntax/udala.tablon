@@ -4,6 +4,7 @@ from logging import getLogger
 from plone import api
 from Products.CMFPlone.utils import safe_text
 from udala.tablon.ws_utils import post_document_to_izenpe
+from plone.app.multilingual.interfaces import ITranslationManager
 
 import requests
 
@@ -37,6 +38,10 @@ def accreditation(object):
     if result and accredited_url:
         if result == 1:
             object.url = accredited_url
+            manager = ITranslationManager(object)
+            for language, item in manager.get_translations().items():
+                item.url = accredited_url
+
             log.info("OK Izenpe: url: %s message: %s", url, message)
             return 1, message
         else:

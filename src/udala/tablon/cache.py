@@ -57,7 +57,7 @@ def purge_urls(urls):
             purge(inputURL)
             continue
 
-        relativePath = physicalPath[len(portalPath) :]
+        relativePath = physicalPath[len(portalPath) :]  # noqa: E203
         if not relativePath:
             purge(inputURL)
             continue

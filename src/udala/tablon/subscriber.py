@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_parent
 from logging import getLogger
 from plone import api
@@ -120,7 +119,7 @@ def send_mail(message, object):
     )
     mailhost = api.portal.get_tool("MailHost")
 
-    message_text = "Izenperekin konexioaren emaitza: %s. Dokumentua:%s" % (
+    message_text = "Izenperekin konexioaren emaitza: {}. Dokumentua:{}".format(
         message,
         object.absolute_url(),
     )

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from .example_data import correct_document_different_documents_per_language
 from .example_data import correct_document_files_and_urls
 from .example_data import correct_document_no_files

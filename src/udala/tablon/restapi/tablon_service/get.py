@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from DateTime import DateTime
 from plone import api
 from plone.protect.interfaces import IDisableCSRFProtection
@@ -18,7 +17,7 @@ from zope.publisher.interfaces import NotFound
 @implementer(IPublishTraverse)
 class TablonGet(Service):
     def __init__(self, context, request):
-        super(TablonGet, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
         self.query = self.request.form.copy()
 

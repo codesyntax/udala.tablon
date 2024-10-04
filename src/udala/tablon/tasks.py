@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from collective.taskqueue2.huey_config import huey_taskqueue
 from collective.taskqueue2.huey_logger import LOG
 from plone import api

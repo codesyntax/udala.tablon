@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 correct_document_files_and_urls = {
     "record_number": "17/2019",
     "date_start": "1995-07-31T13:45:00",

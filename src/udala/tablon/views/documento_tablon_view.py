@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # from udala.tablon import _
 from plone import api
 from Products.Five.browser import BrowserView

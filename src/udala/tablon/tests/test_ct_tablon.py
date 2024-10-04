@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
@@ -37,7 +36,7 @@ class TablonIntegrationTest(unittest.TestCase):
 
         self.assertTrue(
             ITablon.providedBy(obj),
-            "ITablon not provided by {0}!".format(
+            "ITablon not provided by {}!".format(
                 obj,
             ),
         )
@@ -52,7 +51,7 @@ class TablonIntegrationTest(unittest.TestCase):
 
         self.assertTrue(
             ITablon.providedBy(obj),
-            "ITablon not provided by {0}!".format(
+            "ITablon not provided by {}!".format(
                 obj.id,
             ),
         )
@@ -67,7 +66,7 @@ class TablonIntegrationTest(unittest.TestCase):
     def test_ct_tablon_globally_addable(self):
         setRoles(self.portal, TEST_USER_ID, ["Contributor"])
         fti = queryUtility(IDexterityFTI, name="Tablon")
-        self.assertTrue(fti.global_allow, "{0} is not globally addable!".format(fti.id))
+        self.assertTrue(fti.global_allow, f"{fti.id} is not globally addable!")
 
     def test_ct_tablon_filter_content_type_false(self):
         setRoles(self.portal, TEST_USER_ID, ["Contributor"])
@@ -85,4 +84,4 @@ class TablonIntegrationTest(unittest.TestCase):
             type="Document",
             title="My Content",
         )
-        self.assertTrue(obj, "Cannot add {0} to {1} container!".format(obj.id, fti.id))
+        self.assertTrue(obj, f"Cannot add {obj.id} to {fti.id} container!")

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone import api
 from plone.protect.interfaces import IDisableCSRFProtection
 from Products.Five.browser import BrowserView
@@ -15,7 +14,7 @@ from zope.publisher.interfaces import NotFound
 @implementer(IPublishTraverse)
 class FileDownloadView(BrowserView):
     def __init__(self, context, request):
-        super(FileDownloadView, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
         self.query = self.request.form.copy()
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.multilingual.dx.interfaces import ILanguageIndependentField
 from plone.dexterity.content import Container
 from plone.namedfile.field import NamedBlobFile

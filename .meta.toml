@@ -4,3 +4,12 @@
 [meta]
 template = "default"
 commit-id = "5d22fbf8"
+
+[gitlab]
+jobs = [
+   "lint",
+   "release-ready",
+   "testing",
+   "coverage",
+   ]
+#

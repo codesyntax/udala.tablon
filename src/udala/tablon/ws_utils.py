@@ -50,7 +50,7 @@ def handle_errors(f):
 
 class RequestsTransport(transport.Transport):
     """
-    A special transport to be used with requets that handles connection authorization
+    A special transport to be used with requests that handles connection authorization
     using p12 certificate files
     """
 

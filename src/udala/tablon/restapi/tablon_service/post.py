@@ -407,7 +407,6 @@ class TablonPost(Service):
                 set_dates(file_es, date_start, date_end)
                 file_es.reindexObject()
 
-
                 # api.content.transition(obj=file_es, transition="publish")
 
                 file_eu_id = register_file(file_eu.UID(), file_es.UID())
@@ -452,7 +451,7 @@ class TablonPost(Service):
                 )
                 # api.content.transition(obj=file_es, transition="publish")
                 file_es.reindexObject()
-                
+
                 file_es_id = register_file(None, file_es.UID())
                 es_files.append(file_es_id)
 

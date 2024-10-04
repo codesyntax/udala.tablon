@@ -1,5 +1,0 @@
-============
-udala.tablon
-============
-
-User documentation

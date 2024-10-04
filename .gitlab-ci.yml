@@ -49,23 +49,7 @@ release-ready:
   except:
     - schedules
 
-dependencies:
-  stage: qa
-  script:
-    - pip install tox
-    - tox -e dependencies
-  except:
-    - schedules
 
-circular-dependencies:
-  stage: qa
-  script:
-    - apt-get update
-    - apt-get install -y graphviz graphviz-dev
-    - pip install tox
-    - tox -e circular
-  except:
-    - schedules
 
 testing:
   stage: test

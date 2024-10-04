@@ -7,9 +7,8 @@ commit-id = "5d22fbf8"
 
 [gitlab]
 jobs = [
-   "lint",
-   "release-ready",
-   "testing",
-   "coverage",
-   ]
-#
+    "lint",
+    "release-ready",
+    "testing",
+    "coverage",
+    ]

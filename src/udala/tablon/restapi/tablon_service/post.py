@@ -368,6 +368,8 @@ class TablonPost(Service):
         #     expirationDate=date_end,
         # )
 
+        set_dates(documento_es, date_start, date_end)
+
         api.content.transition(obj=documento_es, transition="publish")
 
         eu_files = []
@@ -398,6 +400,9 @@ class TablonPost(Service):
                 ITranslationManager(file_eu).add_translation("es")
                 file_es = ITranslationManager(file_eu).get_translation("es")
                 file_es.title = file.get("name_es")
+
+                set_dates(file_es, date_start, date_end)
+
 
                 # api.content.transition(obj=file_es, transition="publish")
 

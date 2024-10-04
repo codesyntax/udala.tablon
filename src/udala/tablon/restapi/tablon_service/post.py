@@ -1,7 +1,4 @@
-import base64
 from datetime import datetime
-
-import pytz
 from plone import api
 from plone.app.dexterity.behaviors.metadata import IPublication
 from plone.app.multilingual.interfaces import ITranslationManager
@@ -10,6 +7,7 @@ from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from udala.tablon import _
+from udala.tablon.cache import purge_urls
 from udala.tablon.config import TASK_DEFAULT_DELAY
 from udala.tablon.file_utils import register_file
 from udala.tablon.tasks import schedule_browser_view_with_traversal
@@ -17,7 +15,10 @@ from udala.tablon.utils import register_documents
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import alsoProvides
-from udala.tablon.cache import purge_urls
+
+import base64
+import pytz
+
 
 OK = 1
 ACCEPTED_ORIGIN_VALUES = ["external", "internal"]

@@ -1,8 +1,8 @@
 from BTrees.OOBTree import OOBTree
 from datetime import datetime
 from plone import api
-from zope.annotation.interfaces import IAnnotations
 from Products.CMFPlone.utils import safe_text
+from zope.annotation.interfaces import IAnnotations
 
 import base64
 import requests

@@ -4,7 +4,8 @@ from plone.namedfile.field import NamedBlobFile
 from plone.supermodel import model
 from udala.tablon import _
 from zope import schema
-from zope.interface import alsoProvides, implementer
+from zope.interface import alsoProvides
+from zope.interface import implementer
 
 
 class IAcreditedFile(model.Schema):

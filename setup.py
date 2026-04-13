@@ -53,7 +53,6 @@ setup(
         "plone.app.dexterity",
         "plone.restapi",
         "requests",
-        "collective.taskqueue2",
         "suds-py3",
         "requests_pkcs12",
     ],
@@ -66,6 +65,9 @@ setup(
             "plone.testing>=5.0.0",
             "plone.app.contenttypes",
             "plone.restapi[test]",
+        ],
+        "taskqueue": [
+            "collective.taskqueue2",
         ],
     },
     entry_points="""

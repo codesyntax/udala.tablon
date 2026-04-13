@@ -10,7 +10,7 @@ from udala.tablon import _
 from udala.tablon.cache import purge_urls
 from udala.tablon.config import TASK_DEFAULT_DELAY
 from udala.tablon.file_utils import register_file
-from udala.tablon.tasks import schedule_browser_view_with_traversal
+from udala.tablon.subscriber import get_publication_accreditation
 from udala.tablon.utils import register_documents
 from zope.globalrequest import getRequest
 from zope.i18n import translate
@@ -18,6 +18,14 @@ from zope.interface import alsoProvides
 
 import base64
 import pytz
+
+
+try:
+    from udala.tablon.tasks import schedule_browser_view_with_traversal
+
+    TASK_QUEUE = True
+except ImportError:
+    TASK_QUEUE = False
 
 
 OK = 1
@@ -232,17 +240,22 @@ def get_accreditation(document_id, file_id):
     using an async process
     """
 
-    schedule_browser_view_with_traversal.schedule(
-        delay=TASK_DEFAULT_DELAY,
-        kwargs=dict(
-            view_name="@tablon",
-            context_path="/".join(api.portal.get().getPhysicalPath()),
-            site_path="/".join(api.portal.get().getPhysicalPath()),
-            username=api.user.get_current().getId(),
-            params={},
-            traversal=f"{document_id}/{file_id}/get_external_accreditation",
-        ),
-    )
+    if TASK_QUEUE:
+        schedule_browser_view_with_traversal.schedule(
+            delay=TASK_DEFAULT_DELAY,
+            kwargs=dict(
+                view_name="@tablon",
+                context_path="/".join(api.portal.get().getPhysicalPath()),
+                site_path="/".join(api.portal.get().getPhysicalPath()),
+                username=api.user.get_current().getId(),
+                params={},
+                traversal=f"{document_id}/{file_id}/get_external_accreditation",
+            ),
+        )
+    else:
+        alsoProvides(getRequest(), IDisableCSRFProtection)
+        file_object = api.content.get(UID=file_id)
+        get_publication_accreditation(file_object)
     return 1
 
 

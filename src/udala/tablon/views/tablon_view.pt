@@ -9,19 +9,11 @@
   <body>
 
     <metal:custom_title fill-slot="content-title">
-      <h1 tal:replace="structure context/@@title"></h1>
-
-      <!-- @@title view template: -->
-      <!--
-    <h1 tal:define="title context/Title" tal:condition="title" tal:content="title">
-      Title or id
-    </h1>
-    -->
-
+      <h1 class="documentFirstHeading mb-4" tal:replace="structure context/@@title"></h1>
     </metal:custom_title>
 
     <metal:custom_description fill-slot="content-description">
-      <p tal:replace="structure context/@@description"></p>
+      <div class="documentDescription lead text-secondary mb-4 pb-3 border-bottom" tal:replace="structure context/@@description"></div>
     </metal:custom_description>
 
     <metal:content-core fill-slot="content-core">
@@ -45,51 +37,74 @@
                        b_start python:int(request.get('b_start', 0));
                        results python:context.restrictedTraverse('@@folderListing')(sort_on='effective', sort_order='reverse', batch=True, b_size=b_size, b_start=b_start);
                        batch python:Batch(results, b_size, b_start);
+                       icons python:context.restrictedTraverse('@@iconresolver');
                      ">
-          <table class="listing"
-                 tal:define="
-                   toLocalizedTime nocall:here/@@plone/toLocalizedTime;
-                 "
+          
+          <div class="card shadow-sm border-0 mb-4"
+               tal:condition="batch"
           >
-            <thead>
-              <tr>
-                <th i18n:translate="">Document number</th>
-                <th i18n:translate="">Description</th>
-                <th i18n:translate="">Origin</th>
-                <th i18n:translate="">Publication date</th>
-                <th i18n:translate="">Expiration date</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr tal:repeat="item batch">
-                <tal:obj define="
-                           obj python:item.getObject();
-                         ">
-                  <td>
-                    <a href=""
-                       tal:content="item/Title"
-                       tal:attributes="
-                         href item/getURL;
-                       "
-                    >
-                      Titlt</a>
-                  </td>
-                  <td>
-                    <span tal:replace="obj/Description"></span>
-                  </td>
-                  <td>
-                    <span tal:replace="obj/origin_department"></span>
-                  </td>
-                  <td>
-                    <span tal:replace="python:toLocalizedTime(obj.effective_date)"></span>
-                  </td>
-                  <td>
-                    <span tal:replace="python:toLocalizedTime(obj.expiration_date)"></span>
-                  </td>
-                </tal:obj>
-              </tr>
-            </tbody>
-          </table>
+            <div class="table-responsive m-0">
+
+              <table class="table table-hover table-striped mb-0 align-middle"
+                     tal:define="
+                       toLocalizedTime nocall:here/@@plone/toLocalizedTime;
+                     "
+              >
+                <thead class="table-light text-secondary">
+                  <tr>
+                    <th i18n:translate="" class="fw-semibold border-bottom-0 py-3 ps-4">Document number</th>
+                    <th i18n:translate="" class="fw-semibold border-bottom-0 py-3">Description</th>
+                    <th i18n:translate="" class="fw-semibold border-bottom-0 py-3">Origin</th>
+                    <th i18n:translate="" class="fw-semibold border-bottom-0 py-3">Publication date</th>
+                    <th i18n:translate="" class="fw-semibold border-bottom-0 py-3 pe-4">Expiration date</th>
+                  </tr>
+                </thead>
+                <tbody class="border-top-0">
+                  <tr tal:repeat="item batch">
+                    <tal:obj define="
+                               obj python:item.getObject();
+                             ">
+                      <td class="ps-4 fw-medium text-dark">
+                        <a class="text-decoration-none fw-bold"
+                           tal:content="item/Title"
+                           tal:attributes="
+                             href item/getURL;
+                           "
+                        >
+                          Titlt</a>
+                      </td>
+                      <td class="text-secondary">
+                        <span tal:replace="obj/Description"></span>
+                      </td>
+                      <td class="text-secondary">
+                        <span tal:replace="obj/origin_department"></span>
+                      </td>
+                      <td class="text-secondary">
+                        <span class="badge bg-light text-dark border shadow-sm px-2 py-1 fw-normal">
+                          <span class="me-1 text-primary d-inline-flex align-items-center" tal:content="structure python:icons.tag('calendar')"></span>
+                          <span tal:replace="python:toLocalizedTime(obj.effective_date)"></span>
+                        </span>
+                      </td>
+                      <td class="pe-4 text-secondary">
+                        <span class="badge bg-light text-dark border shadow-sm px-2 py-1 fw-normal">
+                          <span class="me-1 text-primary d-inline-flex align-items-center" tal:content="structure python:icons.tag('calendar-x')"></span>
+                          <span tal:replace="python:toLocalizedTime(obj.expiration_date)"></span>
+                        </span>
+                      </td>
+                    </tal:obj>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+          
+          <div class="alert alert-info d-flex align-items-center shadow-sm my-4"
+               tal:condition="not:batch"
+          >
+             <span class="fs-4 me-3 d-flex align-items-center text-info" tal:content="structure python:icons.tag('info-circle')"></span>
+             <p class="mb-0" i18n:translate="">There is no data</p>
+          </div>
 
           <div metal:use-macro="context/batch_macros/macros/navigation"></div>
         </tal:content>

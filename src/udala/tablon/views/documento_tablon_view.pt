@@ -9,82 +9,100 @@
   <body>
 
     <metal:custom_title fill-slot="content-title">
-      <p tal:replace="structure context/@@description"></p>
+      <h1 class="documentFirstHeading mb-3" tal:replace="structure context/@@description"></h1>
     </metal:custom_title>
 
     <metal:custom_description fill-slot="content-description">
+      <div class="lead text-secondary mb-4 pb-3 border-bottom"></div>
     </metal:custom_description>
 
     <metal:content-core fill-slot="content-core">
       <metal:block define-macro="content-core">
 
-        <dl tal:define="
-              plone nocall:context/@@plone;
-            ">
-          <dt i18n:translate="">record number</dt>
-          <dd tal:content="context/Title">origin</dd>
+        <div class="card shadow-sm border-0 mb-5 bg-light p-4"
+             tal:define="
+               plone nocall:context/@@plone;
+               icons python:context.restrictedTraverse('@@iconresolver');
+             "
+        >
+          <dl class="row mb-0">
+            <dt class="col-sm-3 text-secondary fw-semibold mb-2" i18n:translate="">record number</dt>
+            <dd class="col-sm-9 text-dark fw-bold mb-3" tal:content="context/Title">origin</dd>
 
-          <dt i18n:translate="">Publication start</dt>
-          <dd tal:content="python:plone.toLocalizedTime(context.effective_date)">
-          origin_department
-          </dd>
+            <dt class="col-sm-3 text-secondary fw-semibold mb-2" i18n:translate="">Publication start</dt>
+            <dd class="col-sm-9 text-dark mb-3">
+              <span class="badge bg-white text-dark border shadow-sm px-2 py-1 fw-normal">
+                <span class="me-1 text-primary d-inline-flex align-items-center" tal:content="structure python:icons.tag('calendar')"></span>
+                <span tal:content="python:plone.toLocalizedTime(context.effective_date)">origin_department</span>
+              </span>
+            </dd>
 
-          <dt i18n:translate="">Publication end</dt>
-          <dd tal:content="python:plone.toLocalizedTime(context.expiration_date)">
-          origin_department
-          </dd>
+            <dt class="col-sm-3 text-secondary fw-semibold mb-2" i18n:translate="">Publication end</dt>
+            <dd class="col-sm-9 text-dark mb-3">
+              <span class="badge bg-white text-dark border shadow-sm px-2 py-1 fw-normal">
+                <span class="me-1 text-primary d-inline-flex align-items-center" tal:content="structure python:icons.tag('calendar-x')"></span>
+                <span tal:content="python:plone.toLocalizedTime(context.expiration_date)">origin_department</span>
+              </span>
+            </dd>
 
-          <dt i18n:translate="">origin_department</dt>
-          <dd>
-            <span tal:content="context/origin_department"></span>
-             -
-            <span tal:content="context/origin_details"></span>
-          </dd>
+            <dt class="col-sm-3 text-secondary fw-semibold mb-2" i18n:translate="">origin_department</dt>
+            <dd class="col-sm-9 text-dark mb-3">
+              <span class="fw-medium text-dark" tal:content="context/origin_department"></span>
+               -
+              <span class="text-secondary" tal:content="context/origin_details"></span>
+            </dd>
 
-          <tal:files define="
-                       files view/files;
-                     "
-                     condition="files"
-          >
-            <dt i18n:translate="files">files</dt>
+            <tal:files define="
+                         files view/files;
+                       "
+                       condition="files"
+            >
+              <dt class="col-sm-3 text-secondary fw-semibold mb-2 pt-3 border-top" i18n:translate="files">files</dt>
 
-            <dd>
-              <ul>
-                <li tal:repeat="file files">
-                  <a href=""
-                     tal:content="file/file_title"
-                     tal:attributes="
-                       href file/url;
-                     "
-                  >
-                  title
-                  </a>
-                &nbsp; &nbsp; &nbsp;
-                  <a class="btn btn-default"
-                     href=""
-                     tal:condition="python:file['file_accreditation_url'] and file['file_accreditation_url'].startswith('http')"
-                     tal:attributes="
-                       href file/file_accreditation_url;
-                     "
-                     i18n:translate=""
-                  >Publication accreditation by IZENPE</a>
-
-                  <tal:notaccredited condition="python:not file['file_accreditation_url'] and checkPermission('Manage portal', context)">
-                    <a class="btn btn-default"
+              <dd class="col-sm-9 pt-3 border-top">
+                <ul class="list-unstyled mb-0 d-flex flex-column gap-3">
+                  <li class="d-flex flex-wrap align-items-center gap-2" tal:repeat="file files">
+                    <a class="btn btn-outline-primary d-inline-flex align-items-center gap-1 rounded-pill px-3 shadow-sm"
                        href=""
                        tal:attributes="
-                         href string:${file/url}/get_external_accreditation;
+                         href file/url;
+                       "
+                    >
+                      <span class="d-flex align-items-center" tal:content="structure python:icons.tag('download')"></span>
+                      <span tal:content="file/file_title">title</span>
+                    </a>
+                    
+                    <a class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 rounded-pill px-3 shadow-sm"
+                       href=""
+                       tal:condition="python:file['file_accreditation_url'] and file['file_accreditation_url'].startswith('http')"
+                       tal:attributes="
+                         href file/file_accreditation_url;
                        "
                        i18n:translate=""
-                    >Get accreditation from IZENPE</a>
-                  </tal:notaccredited>
+                    >
+                      <span class="d-flex align-items-center" tal:content="structure python:icons.tag('shield-check')"></span>
+                      <span>Publication accreditation by IZENPE</span>
+                    </a>
 
+                    <tal:notaccredited condition="python:not file['file_accreditation_url'] and checkPermission('Manage portal', context)">
+                      <a class="btn btn-sm btn-outline-warning d-inline-flex align-items-center gap-1 rounded-pill px-3 shadow-sm"
+                         href=""
+                         tal:attributes="
+                           href string:${file/url}/get_external_accreditation;
+                         "
+                         i18n:translate=""
+                      >
+                        <span class="d-flex align-items-center" tal:content="structure python:icons.tag('shield-exclamation')"></span>
+                        <span>Get accreditation from IZENPE</span>
+                      </a>
+                    </tal:notaccredited>
 
-                </li>
-              </ul>
-            </dd>
-          </tal:files>
-        </dl>
+                  </li>
+                </ul>
+              </dd>
+            </tal:files>
+          </dl>
+        </div>
 
         <div id="parent-fieldname-sponsors-text"
              tal:define="

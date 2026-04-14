@@ -4,13 +4,12 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.serializer.dxcontent import SerializeToJson
 from udala.tablon.content.documento_tablon import IDocumentoTablon
 from udala.tablon.file_utils import get_file
+from udala.tablon.interfaces import IUdalaTablonLayer
 from udala.tablon.utils import get_document_by_uid_and_lang
 from udala.tablon.utils import get_documents
 from udala.tablon.utils import get_file_contents
 from zope.component import adapter
 from zope.interface import implementer
-from zope.interface import Interface
-
 import base64
 
 
@@ -18,7 +17,7 @@ TRANSLATION_LANGUAGES = {"eu": "es", "es": "eu"}
 
 
 @implementer(ISerializeToJson)
-@adapter(IDocumentoTablon, Interface)
+@adapter(IDocumentoTablon, IUdalaTablonLayer)
 class DocumentoTablonSerializeToJson(SerializeToJson):
     def __call__(self, version=None, include_items=False):
         portal_url = api.portal.get().absolute_url()

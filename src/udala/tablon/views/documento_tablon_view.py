@@ -26,10 +26,6 @@ class DocumentoTablonView(BrowserView):
         portal_url = portal.absolute_url()
         language = self.context.Language()
         items = []
-        import pdb
-
-        pdb.set_trace()
-        a = 1
 
         document_key = get_document_by_uid_and_lang(self.context.UID(), language)
         document = get_documents(document_key)

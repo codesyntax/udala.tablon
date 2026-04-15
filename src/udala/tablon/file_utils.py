@@ -1,5 +1,5 @@
 from BTrees.OOBTree import OOBTree
-from datetime import datetime
+from datetime import datetime, UTC
 from plone import api
 from zope.annotation.interfaces import IAnnotations
 
@@ -16,18 +16,22 @@ def register_file(file_eu, file_es):
     annotations = annotated.get(ANNOTATION_KEY, OOBTree())
 
     # Check whether this file is already added.
-    existing_file = get_file_by_uid_and_lang(file_eu, "eu")
-    if existing_file is not None:
-        return existing_file
-
-    generated_uuid = uuid.uuid4().hex
-    while generated_uuid in annotations:
+    generated_uuid = get_file_by_uid_and_lang(file_eu, "eu")
+    if generated_uuid is None:
         generated_uuid = uuid.uuid4().hex
+        while generated_uuid in annotations:
+            generated_uuid = uuid.uuid4().hex
+
+    old_file_eu = annotations.get(generated_uuid, {}).get("eu")
+    old_file_es = annotations.get(generated_uuid, {}).get("es")
+    date = annotations.get(generated_uuid, {}).get(
+        "date", datetime.now(UTC).isoformat()
+    )
 
     annotations[generated_uuid] = {
-        "eu": file_eu,
-        "es": file_es,
-        "date": datetime.now().isoformat(),
+        "eu": old_file_eu or file_eu,
+        "es": old_file_es or file_es,
+        "date": date,
     }
 
     annotated[ANNOTATION_KEY] = annotations

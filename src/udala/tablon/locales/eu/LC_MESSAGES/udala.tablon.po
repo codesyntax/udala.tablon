@@ -205,7 +205,7 @@ msgstr "Fitxategiak"
 
 #: ../views/documento_tablon_view.pt:48
 msgid "origin_department"
-msgstr "Jatorrizko sailaka"
+msgstr "Jatorrizko sailak"
 
 #: ../views/documento_tablon_view.pt:29
 msgid "record number"

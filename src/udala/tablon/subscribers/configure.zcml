@@ -4,13 +4,13 @@
 
  <!-- -*- extra stuff goes here -*- -->
 
-  <subscriber for="plone.dexterity.interfaces.IDexterityContent
-                   zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+  <subscriber for="udala.tablon.content.documento_tablon.IDocumentoTablon
+                   zope.lifecycleevent.interfaces.IObjectAddedEvent"
               handler=".register_document.handler"
               />
 
-  <subscriber for="plone.dexterity.interfaces.IDexterityContent
-                   zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+  <subscriber for="udala.tablon.content.acredited_file.IAcreditedFile
+                   zope.lifecycleevent.interfaces.IObjectAddedEvent"
               handler=".register_file.handler"
               />
 

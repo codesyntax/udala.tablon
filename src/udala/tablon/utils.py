@@ -1,5 +1,5 @@
 from BTrees.OOBTree import OOBTree
-from datetime import datetime
+from datetime import datetime, UTC
 from plone import api
 from Products.CMFPlone.utils import safe_text
 from zope.annotation.interfaces import IAnnotations
@@ -19,20 +19,24 @@ def register_documents(documento_eu, documento_es, files_eu, files_es):
     annotations = annotated.get(ANNOTATION_KEY, OOBTree())
 
     # Check whether this document is already added:
-    existing_document = get_document_by_uid_and_lang(documento_eu, "eu")
-    if existing_document is not None:
-        return existing_document
-
-    generated_uuid = uuid.uuid4().hex
-    while generated_uuid in annotations:
+    generated_uuid = get_document_by_uid_and_lang(documento_eu, "eu")
+    if generated_uuid is None:
         generated_uuid = uuid.uuid4().hex
+        while generated_uuid in annotations:
+            generated_uuid = uuid.uuid4().hex
+
+    old_files_eu = annotations.get(generated_uuid, {}).get("files_eu", [])
+    old_files_es = annotations.get(generated_uuid, {}).get("files_es", [])
+    date = annotations.get(generated_uuid, {}).get(
+        "date", datetime.now(UTC).isoformat()
+    )
 
     annotations[generated_uuid] = {
         "eu": documento_eu,
         "es": documento_es,
-        "files_eu": files_eu,
-        "files_es": files_es,
-        "date": datetime.now().isoformat(),
+        "files_eu": old_files_eu + files_eu,
+        "files_es": old_files_es + files_es,
+        "date": date,
     }
 
     annotated[ANNOTATION_KEY] = annotations

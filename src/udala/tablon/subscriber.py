@@ -117,15 +117,16 @@ def send_mail(message, object):
     email = api.portal.get_registry_record(
         "udala.tablon.udala_tablon_control_panel.admin_email"
     )
-    mailhost = api.portal.get_tool("MailHost")
+    if email:
+        mailhost = api.portal.get_tool("MailHost")
 
-    message_text = "Izenperekin konexioaren emaitza: {}. Dokumentua:{}".format(
-        message,
-        object.absolute_url(),
-    )
-    mailhost.send(
-        message_text,
-        mto=email,
-        mfrom=api.portal.get_registry_record("plone.email_from_address"),
-        subject="Izenpe emaitza",
-    )
+        message_text = "Izenperekin konexioaren emaitza: {}. Dokumentua:{}".format(
+            message,
+            object.absolute_url(),
+        )
+        mailhost.send(
+            message_text,
+            mto=email,
+            mfrom=api.portal.get_registry_record("plone.email_from_address"),
+            subject="Izenpe emaitza",
+        )

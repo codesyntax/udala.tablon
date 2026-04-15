@@ -41,6 +41,8 @@
 
   <!-- -*- extra stuff goes here -*- -->
 
+  <include package=".subscribers" />
+
   <include package=".controlpanels" />
 
 

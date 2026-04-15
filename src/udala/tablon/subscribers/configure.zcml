@@ -6,6 +6,11 @@
 
   <subscriber for="plone.dexterity.interfaces.IDexterityContent
                    zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+              handler=".register_document.handler"
+              />
+
+  <subscriber for="plone.dexterity.interfaces.IDexterityContent
+                   zope.lifecycleevent.interfaces.IObjectModifiedEvent"
               handler=".register_file.handler"
               />
 

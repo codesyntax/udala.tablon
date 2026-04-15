@@ -1,11 +1,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-07-04 06:59+0000\n"
+"POT-Creation-Date: 2026-04-15 07:03+0000\n"
 "PO-Revision-Date: 2024-07-04 09:07+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,13 +13,14 @@ msgstr ""
 "Language-Name: English\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: DOMAIN\n"
+"Language: es\n"
 "X-Generator: Poedit 3.0.1\n"
 
-#: ../content/acredited_file.py:20
+#: ../content/acredited_file.py:16
 msgid "Accreditation URL"
 msgstr "URL de la verificación"
 
-#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:15
+#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:14
 msgid "Accrediter endpoint URL"
 msgstr "URL del endpoint de verificación"
 
@@ -28,19 +28,19 @@ msgstr "URL del endpoint de verificación"
 msgid "AcreditedFile"
 msgstr "Archivo verificado"
 
-#: ../views/tablon_view.pt:40
+#: ../views/tablon_view.pt:56
 msgid "Description"
 msgstr "Descripción"
 
-#: ../content/documento_tablon.py:26
+#: ../content/documento_tablon.py:25
 msgid "Details about the origin of the document"
 msgstr "Detalles sobre el origen del documento"
 
-#: ../views/tablon_view.pt:39
+#: ../views/tablon_view.pt:55
 msgid "Document number"
 msgstr "Número de documento"
 
-#: ../content/documento_tablon.py:30
+#: ../content/documento_tablon.py:29
 msgid "Document publication URL"
 msgstr "URL de publicación del documento"
 
@@ -48,59 +48,59 @@ msgstr "URL de publicación del documento"
 msgid "DocumentoTablon"
 msgstr "Documento del Tablón"
 
-#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:59
+#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:58
 msgid "Email address where accreditation notifications will be sent"
 msgstr "Email donde se recibirán los mensajes sobre el proceso de verificación de los documentos"
 
-#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:48
+#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:47
 msgid "Enter the full domain (with https) of the site. "
 msgstr "Introducir la URL completa, incluyendo https"
 
-#: ../views/tablon_view.pt:43
+#: ../views/tablon_view.pt:59
 msgid "Expiration date"
 msgstr "Fecha de caducidad"
 
-#: ../views/documento_tablon_view.pt:52
+#: ../views/documento_tablon_view.pt:94
 msgid "Get accreditation from IZENPE"
 msgstr "Obtener verificación de IZENPE"
 
-#: ../configure.zcml:25
+#: ../configure.zcml:26
 msgid "Installs the udala.tablon add-on."
 msgstr "Instalar udala.tablon"
 
-#: ../views/tablon_view.pt:41
+#: ../views/tablon_view.pt:57
 msgid "Origin"
 msgstr "Origen"
 
-#: ../content/documento_tablon.py:22
+#: ../content/documento_tablon.py:21
 msgid "Origin department of the document"
 msgstr "Departamento de origen del documento"
 
-#: ../content/documento_tablon.py:19
+#: ../content/documento_tablon.py:18
 msgid "Origin of the document"
 msgstr "Origen del documento"
 
-#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:37
+#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:36
 msgid "Password of the pkcs12 file"
 msgstr "Contraseña del archivo pkcs12"
 
-#: ../views/documento_tablon_view.pt:47
+#: ../views/documento_tablon_view.pt:83
 msgid "Publication accreditation by IZENPE"
 msgstr "Publicación acreditada por IZENPE"
 
-#: ../views/tablon_view.pt:42
+#: ../views/tablon_view.pt:58
 msgid "Publication date"
 msgstr "Fecha de publicación"
 
-#: ../views/documento_tablon_view.pt:26
+#: ../views/documento_tablon_view.pt:40
 msgid "Publication end"
 msgstr "Fin de la publicación"
 
-#: ../views/documento_tablon_view.pt:21
+#: ../views/documento_tablon_view.pt:32
 msgid "Publication start"
 msgstr "Inicio de la publicación"
 
-#: ../content/tablon.py:20
+#: ../content/tablon.py:19
 msgid "Sponsors"
 msgstr "Patrocinadores"
 
@@ -108,111 +108,115 @@ msgstr "Patrocinadores"
 msgid "Tablon"
 msgstr "Tablón"
 
-#: ../content/documento_tablon.py:31
+#: ../content/documento_tablon.py:30
 msgid "The document can be external, thus you can provide its URL here"
 msgstr "El documento puede ser externo, por lo que se puede introducir su URL"
 
-#: ../restapi/tablon_service/post.py:124
+#: ../restapi/tablon_service/post.py:132
 msgid "The field description_es is mandatory"
 msgstr "El campo descripcion_es es obligatorio"
 
-#: ../restapi/tablon_service/post.py:117
+#: ../restapi/tablon_service/post.py:125
 msgid "The field description_eu is mandatory"
 msgstr "El campo descripcion_eu es obligatorio"
 
-#: ../restapi/tablon_service/post.py:76
+#: ../restapi/tablon_service/post.py:84
 msgid "The field origin is mandatory"
 msgstr "El campo origin es obligatorio"
 
-#: ../restapi/tablon_service/post.py:93
+#: ../restapi/tablon_service/post.py:101
 msgid "The field origin_department_es is mandatory"
 msgstr "El campo origin_department_es es obligatorio"
 
-#: ../restapi/tablon_service/post.py:84
+#: ../restapi/tablon_service/post.py:92
 msgid "The field origin_department_eu is mandatory"
 msgstr "El campo origin_department_eu es obligatorio"
 
-#: ../restapi/tablon_service/post.py:109
+#: ../restapi/tablon_service/post.py:117
 msgid "The field origin_details_es is mandatory"
 msgstr "El campo origin_details_es es obligatorio"
 
-#: ../restapi/tablon_service/post.py:101
+#: ../restapi/tablon_service/post.py:109
 msgid "The field origin_details_eu mandatory"
 msgstr "El campo origin_details_eu es obligatorio"
 
-#: ../restapi/tablon_service/post.py:39
+#: ../restapi/tablon_service/post.py:47
 msgid "The field record_number is mandatory"
 msgstr "El campo record_number es obligatorio"
 
-#: ../restapi/tablon_service/post.py:67
+#: ../restapi/tablon_service/post.py:75
 msgid "The format of field date_end is not correct"
 msgstr "El formato del campo date_end no es correcto"
 
-#: ../restapi/tablon_service/post.py:57
+#: ../restapi/tablon_service/post.py:65
 msgid "The format of field date_start is not correct"
 msgstr "El formato del campo date_start no es correcto"
 
-#: ../restapi/tablon_service/post.py:152
+#: ../restapi/tablon_service/post.py:160
 msgid "The format of the field publication_url_es is not correct"
 msgstr "El formato del campo publication_url_es no es correcto"
 
-#: ../restapi/tablon_service/post.py:142
+#: ../restapi/tablon_service/post.py:150
 msgid "The format of the field publication_url_eu is not correct"
 msgstr "El formato del campo publication_url_eu no es correcto"
 
-#: ../restapi/tablon_service/post.py:167
+#: ../restapi/tablon_service/post.py:175
 msgid "The value of a single document is not correct"
 msgstr "El valor de un archivo no es correcto"
 
-#: ../restapi/tablon_service/post.py:207
+#: ../restapi/tablon_service/post.py:215
 msgid "The value of contents in a single document is mandatory"
 msgstr "El valor del campo contents de un archivo es obligatorio"
 
-#: ../restapi/tablon_service/post.py:217
+#: ../restapi/tablon_service/post.py:225
 msgid "The value of filename in a single document is mandatory"
 msgstr "El valor del campo filename de un archivo es obligatorio"
 
-#: ../restapi/tablon_service/post.py:187
+#: ../restapi/tablon_service/post.py:195
 msgid "The value of name_es in a single document is mandatory"
 msgstr "El valor del campo name_es de un archivo es obligatorio"
 
-#: ../restapi/tablon_service/post.py:197
+#: ../restapi/tablon_service/post.py:205
 msgid "The value of name_eu in a single document is mandatory"
 msgstr "El valor del campo name_eu de un archivo es obligatorio"
 
-#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:74
+#: ../views/tablon_view.pt:106
+msgid "There is no data"
+msgstr ""
+
+#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:73
 #: ../profiles/default/controlpanel.xml
 msgid "Udala Tablon Control Panel"
 msgstr "Panel de Control del Tablón"
 
-#: ../configure.zcml:34
+#: ../configure.zcml:35
 msgid "Uninstalls the udala.tablon add-on."
 msgstr "Desinstalar udala.tablon"
 
-#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:51
+#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:50
 msgid "We need to pass this as a configuration item because when running async processes we do not have access to the real URL of the object"
 msgstr "Necesitamos este valor porque al solicitar la verificación a IZENPE no tenemos acceso a la URL del portal"
 
-#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:26
+#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:25
 msgid "base64 encoded pkcs12 file"
 msgstr "archivo pkcs12 codificado en formato base64"
 
-#: ../views/documento_tablon_view.pt:38
+#: ../views/documento_tablon_view.pt:60
 msgid "files"
 msgstr "Archivos"
 
-#: ../views/documento_tablon_view.pt:31
+#: ../views/documento_tablon_view.pt:48
 msgid "origin_department"
 msgstr "Departamento de origen"
 
-#: ../views/documento_tablon_view.pt:18
+#: ../views/documento_tablon_view.pt:29
 msgid "record number"
 msgstr "Número de documento"
 
-#: ../configure.zcml:25
+#: ../configure.zcml:26
 msgid "udala.tablon"
 msgstr "udala.tablon"
 
-#: ../configure.zcml:34
+#: ../configure.zcml:35
 msgid "udala.tablon (uninstall)"
 msgstr "udala.tablon (uninstall)"

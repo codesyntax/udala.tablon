@@ -71,17 +71,16 @@
                       <span class="d-flex align-items-center" tal:content="structure python:icons.tag('download')"></span>
                       <span tal:content="file/file_title">title</span>
                     </a>
-                    
+
                     <a class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 rounded-pill px-3 shadow-sm"
                        href=""
                        tal:condition="python:file['file_accreditation_url'] and file['file_accreditation_url'].startswith('http')"
                        tal:attributes="
                          href file/file_accreditation_url;
                        "
-                       i18n:translate=""
                     >
                       <span class="d-flex align-items-center" tal:content="structure python:icons.tag('shield-check')"></span>
-                      <span>Publication accreditation by IZENPE</span>
+                      <span i18n:translate="">Publication accreditation by IZENPE</span>
                     </a>
 
                     <tal:notaccredited condition="python:not file['file_accreditation_url'] and checkPermission('Manage portal', context)">
@@ -90,10 +89,9 @@
                          tal:attributes="
                            href string:${file/url}/get_external_accreditation;
                          "
-                         i18n:translate=""
                       >
                         <span class="d-flex align-items-center" tal:content="structure python:icons.tag('shield-exclamation')"></span>
-                        <span>Get accreditation from IZENPE</span>
+                        <span i18n:translate="">Get accreditation from IZENPE</span>
                       </a>
                     </tal:notaccredited>
 

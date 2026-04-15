@@ -18,6 +18,11 @@ def register_documents(documento_eu, documento_es, files_eu, files_es):
     annotated = IAnnotations(portal)
     annotations = annotated.get(ANNOTATION_KEY, OOBTree())
 
+    # Check whether this document is already added:
+    existing_document = get_document_by_uid_and_lang(documento_eu, "eu")
+    if existing_document is not None:
+        return existing_document
+
     generated_uuid = uuid.uuid4().hex
     while generated_uuid in annotations:
         generated_uuid = uuid.uuid4().hex

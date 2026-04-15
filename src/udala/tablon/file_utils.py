@@ -6,7 +6,7 @@ from zope.annotation.interfaces import IAnnotations
 import uuid
 
 
-ANNOTATION_KEY = "eibarkoudala.tablon.archivo_tablon"
+ANNOTATION_KEY = "udala.tablon.archivo_tablon"
 
 
 def register_file(file_eu, file_es):

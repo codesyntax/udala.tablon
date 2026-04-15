@@ -9,7 +9,7 @@ import requests
 import uuid
 
 
-ANNOTATION_KEY = "eibarkoudala.tablon.documento_tablon"
+ANNOTATION_KEY = "udala.tablon.documento_tablon"
 
 
 def register_documents(documento_eu, documento_es, files_eu, files_es):

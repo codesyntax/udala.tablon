@@ -2,7 +2,7 @@ from BTrees.OOBTree import OOBTree
 from datetime import datetime
 from datetime import timezone
 from plone import api
-from Products.CMFPlone.utils import safe_text
+from plone.base.utils import safe_text
 from zope.annotation.interfaces import IAnnotations
 
 import base64
@@ -13,33 +13,44 @@ import uuid
 ANNOTATION_KEY = "udala.tablon.documento_tablon"
 
 
-def register_documents(documento_eu, documento_es, files_eu, files_es):
+def register_documents(
+    uid: str,
+    language: str,
+    file_uids: list | None = None,
+    shared_uid: str | None = None,
+) -> str:
     """register documents in an annotation and produce a single identifier"""
     portal = api.portal.get()
     annotated = IAnnotations(portal)
     annotations = annotated.get(ANNOTATION_KEY, OOBTree())
 
-    # Check whether this document is already added:
-    generated_uuid = get_document_by_uid_and_lang(documento_eu, "eu")
+    if file_uids is None:
+        file_uids = []
+
+    generated_uuid = shared_uid
+    if generated_uuid is None:
+        generated_uuid = get_document_by_uid_and_lang(uid, language)
+
     if generated_uuid is None:
         generated_uuid = uuid.uuid4().hex
         while generated_uuid in annotations:
             generated_uuid = uuid.uuid4().hex
 
-    old_files_eu = annotations.get(generated_uuid, {}).get("files_eu", [])
-    old_files_es = annotations.get(generated_uuid, {}).get("files_es", [])
-    date = annotations.get(generated_uuid, {}).get(
-        "date", datetime.now(timezone.utc).isoformat()
+    data = annotations.get(
+        generated_uuid,
+        {
+            "translations": {},
+            "files": [],
+            "date": datetime.now(timezone.utc).isoformat(),
+        },
     )
 
-    annotations[generated_uuid] = {
-        "eu": documento_eu,
-        "es": documento_es,
-        "files_eu": old_files_eu + files_eu,
-        "files_es": old_files_es + files_es,
-        "date": date,
-    }
+    data["translations"][language] = uid
+    if file_uids:
+        # Avoid duplicate files while preserving order (optional) or just use set
+        data["files"] = list(set(data.get("files", []) + file_uids))
 
+    annotations[generated_uuid] = data
     annotated[ANNOTATION_KEY] = annotations
 
     return generated_uuid
@@ -47,7 +58,6 @@ def register_documents(documento_eu, documento_es, files_eu, files_es):
 
 def get_documents(value):
     """given a registered UUID, return the related documents or None if it does not exist"""  # noqa: E501
-
     portal = api.portal.get()
     annotated = IAnnotations(portal)
     annotations = annotated.get(ANNOTATION_KEY, OOBTree())
@@ -55,12 +65,37 @@ def get_documents(value):
     return annotations.get(value, None)
 
 
+def resolve_plone_uid(annotation_dict, request):
+    """safely resolve a shared uid annotation dictionary to a plone object uid"""
+    if not annotation_dict:
+        return None
+
+    translations = annotation_dict.get("translations", {})
+    if not translations:
+        return None
+
+    req_lang = request.get("LANGUAGE")
+    if not req_lang:
+        req_lang = api.portal.get_default_language()
+
+    if req_lang in translations:
+        return translations[req_lang]
+
+    # Fallback to the first available language to avoid unnecessary 404s
+    return next(iter(translations.values()))
+
+
 def get_document_by_uid_and_lang(uid, language):
+    if not uid:
+        return None
+
     portal = api.portal.get()
     annotated = IAnnotations(portal)
     annotations = annotated.get(ANNOTATION_KEY, OOBTree())
+
     for k, v in annotations.items():
-        if v.get(language, "") == uid:
+        translations = v.get("translations", {})
+        if translations.get(language) == uid:
             return k
 
     return None

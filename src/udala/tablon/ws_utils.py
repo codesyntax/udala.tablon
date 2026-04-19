@@ -194,7 +194,7 @@ def post_document_to_izenpe(  # noqa: C901
                 for item2 in data.item:
                     if (language == "eu" and item2.key == "msjerror_eus") or (
                         language == "es" and item2.key == "msjerror_cas"
-                    ):  # noqa: E501
+                    ):
                         errorcode = item.value
                         errormessage = item2.value
                     elif language not in ["eu", "es"] and item2.key == "coderror":

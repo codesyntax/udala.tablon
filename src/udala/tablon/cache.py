@@ -34,8 +34,11 @@ def purge_urls(urls):  # noqa: C901
     portal = api.portal.get()
     portalPath = portal.getPhysicalPath()
     registry = getUtility(IRegistry)
-    purgingSettings = registry.forInterface(ICachePurgingSettings)
-    proxies = purgingSettings.cachingProxies
+    try:
+        purgingSettings = registry.forInterface(ICachePurgingSettings)
+        proxies = purgingSettings.cachingProxies
+    except KeyError:
+        return []
 
     for inputURL in urls:
         if not inputURL.startswith(serverURL):  # not in the site

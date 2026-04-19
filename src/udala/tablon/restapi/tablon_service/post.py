@@ -9,6 +9,7 @@ from plone.restapi.services import Service
 from udala.tablon import _
 from udala.tablon.cache import purge_urls
 from udala.tablon.config import TASK_DEFAULT_DELAY
+from udala.tablon.file_utils import get_file
 from udala.tablon.file_utils import register_file
 from udala.tablon.subscriber import get_publication_accreditation
 from udala.tablon.utils import register_documents
@@ -251,8 +252,15 @@ def get_accreditation(document_id, file_id):
         )
     else:
         alsoProvides(getRequest(), IDisableCSRFProtection)
-        file_object = api.content.get(UID=file_id)
-        get_publication_accreditation(file_object)
+        file_data = get_file(file_id)
+        if file_data:
+            from udala.tablon.utils import resolve_plone_uid
+
+            file_uid = resolve_plone_uid(file_data, getRequest())
+            if file_uid:
+                file_object = api.content.get(UID=file_uid)
+                if file_object is not None:
+                    get_publication_accreditation(file_object)
     return 1
 
 
@@ -419,7 +427,8 @@ class TablonPost(Service):
 
                 # api.content.transition(obj=file_es, transition="publish")
 
-                file_eu_id = register_file(file_eu.UID(), file_es.UID())
+                file_eu_id = register_file(uid=file_eu.UID(), language="eu")
+                register_file(uid=file_es.UID(), language="es", shared_uid=file_eu_id)
                 eu_files.append(file_eu_id)
                 es_files.append(file_eu_id)
 
@@ -441,7 +450,7 @@ class TablonPost(Service):
                 file_eu.reindexObject()
                 # api.content.transition(obj=file_eu, transition="publish")
 
-                file_eu_id = register_file(file_eu.UID(), None)
+                file_eu_id = register_file(uid=file_eu.UID(), language="eu")
                 eu_files.append(file_eu_id)
 
             elif file_language in ["es"]:
@@ -462,11 +471,17 @@ class TablonPost(Service):
                 # api.content.transition(obj=file_es, transition="publish")
                 file_es.reindexObject()
 
-                file_es_id = register_file(None, file_es.UID())
+                file_es_id = register_file(uid=file_es.UID(), language="es")
                 es_files.append(file_es_id)
 
         document_id = register_documents(
-            documento_eu.UID(), documento_es.UID(), eu_files, es_files
+            uid=documento_eu.UID(), language="eu", file_uids=eu_files
+        )
+        register_documents(
+            uid=documento_es.UID(),
+            language="es",
+            file_uids=es_files,
+            shared_uid=document_id,
         )
 
         for file_id in set(eu_files + es_files):

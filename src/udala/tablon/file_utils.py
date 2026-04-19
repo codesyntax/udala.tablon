@@ -10,31 +10,32 @@ import uuid
 ANNOTATION_KEY = "udala.tablon.archivo_tablon"
 
 
-def register_file(file_eu, file_es):
+def register_file(uid: str, language: str, shared_uid: str | None = None) -> str:
     """register file in an annotation and produce a single identifier"""
     portal = api.portal.get()
     annotated = IAnnotations(portal)
     annotations = annotated.get(ANNOTATION_KEY, OOBTree())
 
-    # Check whether this file is already added.
-    generated_uuid = get_file_by_uid_and_lang(file_eu, "eu")
+    generated_uuid = shared_uid
+    if generated_uuid is None:
+        generated_uuid = get_file_by_uid_and_lang(uid, language)
+
     if generated_uuid is None:
         generated_uuid = uuid.uuid4().hex
         while generated_uuid in annotations:
             generated_uuid = uuid.uuid4().hex
 
-    old_file_eu = annotations.get(generated_uuid, {}).get("eu")
-    old_file_es = annotations.get(generated_uuid, {}).get("es")
-    date = annotations.get(generated_uuid, {}).get(
-        "date", datetime.now(timezone.utc).isoformat()
+    data = annotations.get(
+        generated_uuid,
+        {
+            "translations": {},
+            "date": datetime.now(timezone.utc).isoformat(),
+        },
     )
 
-    annotations[generated_uuid] = {
-        "eu": old_file_eu or file_eu,
-        "es": old_file_es or file_es,
-        "date": date,
-    }
+    data["translations"][language] = uid
 
+    annotations[generated_uuid] = data
     annotated[ANNOTATION_KEY] = annotations
 
     return generated_uuid
@@ -51,11 +52,15 @@ def get_file(value):
 
 
 def get_file_by_uid_and_lang(uid, language):
+    if not uid:
+        return None
+
     portal = api.portal.get()
     annotated = IAnnotations(portal)
     annotations = annotated.get(ANNOTATION_KEY, OOBTree())
     for k, v in annotations.items():
-        if v.get(language, "") == uid:
+        translations = v.get("translations", {})
+        if translations.get(language) == uid:
             return k
 
     return None

@@ -4,6 +4,7 @@ from Products.Five.browser import BrowserView
 from udala.tablon.file_utils import get_file
 from udala.tablon.subscriber import get_publication_accreditation
 from udala.tablon.utils import get_documents
+from udala.tablon.utils import resolve_plone_uid
 from zope.i18n import translate
 from zope.interface import alsoProvides
 from zope.interface import implementer
@@ -43,9 +44,7 @@ class FileDownloadView(BrowserView):
             file_id = self._get_file_id
             file = get_file(file_id)
             if documents and file:
-                file_uid = file.get("eu")
-                if file_uid is None:
-                    file_uid = file.get("es")
+                file_uid = resolve_plone_uid(file, self.request)
 
                 if file_uid is None:
                     self.request.response.setStatus(404)

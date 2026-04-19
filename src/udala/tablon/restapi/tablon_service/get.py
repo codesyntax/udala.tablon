@@ -6,6 +6,7 @@ from plone.restapi.services import Service
 from udala.tablon.file_utils import get_file
 from udala.tablon.subscriber import get_publication_accreditation
 from udala.tablon.utils import get_documents
+from udala.tablon.utils import resolve_plone_uid
 from zope.component import getMultiAdapter
 from zope.i18n import translate
 from zope.interface import alsoProvides
@@ -44,12 +45,16 @@ class TablonGet(Service):
             document = get_documents(doc_id)
 
             if document:
-                eu_uid = document.get("eu")
-                eu_document = api.content.get(UID=eu_uid)
+                plone_uid = resolve_plone_uid(document, self.request)
+                if not plone_uid:
+                    raise NotFound(self.context, "", self.request)
 
-                adapter = getMultiAdapter((eu_document, self.request), ISerializeToJson)
-
-                return adapter()
+                plone_document = api.content.get(UID=plone_uid)
+                if plone_document is not None:
+                    adapter = getMultiAdapter(
+                        (plone_document, self.request), ISerializeToJson
+                    )
+                    return adapter()
 
         elif len(self.params) == 2:
             doc_id = self._get_doc_id
@@ -59,9 +64,7 @@ class TablonGet(Service):
             file = get_file(file_id)
 
             if documents and file:
-                file_uid = file.get("eu")
-                if file_uid is None:
-                    file_uid = file.get("es")
+                file_uid = resolve_plone_uid(file, self.request)
 
                 if file_uid is None:
                     raise NotFound(self.context, "", self.request)
@@ -77,9 +80,8 @@ class TablonGet(Service):
         elif len(self.params) == 3 and self.params[2] == "get_external_accreditation":
             file_id = self._get_file_id
             file = get_file(file_id)
-            file_uid = file.get("eu")
-            if file_uid is None:
-                file_uid = file.get("es")
+
+            file_uid = resolve_plone_uid(file, self.request)
 
             if file_uid is None:
                 self.request.response.setStatus(404)

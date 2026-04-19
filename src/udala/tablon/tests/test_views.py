@@ -55,14 +55,11 @@ class TestViews(unittest.TestCase):
                 title=f"file_{doc}",
             )
 
-            self.file_keys.append(register_file(file_eu.UID(), file_es.UID()))
+            self.file_keys.append(register_file(file_eu.UID(), "eu"))
 
             self.document_keys.append(
                 register_documents(
-                    mydoc_eu.UID(),
-                    mydoc_es.UID(),
-                    [self.file_keys[-1]],
-                    [self.file_keys[-1]],
+                    uid=mydoc_eu.UID(), language="eu", file_uids=[self.file_keys[-1]]
                 )
             )
 

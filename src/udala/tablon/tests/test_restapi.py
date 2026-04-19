@@ -88,13 +88,10 @@ class TestRESTAPIEndpoints(unittest.TestCase):
             ITranslationManager(mydoc_eu).register_translation("es", mydoc_es)
             ITranslationManager(file_eu).register_translation("es", file_es)
 
-            file_key = register_file(file_eu.UID(), file_es.UID())
+            file_key = register_file(file_eu.UID(), "eu")
 
             key = register_documents(
-                mydoc_eu.UID(),
-                mydoc_es.UID(),
-                [file_key],
-                [file_key],
+                uid=mydoc_eu.UID(), language="eu", file_uids=[file_key]
             )
             self.document_data.append(key)
             self.file_annotation_ids.append(file_key)
@@ -139,6 +136,8 @@ class TestRESTAPIEndpoints(unittest.TestCase):
 
     def test_get_document(self):
         response = self.api_session.get(f"/@tablon/{self.document_data[0]}")
+        if response.status_code != 200:
+            print(response.content)
         self.assertEqual(response.status_code, 200)
 
     def test_get_file_in_document(self):
@@ -195,6 +194,8 @@ class TestRESTAPIEndpoints(unittest.TestCase):
     def test_post_document_without_urls(self):
         response = self.api_session.post("/@tablon", json=correct_document_no_urls)
 
+        if response.status_code != 201:
+            print(response.content)
         self.assertEqual(response.status_code, 201)
         response_json = response.json()
         generated_uuid = response_json.get("uuid")
@@ -318,7 +319,9 @@ class TestRESTAPIEndpoints(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_get_expired_in_a_given_day(self):
-        response = self.api_session.get("/@tablon-expired?date=1995-10-31")
+        response = self.api_session.get(
+            "/@tablon-expired?date=1995-10-31", headers={"Accept-Language": "eu"}
+        )
 
         self.assertEqual(response.status_code, 200)
         response_json = response.json()

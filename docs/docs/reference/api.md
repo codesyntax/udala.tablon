@@ -63,6 +63,7 @@ Returns the standard Plone REST API JSON serialization, with the added translata
 {
     "@id": "http://localhost:8080/Plone/@tablon/b2c3d4e5f6g7h8i9j0k1",
     "uuid": "b2c3d4e5f6g7h8i9j0k1",
+    "record_number": "2024/001",
     "date_start": "2024-03-01T00:00:00Z",
     "date_end": "2024-03-31T23:59:59Z",
     "origin": "external",
@@ -91,6 +92,10 @@ Returns the standard Plone REST API JSON serialization, with the added translata
             "izenpe_urls": {
                 "eu": "http://accreditation.service/cert",
                 "es": "http://accreditation.service/cert"
+            },
+            "izenpe_contents": {
+                "eu": "base64...",
+                "es": "base64..."
             },
             "filename": "deialdia_convocatoria.pdf",
             "contents": "JVBERi..."

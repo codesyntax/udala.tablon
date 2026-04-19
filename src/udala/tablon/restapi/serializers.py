@@ -81,6 +81,7 @@ class DocumentoTablonSerializeToJson(SerializeToJson):
         result = {
             "@id": f"{portal_url}/@tablon/{document_key}",
             "uuid": document_key,
+            "record_number": self.context.title,
             "date_start": self.context.effective.toZone("UTC").ISO8601()
             if hasattr(self.context.effective, "toZone")
             else self.context.effective().toZone("UTC").ISO8601(),

@@ -1,6 +1,6 @@
-from .utils import is_pam_enabled
 from udala.tablon.annotations.document import get_document_by_uid_and_lang
 from udala.tablon.annotations.document import register_documents
+from udala.tablon.utils import is_pam_enabled
 
 
 try:

@@ -36,14 +36,14 @@ def handle_errors(f):
                 "Error in requests\n" + traceback.format_exc(),
                 e.response.status_code,
                 buf,
-            )
-        except requests.RequestException:
+            ) from e
+        except requests.RequestException as e:
             buf = BytesIO(traceback.format_exc().encode("utf-8"))
             raise transport.TransportError(
                 "Error in requests\n" + traceback.format_exc(),
                 000,
                 buf,
-            )
+            ) from e
 
     return wrapper
 
@@ -148,7 +148,7 @@ def create_temporary_file(contents):
     return filepath
 
 
-def post_document_to_izenpe(
+def post_document_to_izenpe(  # noqa: C901
     url: str,  # url of the document
     title: str,  # title of the document
     revision_date: str,  # final revision date
@@ -163,7 +163,7 @@ def post_document_to_izenpe(
         log.info(e)
         ip = "127.0.0.1"
 
-    port = url.startswith("https:") and 443 or 80
+    port = (url.startswith("https:") and 443) or 80
     security = url.startswith("https:")
 
     result = 0
@@ -192,10 +192,9 @@ def post_document_to_izenpe(
             if item.key == "tipo" and item.value == "error":
                 # Handle error
                 for item2 in data.item:
-                    if language == "eu" and item2.key == "msjerror_eus":
-                        errorcode = item.value
-                        errormessage = item2.value
-                    elif language == "es" and item2.key == "msjerror_cas":
+                    if (language == "eu" and item2.key == "msjerror_eus") or (
+                        language == "es" and item2.key == "msjerror_cas"
+                    ):  # noqa: E501
                         errorcode = item.value
                         errormessage = item2.value
                     elif language not in ["eu", "es"] and item2.key == "coderror":

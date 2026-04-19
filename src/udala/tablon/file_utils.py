@@ -1,5 +1,6 @@
 from BTrees.OOBTree import OOBTree
-from datetime import datetime, UTC
+from datetime import datetime
+from datetime import timezone
 from plone import api
 from zope.annotation.interfaces import IAnnotations
 
@@ -25,7 +26,7 @@ def register_file(file_eu, file_es):
     old_file_eu = annotations.get(generated_uuid, {}).get("eu")
     old_file_es = annotations.get(generated_uuid, {}).get("es")
     date = annotations.get(generated_uuid, {}).get(
-        "date", datetime.now(UTC).isoformat()
+        "date", datetime.now(timezone.utc).isoformat()
     )
 
     annotations[generated_uuid] = {

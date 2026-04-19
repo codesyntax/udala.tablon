@@ -1,131 +1,184 @@
-# Generated from:
-# https://github.com/plone/meta/tree/main/config/default
-# See the inline comments on how to expand/tweak this configuration file
+[project]
+name = "udala.tablon"
+dynamic = ["version"]
+description = "A new addon for Plone"
+readme = "README.md"
+license = "GPL-2.0-only"
+requires-python = ">=3.10"
+authors = [{ name = "CodeSyntax", email = "plone@codesyntax.com" }]
+keywords = ["CMS", "Plone", "Python"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Web Environment",
+    "Framework :: Plone",
+    "Framework :: Plone :: 6.0",
+    "Framework :: Plone :: 6.1",
+    "Framework :: Plone :: 6.2",
+    "Framework :: Plone :: Addon",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "Products.CMFPlone",
+    "plone.api",
+    "plone.restapi",
+    "requests",
+    "suds-py3",
+    "requests_pkcs12",
+]
+
+[project.optional-dependencies]
+test = [
+    "horse-with-no-namespace",
+    "plone.app.testing",
+    "plone.restapi[test]",
+    "pytest",
+    "pytest-cov",
+    "pytest-plone>=1.0.0a2",
+]
+taskqueue = ["collective.taskqueue2"]
+
+release = [
+    "zest.releaser[recommended]",
+    "zestreleaser.towncrier",
+    "zest.pocompile",
+]
+
+[project.urls]
+Homepage = "https://github.com/codesyntax/udala.tablon"
+PyPI = "https://pypi.org/project/udala.tablon"
+Source = "https://github.com/codesyntax/udala.tablon"
+Tracker = "https://github.com/codesyntax/udala.tablon/issues"
+
+
+[project.entry-points."plone.autoinclude.plugin"]
+target = "plone"
+
+[tool.uv]
+managed = false
+
+[tool.hatch.version]
+path = "src/udala/tablon/__init__.py"
+
 [build-system]
-requires = ["setuptools>=68.2"]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-##
-# Add extra configuration options in .meta.toml:
-#  [pyproject]
-#  towncrier_extra_lines = """
-#  extra_configuration
-#  """
-##
+[tool.hatch.build]
+strict-naming = true
 
-[tool.isort]
-profile = "plone"
+[tool.hatch.build.targets.sdist]
+exclude = ["/.github"]
 
-##
-# Add extra configuration options in .meta.toml:
-#  [pyproject]
-#  isort_extra_lines = """
-#  extra_configuration
-#  """
-##
+[tool.hatch.build.targets.wheel]
+packages = ["src/udala"]
 
-[tool.black]
-target-version = ["py38"]
+[tool.towncrier]
+directory = "news/"
+filename = "CHANGELOG.md"
+start_string = "<!-- towncrier release notes start -->\n"
+title_format = "## {version} ({project_date})"
+template = "news/.changelog_template.jinja"
+issue_format = "[#{issue}](https://github.com/codesyntax/udala.tablon/issues/{issue})"
+underlines = ["", "", ""]
 
-##
-# Add extra configuration options in .meta.toml:
-#  [pyproject]
-#  black_extra_lines = """
-#  extra_configuration
-#  """
-##
+[[tool.towncrier.type]]
+directory = "breaking"
+name = "Breaking changes:"
+showcontent = true
 
-[tool.codespell]
-ignore-words-list = "discreet,assertin,"
-skip = "*.po,"
-##
-# Add extra configuration options in .meta.toml:
-#  [pyproject]
-#  codespell_ignores = "foo,bar"
-#  codespell_skip = "*.po,*.map,package-lock.json"
-##
+[[tool.towncrier.type]]
+directory = "feature"
+name = "New features:"
+showcontent = true
 
-[tool.dependencychecker]
-Zope = [
-  # Zope own provided namespaces
-  'App', 'OFS', 'Products.Five', 'Products.OFSP', 'Products.PageTemplates',
-  'Products.SiteAccess', 'Shared', 'Testing', 'ZPublisher', 'ZTUtils',
-  'Zope2', 'webdav', 'zmi',
-  # ExtensionClass own provided namespaces
-  'ExtensionClass', 'ComputedAttribute', 'MethodObject',
-  # Zope dependencies
-  'AccessControl', 'Acquisition', 'AuthEncoding', 'beautifulsoup4', 'BTrees',
-  'cffi', 'Chameleon', 'DateTime', 'DocumentTemplate',
-  'MultiMapping', 'multipart', 'PasteDeploy', 'Persistence', 'persistent',
-  'pycparser', 'python-gettext', 'pytz', 'RestrictedPython', 'roman',
-  'soupsieve', 'transaction', 'waitress', 'WebOb', 'WebTest', 'WSGIProxy2',
-  'z3c.pt', 'zc.lockfile', 'ZConfig', 'zExceptions', 'ZODB', 'zodbpickle',
-  'zope.annotation', 'zope.browser', 'zope.browsermenu', 'zope.browserpage',
-  'zope.browserresource', 'zope.cachedescriptors', 'zope.component',
-  'zope.configuration', 'zope.container', 'zope.contentprovider',
-  'zope.contenttype', 'zope.datetime', 'zope.deferredimport',
-  'zope.deprecation', 'zope.dottedname', 'zope.event', 'zope.exceptions',
-  'zope.filerepresentation', 'zope.globalrequest', 'zope.hookable',
-  'zope.i18n', 'zope.i18nmessageid', 'zope.interface', 'zope.lifecycleevent',
-  'zope.location', 'zope.pagetemplate', 'zope.processlifetime', 'zope.proxy',
-  'zope.ptresource', 'zope.publisher', 'zope.schema', 'zope.security',
-  'zope.sequencesort', 'zope.site', 'zope.size', 'zope.structuredtext',
-  'zope.tal', 'zope.tales', 'zope.testbrowser', 'zope.testing',
-  'zope.traversing', 'zope.viewlet'
+[[tool.towncrier.type]]
+directory = "bugfix"
+name = "Bug fixes:"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "internal"
+name = "Internal:"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "documentation"
+name = "Documentation:"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "tests"
+name = "Tests"
+showcontent = true
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+fix = true
+lint.select = [
+    # flake8-2020
+    "YTT",
+    # flake8-bandit
+    "S",
+    # flake8-bugbear
+    "B",
+    # flake8-builtins
+    "A",
+    # flake8-comprehensions
+    "C4",
+    # flake8-debugger
+    "T10",
+    # flake8-simplify
+    "SIM",
+    # mccabe
+    "C90",
+    # pycodestyle
+    "E",
+    "W",
+    # pyflakes
+    "F",
+    # pygrep-hooks
+    "PGH",
+    # pyupgrade
+    "UP",
+    # ruff
+    "RUF",
 ]
-'Products.CMFCore' = [
-  'docutils', 'five.localsitemanager', 'Missing', 'Products.BTreeFolder2',
-  'Products.GenericSetup', 'Products.MailHost', 'Products.PythonScripts',
-  'Products.StandardCacheManagers', 'Products.ZCatalog', 'Record',
-  'zope.sendmail', 'Zope'
-]
-'plone.base' = [
-  'plone.batching', 'plone.registry', 'plone.schema','plone.z3cform',
-  'Products.CMFCore', 'Products.CMFDynamicViewFTI',
-]
-python-dateutil = ['dateutil']
-pytest-plone = ['pytest', 'zope.pytestlayer', 'plone.testing', 'plone.app.testing']
-
-##
-# Add extra configuration options in .meta.toml:
-#  [pyproject]
-#  dependencies_ignores = "['zestreleaser.towncrier']"
-#  dependencies_mappings = [
-#    "gitpython = ['git']",
-#    "pygithub = ['github']",
-#  ]
-##
-
-[tool.check-manifest]
-ignore = [
-    ".editorconfig",
-    ".flake8",
-    ".meta.toml",
-    ".pre-commit-config.yaml",
-    "dependabot.yml",
-    "mx.ini",
-    "tox.ini",
-
+lint.ignore = [
+    # DoNotAssignLambda
+    "E731",
 ]
 
-##
-# Add extra configuration options in .meta.toml:
-#  [pyproject]
-#  check_manifest_ignores = """
-#      "*.map.js",
-#      "*.pyc",
-#  """
-#  check_manifest_extra_lines = """
-#  ignore-bad-ideas = [
-#      "some/test/file/PKG-INFO",
-#  ]
-#  """
-##
+[tool.ruff.lint.isort]
+case-sensitive = false
+no-sections = true
+force-single-line = true
+from-first = true
+lines-after-imports = 2
+lines-between-types = 1
+order-by-type = false
 
+[tool.ruff.format]
+preview = true
 
-##
-# Add extra configuration options in .meta.toml:
-#  [pyproject]
-#  extra_lines = """
-#  _your own configuration lines_
-#  """
-##
+[tool.ruff.lint.per-file-ignores]
+"**/tests/*" = ["E501", "RUF001", "S101", "B018"]
+"tests/*" = ["E501", "RUF001", "S101", "B018"]
+"src/udala/tablon/locales/update.py" = ["E501", "S602"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source_pkgs = ["udala.tablon", "tests"]
+branch = true
+parallel = true
+omit = ["src/udala/tablon/locales/*.py"]
+
+[tool.zest-releaser]
+python-file-with-version = "src/udala/tablon/__init__.py"

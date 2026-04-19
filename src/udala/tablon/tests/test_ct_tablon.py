@@ -2,8 +2,8 @@ from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.dexterity.interfaces import IDexterityFTI
-from udala.tablon.content.tablon import ITablon  # NOQA E501
-from udala.tablon.testing import UDALA_TABLON_INTEGRATION_TESTING  # noqa
+from udala.tablon.content.tablon import ITablon
+from udala.tablon.testing import UDALA_TABLON_INTEGRATION_TESTING
 from zope.component import createObject
 from zope.component import queryUtility
 
@@ -11,7 +11,6 @@ import unittest
 
 
 class TablonIntegrationTest(unittest.TestCase):
-
     layer = UDALA_TABLON_INTEGRATION_TESTING
 
     def setUp(self):
@@ -36,9 +35,7 @@ class TablonIntegrationTest(unittest.TestCase):
 
         self.assertTrue(
             ITablon.providedBy(obj),
-            "ITablon not provided by {}!".format(
-                obj,
-            ),
+            f"ITablon not provided by {obj}!",
         )
 
     def test_ct_tablon_adding(self):
@@ -51,9 +48,7 @@ class TablonIntegrationTest(unittest.TestCase):
 
         self.assertTrue(
             ITablon.providedBy(obj),
-            "ITablon not provided by {}!".format(
-                obj.id,
-            ),
+            f"ITablon not provided by {obj.id}!",
         )
 
         parent = obj.__parent__

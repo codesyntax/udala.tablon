@@ -33,9 +33,8 @@ ACCEPTED_ORIGIN_VALUES = ["external", "internal"]
 
 
 def _validate_not_empty(value):
-    if value is not None:
-        if value.strip():
-            return OK
+    if value is not None and value.strip():
+        return OK
 
     return False
 
@@ -77,9 +76,8 @@ def _validate_date_end(value):
 
 
 def _validate_origin(value):
-    if _validate_not_empty(value) is OK:
-        if value in ACCEPTED_ORIGIN_VALUES:
-            return OK
+    if _validate_not_empty(value) is OK and value in ACCEPTED_ORIGIN_VALUES:
+        return OK
 
     return translate(_("The field origin is mandatory"), context=getRequest())
 
@@ -178,12 +176,11 @@ def _validate_document(value):
 
 
 def _validate_documents(value):
-    if value:
-        if isinstance(value, list):
-            for item in value:
-                result = _validate_document(item)
-                if result is not OK:
-                    return result
+    if value and isinstance(value, list):
+        for item in value:
+            result = _validate_document(item)
+            if result is not OK:
+                return result
     return True
 
 
@@ -243,14 +240,14 @@ def get_accreditation(document_id, file_id):
     if TASK_QUEUE:
         schedule_browser_view_with_traversal.schedule(
             delay=TASK_DEFAULT_DELAY,
-            kwargs=dict(
-                view_name="@tablon",
-                context_path="/".join(api.portal.get().getPhysicalPath()),
-                site_path="/".join(api.portal.get().getPhysicalPath()),
-                username=api.user.get_current().getId(),
-                params={},
-                traversal=f"{document_id}/{file_id}/get_external_accreditation",
-            ),
+            kwargs={
+                "view_name": "@tablon",
+                "context_path": "/".join(api.portal.get().getPhysicalPath()),
+                "site_path": "/".join(api.portal.get().getPhysicalPath()),
+                "username": api.user.get_current().getId(),
+                "params": {},
+                "traversal": f"{document_id}/{file_id}/get_external_accreditation",
+            },
         )
     else:
         alsoProvides(getRequest(), IDisableCSRFProtection)
@@ -481,12 +478,10 @@ class TablonPost(Service):
         self.request.response.setHeader("Location", document_uri)
 
         tablon_es = ITranslationManager(tablon_eu).get_translation("es")
-        purge_urls(
-            [
-                tablon_eu.absolute_url(),
-                tablon_es.absolute_url(),
-            ]
-        )
+        purge_urls([
+            tablon_eu.absolute_url(),
+            tablon_es.absolute_url(),
+        ])
 
         return {
             "@id": document_uri,

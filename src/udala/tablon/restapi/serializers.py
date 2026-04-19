@@ -10,6 +10,7 @@ from udala.tablon.utils import get_documents
 from udala.tablon.utils import get_file_contents
 from zope.component import adapter
 from zope.interface import implementer
+
 import base64
 
 
@@ -53,14 +54,12 @@ class DocumentoTablonSerializeToJson(SerializeToJson):
                             "izenpe_content": get_file_contents(file_object.url),
                         }
                         if file_object.file is not None:
-                            file_data.update(
-                                {
-                                    "filename": file_object.file.filename,
-                                    "contents": base64.urlsafe_b64encode(
-                                        file_object.file.data
-                                    ).decode(),
-                                }
-                            )
+                            file_data.update({
+                                "filename": file_object.file.filename,
+                                "contents": base64.urlsafe_b64encode(
+                                    file_object.file.data
+                                ).decode(),
+                            })
                         documents.append(file_data)
 
         language = self.context.Language()
@@ -76,13 +75,13 @@ class DocumentoTablonSerializeToJson(SerializeToJson):
             "date_end": self.context.expires().toZone("UTC").ISO8601(),
             "origin": self.context.origin,
             f"origin_department_{language}": self.context.origin_department,
-            f"origin_department_{translated_language}": translated_context.origin_department,
+            f"origin_department_{translated_language}": translated_context.origin_department,  # noqa: E501
             f"origin_details_{language}": self.context.origin_details,
             f"origin_details_{translated_language}": translated_context.origin_details,
             f"description_{language}": self.context.description,
             f"description_{translated_language}": translated_context.description,
             f"publication_url_{language}": self.context.publication_url,
-            f"publication_url_{translated_language}": translated_context.publication_url,
+            f"publication_url_{translated_language}": translated_context.publication_url,  # noqa: E501
             "documents": documents,
         }
 

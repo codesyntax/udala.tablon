@@ -1,5 +1,6 @@
 from BTrees.OOBTree import OOBTree
-from datetime import datetime, UTC
+from datetime import datetime
+from datetime import timezone
 from plone import api
 from Products.CMFPlone.utils import safe_text
 from zope.annotation.interfaces import IAnnotations
@@ -28,7 +29,7 @@ def register_documents(documento_eu, documento_es, files_eu, files_es):
     old_files_eu = annotations.get(generated_uuid, {}).get("files_eu", [])
     old_files_es = annotations.get(generated_uuid, {}).get("files_es", [])
     date = annotations.get(generated_uuid, {}).get(
-        "date", datetime.now(UTC).isoformat()
+        "date", datetime.now(timezone.utc).isoformat()
     )
 
     annotations[generated_uuid] = {
@@ -45,7 +46,7 @@ def register_documents(documento_eu, documento_es, files_eu, files_es):
 
 
 def get_documents(value):
-    """given a registered UUID, return the related documents or None if it does not exist"""
+    """given a registered UUID, return the related documents or None if it does not exist"""  # noqa: E501
 
     portal = api.portal.get()
     annotated = IAnnotations(portal)
@@ -85,7 +86,7 @@ def get_file_contents(url):
     """download the url and return the contents in a base64 encoded string"""
     if url:
         try:
-            data = requests.get(url, verify=False)
+            data = requests.get(url, verify=False, timeout=60)  # noqa: S501
             if data.ok:
                 return safe_text(base64.urlsafe_b64encode(data.content))
         except Exception as e:

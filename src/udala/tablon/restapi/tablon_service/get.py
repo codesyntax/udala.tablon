@@ -38,7 +38,7 @@ class TablonGet(Service):
             raise Exception("Must supply exactly one parameter (doc id)")
         return self.params[1]
 
-    def reply(self):
+    def reply(self):  # noqa: C901
         if len(self.params) == 1:
             doc_id = self._get_doc_id
             document = get_documents(doc_id)
@@ -107,10 +107,7 @@ class TablonExpiredGet(Service):
     def reply(self):
 
         date = self.request.get("date", None)
-        if date is None:
-            date = DateTime()
-        else:
-            date = DateTime(date, fmt="international")
+        date = DateTime() if date is None else DateTime(date, fmt="international")
 
         brains = api.content.find(
             Language="eu",

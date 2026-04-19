@@ -8,7 +8,7 @@ from zope.component import getUtility
 from zope.globalrequest import getRequest
 
 
-def purge_urls(urls):
+def purge_urls(urls):  # noqa: C901
     request = getRequest()
     sync = True
     purger = getUtility(IPurger)
@@ -57,7 +57,7 @@ def purge_urls(urls):
             purge(inputURL)
             continue
 
-        relativePath = physicalPath[len(portalPath) :]  # noqa: E203
+        relativePath = physicalPath[len(portalPath) :]
         if not relativePath:
             purge(inputURL)
             continue

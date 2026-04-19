@@ -15,7 +15,6 @@ import uuid
 
 
 class TestAnnotationUtils(unittest.TestCase):
-
     layer = UDALA_TABLON_INTEGRATION_TESTING
 
     def setUp(self):

@@ -3,7 +3,7 @@
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
-from udala.tablon.testing import UDALA_TABLON_INTEGRATION_TESTING  # noqa: E501
+from udala.tablon.testing import UDALA_TABLON_INTEGRATION_TESTING
 
 import unittest
 
@@ -40,7 +40,6 @@ class TestSetup(unittest.TestCase):
 
 
 class TestUninstall(unittest.TestCase):
-
     layer = UDALA_TABLON_INTEGRATION_TESTING
 
     def setUp(self):

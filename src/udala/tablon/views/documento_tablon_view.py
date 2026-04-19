@@ -38,11 +38,9 @@ class DocumentoTablonView(BrowserView):
                     file_language_uid = file.get(language)
                     file_object = api.content.get(UID=file_language_uid)
                     if file_object:
-                        items.append(
-                            {
-                                "url": f"{portal_url}/@tablon/{document_key}/{language_file}",
-                                "file_title": file_object.Title(),
-                                "file_accreditation_url": file_object.url,
-                            }
-                        )
+                        items.append({
+                            "url": f"{portal_url}/@tablon/{document_key}/{language_file}",  # noqa: E501
+                            "file_title": file_object.Title(),
+                            "file_accreditation_url": file_object.url,
+                        })
         return items

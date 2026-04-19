@@ -48,7 +48,7 @@ class IUdalaTablonControlPanel(Interface):
             "Enter the full domain (with https) of the site. ",
         ),
         description=_(
-            "We need to pass this as a configuration item because when running async processes we do not have access to the real URL of the object",
+            "We need to pass this as a configuration item because when running async processes we do not have access to the real URL of the object",  # noqa: E501
         ),
         default="",
         required=True,

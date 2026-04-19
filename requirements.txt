@@ -1,1 +1,1 @@
--r requirements_plone60.txt
+-c https://dist.plone.org/release/6.1.4/constraints.txt

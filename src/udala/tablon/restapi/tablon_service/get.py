@@ -111,17 +111,10 @@ class TablonExpiredGet(Service):
         date = self.request.get("date", None)
         date = DateTime() if date is None else DateTime(date, fmt="international")
 
-        req_lang = self.request.getHeader("Accept-Language")
-        if req_lang and "," in req_lang:
-            req_lang = req_lang.split(",")[0].split("-")[0]
-
-        if not req_lang:
-            req_lang = api.portal.get_current_language()
-        if not req_lang:
-            req_lang = api.portal.get_default_language()
-
+        # Query "all" languages so we don't miss documents if the requested
+        # language happens to lack a translation. The serializer automatically
+        # embeds all available translations for a given Shared UID.
         brains = api.content.find(
-            Language=req_lang,
             portal_type="DocumentoTablon",
             expires={
                 "query": (date.earliestTime(), date.latestTime()),
@@ -130,10 +123,26 @@ class TablonExpiredGet(Service):
         )
 
         result = []
+        seen_uids = set()
+
+        from udala.tablon.annotations.document import get_document_by_uid_and_lang
+
         for brain in brains:
-            adapter = getMultiAdapter(
-                (brain.getObject(), self.request), ISerializeToJson
-            )
+            obj = brain.getObject()
+
+            # The serializer groups all translations under one Shared UID.
+            # To avoid returning duplicate JSON objects when multiple translations
+            # of the same document expire on the same day, we deduplicate by Shared UID.
+            shared_uid = get_document_by_uid_and_lang(obj.UID(), obj.Language())
+            if not shared_uid:
+                continue
+
+            if shared_uid in seen_uids:
+                continue
+
+            seen_uids.add(shared_uid)
+
+            adapter = getMultiAdapter((obj, self.request), ISerializeToJson)
 
             item = adapter()
             result.append(item)

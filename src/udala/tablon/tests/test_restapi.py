@@ -79,14 +79,20 @@ class TestRESTAPIEndpoints(unittest.TestCase):
                 effective=EFFECTIVE_DATE,
                 expires=EXPIRATION_DATE,
             )
+            ITranslationManager(mydoc_eu).register_translation("es", mydoc_es)
+            from zope.event import notify
+            from zope.lifecycleevent import ObjectModifiedEvent
+
+            notify(ObjectModifiedEvent(mydoc_es))
+            notify(ObjectModifiedEvent(mydoc_eu))
             file_es = createContentInContainer(
                 mydoc_es,
                 "AcreditedFile",
                 title=f"file_{doc}",
             )
-
-            ITranslationManager(mydoc_eu).register_translation("es", mydoc_es)
             ITranslationManager(file_eu).register_translation("es", file_es)
+            notify(ObjectModifiedEvent(file_es))
+            notify(ObjectModifiedEvent(file_eu))
 
             file_key = register_file(file_eu.UID(), "eu")
 
@@ -317,6 +323,35 @@ class TestRESTAPIEndpoints(unittest.TestCase):
     def test_get_expired_today(self):
         response = self.api_session.get("/@tablon-expired")
         self.assertEqual(response.status_code, 200)
+
+    def test_serializer_outputs_same_json_for_translated_documents(self):
+        doc_eu = self.eu_tablon["doc1"]
+        doc_es = self.es_tablon["doc1"]
+
+        doc_eu_url = doc_eu.absolute_url_path()
+        doc_es_url = doc_es.absolute_url_path()
+
+        # Plone testing URL paths typically prefix with '/plone' so we need to trim it for api_session
+        if doc_eu_url.startswith("/plone/"):
+            doc_eu_url = doc_eu_url.replace("/plone/", "/", 1)
+        if doc_es_url.startswith("/plone/"):
+            doc_es_url = doc_es_url.replace("/plone/", "/", 1)
+
+        response_eu = self.api_session.get(
+            doc_eu_url, headers={"Accept": "application/json"}
+        )
+        response_es = self.api_session.get(
+            doc_es_url, headers={"Accept": "application/json"}
+        )
+
+        self.assertEqual(response_eu.status_code, 200)
+        self.assertEqual(response_es.status_code, 200)
+
+        json_eu = response_eu.json()
+        json_es = response_es.json()
+
+        self.assertEqual(json_eu["@id"], json_es["@id"])
+        self.assertEqual(json_eu["translations"], json_es["translations"])
 
     def test_get_expired_in_a_given_day(self):
         response = self.api_session.get(

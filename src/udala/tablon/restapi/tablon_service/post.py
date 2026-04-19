@@ -9,6 +9,7 @@ from plone.restapi.services import Service
 from udala.tablon import _
 from udala.tablon.cache import purge_urls
 from udala.tablon.config import TASK_DEFAULT_DELAY
+from udala.tablon.content.documento_tablon import OriginVocabulary
 from udala.tablon.file_utils import get_file
 from udala.tablon.file_utils import register_file
 from udala.tablon.subscriber import get_publication_accreditation
@@ -30,7 +31,7 @@ except ImportError:
 
 
 OK = 1
-ACCEPTED_ORIGIN_VALUES = ["external", "internal"]
+ACCEPTED_ORIGIN_VALUES = [term.value for term in OriginVocabulary]
 
 
 def _validate_not_empty(value):

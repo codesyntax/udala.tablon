@@ -1,21 +1,28 @@
 # from plone.app.textfield import RichText
 # from plone.autoform import directives
 from plone.dexterity.content import Container
-
-# from plone.namedfile import field as namedfile
 from plone.supermodel import model
 from udala.tablon import _
-
-# from plone.supermodel.directives import fieldset
-# from z3c.form.browser.radio import RadioFieldWidget
 from zope import schema
 from zope.interface import implementer
+from zope.schema.vocabulary import SimpleTerm
+from zope.schema.vocabulary import SimpleVocabulary
+
+
+OriginVocabulary = SimpleVocabulary([
+    SimpleTerm(value="external", token="external", title=_("External")),  # noqa: S106
+    SimpleTerm(value="internal", token="internal", title=_("Internal")),  # noqa: S106
+])
 
 
 class IDocumentoTablon(model.Schema):
     """Marker interface and Dexterity Python Schema for DocumentoTablon"""
 
-    origin = schema.TextLine(title=_("Origin of the document"))
+    origin = schema.Choice(
+        title=_("Origin of the document"),
+        vocabulary=OriginVocabulary,
+        required=True,
+    )
 
     origin_department = schema.TextLine(
         title=_("Origin department of the document"), required=False

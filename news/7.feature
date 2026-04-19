@@ -1,0 +1,1 @@
+Added a GitHub Actions workflow to automatically build and deploy Sphinx documentation to GitHub Pages on merges to the main branch. Updated `pyproject.toml`, `README.md`, and `docs/conf.py` metadata to correctly link to the new documentation URL at https://codesyntax.github.io/udala.tablon/.

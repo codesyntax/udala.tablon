@@ -49,6 +49,7 @@ release = [
 ]
 
 [project.urls]
+Documentation = "https://codesyntax.github.io/udala.tablon/"
 Homepage = "https://github.com/codesyntax/udala.tablon"
 PyPI = "https://pypi.org/project/udala.tablon"
 Source = "https://github.com/codesyntax/udala.tablon"

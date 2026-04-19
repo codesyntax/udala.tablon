@@ -49,7 +49,8 @@ This add-on can be seen in action at the following sites:
 Documentation
 -------------
 
-Full documentation for end users can be found in the "docs" folder, and is also available online at http://docs.plone.org/foo/bar
+Full documentation can be found in the "docs" folder, and is automatically published online at:
+**[https://codesyntax.github.io/udala.tablon/](https://codesyntax.github.io/udala.tablon/)**
 
 
 Translations
@@ -95,7 +96,7 @@ Contribute
 
 - Issue Tracker: https://github.com/collective/udala.tablon/issues
 - Source Code: https://github.com/collective/udala.tablon
-- Documentation: https://docs.plone.org/foo/bar
+- Documentation: https://codesyntax.github.io/udala.tablon/
 
 
 Support

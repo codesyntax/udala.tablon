@@ -5,9 +5,9 @@
 # -- Path setup --------------------------------------------------------------
 
 from datetime import datetime
-
 from packaging.version import Version
 from plone_sphinx_theme import __version__
+
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -235,7 +235,7 @@ autodoc_class_signature = "separated"
 # -- Options for sphinx_sitemap to html -----------------------------
 
 # Used by sphinx_sitemap to generate a sitemap
-html_baseurl = "https://MY_READTHEDOCS_PROJECT_SLUG.readthedocs.io/"
+html_baseurl = "https://codesyntax.github.io/udala.tablon/"
 # https://sphinx-sitemap.readthedocs.io/en/latest/advanced-configuration.html#customizing-the-url-scheme
 sitemap_url_scheme = "{link}"
 sitemap_filename = "sitemap-custom.xml"

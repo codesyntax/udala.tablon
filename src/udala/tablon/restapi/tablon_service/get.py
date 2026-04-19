@@ -111,8 +111,17 @@ class TablonExpiredGet(Service):
         date = self.request.get("date", None)
         date = DateTime() if date is None else DateTime(date, fmt="international")
 
+        req_lang = self.request.getHeader("Accept-Language")
+        if req_lang and "," in req_lang:
+            req_lang = req_lang.split(",")[0].split("-")[0]
+
+        if not req_lang:
+            req_lang = api.portal.get_current_language()
+        if not req_lang:
+            req_lang = api.portal.get_default_language()
+
         brains = api.content.find(
-            Language="eu",
+            Language=req_lang,
             portal_type="DocumentoTablon",
             expires={
                 "query": (date.earliestTime(), date.latestTime()),

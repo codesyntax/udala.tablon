@@ -8,7 +8,6 @@ myst:
 ---
 
 This glossary provides example terms and definitions relevant to **Documentation Starter**.
-Documentation for udala.tablon API and Backend
 
 ```{note}
 This is an example glossary demonstrating MyST Markdown’s `{glossary}` directive. You can adapt it for your project’s appendix by editing or replacing these entries with your own terms and definitions.

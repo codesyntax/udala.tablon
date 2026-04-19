@@ -1,16 +1,12 @@
 ---
 myst:
   html_meta:
-    "description": "Documentation for udala.tablon API and Backend"
-    "property=og:description": "Documentation for udala.tablon API and Backend"
     "property=og:title": "Documentation Starter"
-    "keywords": "Documentation Starter, documentation, Documentation for udala.tablon API and Backend"
 ---
 
 # Documentation Starter
 
 Welcome to the documentation for Documentation Starter!
-Documentation for udala.tablon API and Backend
 
 This scaffold provides a ready-to-use environment for creating comprehensive documentation for {term}`Plone` projects, based on {term}`Plone Sphinx Theme`.
 

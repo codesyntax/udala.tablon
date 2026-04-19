@@ -40,8 +40,20 @@ class AcreditedFileIntegrationTest(unittest.TestCase):
 
     def test_ct_acredited_file_adding(self):
         setRoles(self.portal, TEST_USER_ID, ["Contributor"])
-        obj = api.content.create(
+
+        tablon = api.content.create(
             container=self.portal,
+            type="Tablon",
+            id="tablon_container",
+        )
+        doc = api.content.create(
+            container=tablon,
+            type="DocumentoTablon",
+            id="documento_container",
+        )
+
+        obj = api.content.create(
+            container=doc,
             type="AcreditedFile",
             id="acredited_file",
         )
@@ -61,9 +73,9 @@ class AcreditedFileIntegrationTest(unittest.TestCase):
     def test_ct_acredited_file_globally_addable(self):
         setRoles(self.portal, TEST_USER_ID, ["Contributor"])
         fti = queryUtility(IDexterityFTI, name="AcreditedFile")
-        self.assertTrue(fti.global_allow, f"{fti.id} is not globally addable!")
+        self.assertFalse(fti.global_allow, f"{fti.id} should NOT be globally addable!")
 
-    def test_ct_acredited_file_filter_content_type_false(self):
+    def test_ct_acredited_file_filter_content_type_true(self):
         setRoles(self.portal, TEST_USER_ID, ["Contributor"])
         fti = queryUtility(IDexterityFTI, name="AcreditedFile")
         portal_types = self.portal.portal_types
@@ -74,9 +86,12 @@ class AcreditedFileIntegrationTest(unittest.TestCase):
             title="AcreditedFile container",
         )
         self.parent = self.portal[parent_id]
-        obj = api.content.create(
-            container=self.parent,
-            type="Document",
-            title="My Content",
-        )
-        self.assertTrue(obj, f"Cannot add {obj.id} to {fti.id} container!")
+
+        from plone.api.exc import InvalidParameterError
+
+        with self.assertRaises(InvalidParameterError):
+            api.content.create(
+                container=self.parent,
+                type="Document",
+                title="My Content",
+            )

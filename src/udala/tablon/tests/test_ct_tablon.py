@@ -81,8 +81,9 @@ class TablonIntegrationTest(unittest.TestCase):
             title="My Content",
         )
         self.assertTrue(obj, f"Cannot add {obj.id} to {fti.id} container!")
-        
+
         from plone.api.exc import InvalidParameterError
+
         with self.assertRaises(InvalidParameterError):
             api.content.create(
                 container=self.parent,

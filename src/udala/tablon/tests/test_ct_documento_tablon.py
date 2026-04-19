@@ -40,8 +40,16 @@ class DocumentoTablonIntegrationTest(unittest.TestCase):
 
     def test_ct_documento_tablon_adding(self):
         setRoles(self.portal, TEST_USER_ID, ["Contributor"])
-        obj = api.content.create(
+
+        # Create Tablon parent first since DocumentoTablon is not globally addable
+        tablon = api.content.create(
             container=self.portal,
+            type="Tablon",
+            id="tablon_container",
+        )
+
+        obj = api.content.create(
+            container=tablon,
             type="DocumentoTablon",
             id="documento_tablon",
         )
@@ -61,7 +69,7 @@ class DocumentoTablonIntegrationTest(unittest.TestCase):
     def test_ct_documento_tablon_globally_addable(self):
         setRoles(self.portal, TEST_USER_ID, ["Contributor"])
         fti = queryUtility(IDexterityFTI, name="DocumentoTablon")
-        self.assertTrue(fti.global_allow, f"{fti.id} is not globally addable!")
+        self.assertFalse(fti.global_allow, f"{fti.id} should NOT be globally addable!")
 
     def test_ct_documento_tablon_filter_content_type_true(self):
         setRoles(self.portal, TEST_USER_ID, ["Contributor"])
@@ -74,15 +82,16 @@ class DocumentoTablonIntegrationTest(unittest.TestCase):
             title="DocumentoTablon container",
         )
         self.parent = self.portal[parent_id]
-        
+
         obj = api.content.create(
             container=self.parent,
             type="AcreditedFile",
             title="My Acredited File",
         )
         self.assertTrue(obj, f"Cannot add {obj.id} to {fti.id} container!")
-        
+
         from plone.api.exc import InvalidParameterError
+
         with self.assertRaises(InvalidParameterError):
             api.content.create(
                 container=self.parent,

@@ -3,10 +3,10 @@ from plone import api
 from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
+from udala.tablon.accreditation import get_publication_accreditation
 from udala.tablon.annotations.document import get_documents
 from udala.tablon.annotations.file import get_file
 from udala.tablon.annotations.resolve import resolve_plone_uid
-from udala.tablon.subscriber import get_publication_accreditation
 from zope.component import getMultiAdapter
 from zope.i18n import translate
 from zope.interface import alsoProvides

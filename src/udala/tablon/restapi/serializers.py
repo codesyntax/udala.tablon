@@ -7,8 +7,8 @@ from udala.tablon.annotations.document import get_documents
 from udala.tablon.annotations.file import get_file
 from udala.tablon.content.documento_tablon import IDocumentoTablon
 from udala.tablon.interfaces import IUdalaTablonLayer
-from udala.tablon.subscribers.utils import is_pam_enabled
 from udala.tablon.utils import get_file_contents
+from udala.tablon.utils import is_pam_enabled
 from zope.component import adapter
 from zope.interface import implementer
 

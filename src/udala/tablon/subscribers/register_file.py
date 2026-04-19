@@ -1,9 +1,9 @@
-from .utils import is_pam_enabled
 from Acquisition import aq_parent
 from udala.tablon.annotations.document import get_document_by_uid_and_lang
 from udala.tablon.annotations.document import register_documents
 from udala.tablon.annotations.file import get_file_by_uid_and_lang
 from udala.tablon.annotations.file import register_file
+from udala.tablon.utils import is_pam_enabled
 
 
 try:

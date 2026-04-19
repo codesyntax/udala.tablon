@@ -2,7 +2,7 @@ from Acquisition import aq_parent
 from logging import getLogger
 from plone import api
 from plone.app.multilingual.interfaces import ITranslationManager
-from Products.CMFPlone.utils import safe_text
+from plone.base.utils import safe_text
 from udala.tablon.ws_utils import post_document_to_izenpe
 
 import requests

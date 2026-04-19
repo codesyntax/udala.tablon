@@ -7,13 +7,11 @@ from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from udala.tablon import _
-from udala.tablon.annotations.document import register_documents
+from udala.tablon.accreditation import get_publication_accreditation
 from udala.tablon.annotations.file import get_file
-from udala.tablon.annotations.file import register_file
 from udala.tablon.cache import purge_urls
 from udala.tablon.config import TASK_DEFAULT_DELAY
 from udala.tablon.content.documento_tablon import OriginVocabulary
-from udala.tablon.subscriber import get_publication_accreditation
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import alsoProvides
@@ -313,7 +311,7 @@ class TablonPost(Service):
         api.content.transition(obj=documento_base, transition="publish")
         created_docs[base_lang] = documento_base
 
-        from udala.tablon.subscribers.utils import is_pam_enabled
+        from udala.tablon.utils import is_pam_enabled
 
         if is_pam_enabled(documento_base):
             for lang in languages:
@@ -378,11 +376,20 @@ class TablonPost(Service):
                             set_dates(file_obj, date_start, date_end)
                             file_obj.reindexObject()
 
-                    file_shared_uid = register_file(
-                        uid=file_obj.UID(), language=lang, shared_uid=file_shared_uid
-                    )
+                    # Wait for PAM translations, then let subscribers do their job
+                    from zope.event import notify
+                    from zope.lifecycleevent import ObjectModifiedEvent
 
-                file_shared_uids.append(file_shared_uid)
+                    notify(ObjectModifiedEvent(file_obj))
+
+                    from udala.tablon.annotations.file import get_file_by_uid_and_lang
+
+                    f_uid = get_file_by_uid_and_lang(uid=file_obj.UID(), language=lang)
+                    if f_uid:
+                        file_shared_uid = f_uid
+
+                if file_shared_uid:
+                    file_shared_uids.append(file_shared_uid)
 
             else:
                 # Single language file
@@ -401,21 +408,34 @@ class TablonPost(Service):
                     set_dates(file_obj, date_start, date_end)
                     file_obj.reindexObject()
 
-                    f_uid = register_file(uid=file_obj.UID(), language=file_lang)
-                    file_shared_uids.append(f_uid)
+                    # Subscribe handles registration, we just look it up.
+                    from udala.tablon.annotations.file import get_file_by_uid_and_lang
+
+                    f_uid = get_file_by_uid_and_lang(
+                        uid=file_obj.UID(), language=file_lang
+                    )
+                    if f_uid:
+                        file_shared_uids.append(f_uid)
 
         document_shared_uid = None
         response_urls = {}
         tablons_to_purge = set()
 
+        from udala.tablon.annotations.document import get_document_by_uid_and_lang
+
         for lang, doc in created_docs.items():
             response_urls[f"url_{lang}"] = doc.absolute_url()
-            document_shared_uid = register_documents(
-                uid=doc.UID(),
-                language=lang,
-                file_uids=file_shared_uids,
-                shared_uid=document_shared_uid,
-            )
+            # Fire an ObjectModifiedEvent in case linking was delayed
+            from zope.event import notify
+            from zope.lifecycleevent import ObjectModifiedEvent
+
+            notify(ObjectModifiedEvent(doc))
+
+            if not document_shared_uid:
+                document_shared_uid = get_document_by_uid_and_lang(
+                    uid=doc.UID(),
+                    language=lang,
+                )
             tablons_to_purge.add(doc.__parent__.absolute_url())
 
         for file_id in set(file_shared_uids):

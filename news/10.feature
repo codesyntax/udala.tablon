@@ -1,0 +1,2 @@
+Removed redundant manual `register_file` and `register_documents` calls from the `@tablon` POST endpoint. The `IObjectAddedEvent` and `IObjectModifiedEvent` subscribers now natively handle dynamic translation linking and Shared UID mapping immediately upon document creation and translation via PAM.
+Refactored `subscriber.py` into `accreditation.py` and moved `is_pam_enabled` to `utils.py` to ensure strict separation of concerns between actual Zope event subscribers and Izenpe utility wrappers.

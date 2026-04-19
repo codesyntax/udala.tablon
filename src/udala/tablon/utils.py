@@ -1,3 +1,4 @@
+from plone.base.utils import get_installer
 from plone.base.utils import safe_text
 
 import base64
@@ -17,3 +18,8 @@ def get_file_contents(url):
             log = getLogger(__name__)
             log.info(e)
     return ""
+
+
+def is_pam_enabled(context):
+    installer = get_installer(context)
+    return installer.is_product_installed("plone.app.multilingual")

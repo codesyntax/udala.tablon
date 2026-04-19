@@ -1,0 +1,1 @@
+Modernized the `udala.tablon` package structure to match `udala.demo` (pyproject.toml, GitHub Actions, Hatchling/uv). Completely refactored the Shared UID architecture: it now accurately supports dynamic language mapping and monolingual/multilingual scenarios using Zope Annotations without crashing during object creation or assuming hardcoded "eu" and "es" keys.

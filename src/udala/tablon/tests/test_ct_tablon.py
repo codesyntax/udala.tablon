@@ -63,7 +63,7 @@ class TablonIntegrationTest(unittest.TestCase):
         fti = queryUtility(IDexterityFTI, name="Tablon")
         self.assertTrue(fti.global_allow, f"{fti.id} is not globally addable!")
 
-    def test_ct_tablon_filter_content_type_false(self):
+    def test_ct_tablon_filter_content_type_true(self):
         setRoles(self.portal, TEST_USER_ID, ["Contributor"])
         fti = queryUtility(IDexterityFTI, name="Tablon")
         portal_types = self.portal.portal_types
@@ -74,9 +74,18 @@ class TablonIntegrationTest(unittest.TestCase):
             title="Tablon container",
         )
         self.parent = self.portal[parent_id]
+
         obj = api.content.create(
             container=self.parent,
-            type="Document",
+            type="DocumentoTablon",
             title="My Content",
         )
         self.assertTrue(obj, f"Cannot add {obj.id} to {fti.id} container!")
+        
+        from plone.api.exc import InvalidParameterError
+        with self.assertRaises(InvalidParameterError):
+            api.content.create(
+                container=self.parent,
+                type="Document",
+                title="My Content",
+            )

@@ -45,7 +45,7 @@ The JSON payload uses a dynamic `translations` dictionary, allowing it to scale 
 ```
 
 ### Responses
-- `201 Created`: Contains the generated `Shared UUID` and the absolute physical URLs to the new Plone items.
+- `201 Created`: Contains the generated `Shared UUID` and the absolute physical URLs to the new Plone items. The returned keys (for example, `url_eu`, `url_es`, `url_en`) will dynamically match the language block provided in the payload's `translations` dictionary.
 - `400 Bad Request`: Validation errors (for example, missing fields in a specific language block).
 - `500 Internal Server Error`: No `Tablon` container found in the system.
 

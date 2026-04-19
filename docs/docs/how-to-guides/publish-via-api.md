@@ -60,7 +60,7 @@ curl -X POST "http://localhost:8080/Plone/@tablon" \
 
 ## 3. Handling the Response
 
-If successful, the API returns a `201 Created` status code and a JSON response containing the generated Shared UUID and the physical URLs of the created Plone items.
+If successful, the API returns a `201 Created` status code and a JSON response containing the generated Shared UUID and the physical URLs of the created Plone items. The returned `url_{lang}` keys are dynamic and will precisely match the language codes provided in your payload's `translations` dictionary.
 
 ```json
 {

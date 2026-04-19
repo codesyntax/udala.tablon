@@ -3,6 +3,7 @@ from logging import getLogger
 from plone import api
 from plone.app.multilingual.interfaces import ITranslationManager
 from plone.base.utils import safe_text
+from udala.tablon.utils import is_pam_enabled
 from udala.tablon.ws_utils import post_document_to_izenpe
 
 import requests
@@ -37,9 +38,10 @@ def accreditation(obj):
     if result and accredited_url:
         if result == 1:
             obj.url = accredited_url
-            manager = ITranslationManager(obj)
-            for _language, item in manager.get_translations().items():
-                item.url = accredited_url
+            if is_pam_enabled(obj):
+                manager = ITranslationManager(obj)
+                for _language, item in manager.get_translations().items():
+                    item.url = accredited_url
 
             log.info("OK Izenpe: url: %s message: %s", url, message)
             return 1, message

@@ -1,0 +1,1 @@
+Fixed `accreditation` helper function to safely check if Plone App Multilingual is enabled before unconditionally attempting to adapt documents via `ITranslationManager`.

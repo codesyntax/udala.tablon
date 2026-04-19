@@ -54,7 +54,7 @@ The JSON payload uses a dynamic `translations` dictionary, allowing it to scale 
 Retrieves the serialized JSON of the document corresponding to the `shared_uid`.
 
 ### Headers
-- `Accept-Language`: The API uses this header to dynamically serve the translation of the document. If the requested language isn't found, it safely falls back to the primary available language to avoid 404 errors.
+- `Accept-Language`: The API natively parses HTTP language headers (for example, `eu,en;q=0.9`) to filter the exact translation block needed. If no specific language is requested or found, it dynamically falls back to the portal's default language.
 
 ### Response
 Returns the standard Plone REST API JSON serialization, with the added translatable fields dynamically injected based on the available translations in the Zope Annotation dictionary.
@@ -66,16 +66,32 @@ Returns the standard Plone REST API JSON serialization, with the added translata
     "date_start": "2024-03-01T00:00:00Z",
     "date_end": "2024-03-31T23:59:59Z",
     "origin": "external",
-    "origin_department_eu": "Kultura Saila",
-    "origin_department_es": "Departamento de Cultura",
-    "description_eu": "Kultur egitarauaren diru-laguntzak",
-    "description_es": "Subvenciones para programas culturales",
+    "translations": {
+        "eu": {
+            "origin_department": "Kultura Saila",
+            "origin_details": "Udaletxea",
+            "description": "Kultur egitarauaren diru-laguntzak",
+            "publication_url": "https://www.donostia.eus"
+        },
+        "es": {
+            "origin_department": "Departamento de Cultura",
+            "origin_details": "Ayuntamiento",
+            "description": "Subvenciones para programas culturales",
+            "publication_url": "https://www.donostia.eus/es"
+        }
+    },
     "documents": [
         {
             "@id": "http://localhost:8080/Plone/@tablon/b2c3d4e5f6g7h8i9j0k1/a1b2c3d4e5",
             "uuid": "a1b2c3d4e5",
-            "title": "Deialdia",
-            "izenpe_url": "http://accreditation.service/cert",
+            "titles": {
+                "eu": "Deialdia",
+                "es": "Convocatoria"
+            },
+            "izenpe_urls": {
+                "eu": "http://accreditation.service/cert",
+                "es": "http://accreditation.service/cert"
+            },
             "filename": "deialdia_convocatoria.pdf",
             "contents": "JVBERi..."
         }

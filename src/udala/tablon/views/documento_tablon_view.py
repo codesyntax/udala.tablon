@@ -1,9 +1,9 @@
 # from udala.tablon import _
 from plone import api
 from Products.Five.browser import BrowserView
-from udala.tablon.file_utils import get_file
-from udala.tablon.utils import get_document_by_uid_and_lang
-from udala.tablon.utils import get_documents
+from udala.tablon.annotations.document import get_document_by_uid_and_lang
+from udala.tablon.annotations.document import get_documents
+from udala.tablon.annotations.file import get_file
 from zope.interface import implementer
 from zope.interface import Interface
 

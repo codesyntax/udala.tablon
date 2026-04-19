@@ -7,13 +7,13 @@ from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from udala.tablon import _
+from udala.tablon.annotations.document import register_documents
+from udala.tablon.annotations.file import get_file
+from udala.tablon.annotations.file import register_file
 from udala.tablon.cache import purge_urls
 from udala.tablon.config import TASK_DEFAULT_DELAY
 from udala.tablon.content.documento_tablon import OriginVocabulary
-from udala.tablon.file_utils import get_file
-from udala.tablon.file_utils import register_file
 from udala.tablon.subscriber import get_publication_accreditation
-from udala.tablon.utils import register_documents
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import alsoProvides
@@ -206,7 +206,7 @@ def get_accreditation(document_id, file_id):
         alsoProvides(getRequest(), IDisableCSRFProtection)
         file_data = get_file(file_id)
         if file_data:
-            from udala.tablon.utils import resolve_plone_uid
+            from udala.tablon.annotations.resolve import resolve_plone_uid
 
             file_uid = resolve_plone_uid(file_data, getRequest())
             if file_uid:

@@ -1,11 +1,11 @@
 from plone.app.testing import login
 from plone.app.testing import SITE_OWNER_NAME
+from udala.tablon.annotations.document import ANNOTATION_KEY
+from udala.tablon.annotations.document import delete_document
+from udala.tablon.annotations.document import get_document_by_uid_and_lang
+from udala.tablon.annotations.document import get_documents
+from udala.tablon.annotations.document import register_documents
 from udala.tablon.testing import UDALA_TABLON_INTEGRATION_TESTING
-from udala.tablon.utils import ANNOTATION_KEY
-from udala.tablon.utils import delete_document
-from udala.tablon.utils import get_document_by_uid_and_lang
-from udala.tablon.utils import get_documents
-from udala.tablon.utils import register_documents
 from zope.annotation.interfaces import IAnnotations
 
 import unittest

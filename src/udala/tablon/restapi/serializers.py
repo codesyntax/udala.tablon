@@ -2,14 +2,14 @@ from plone import api
 from plone.app.multilingual.interfaces import ITranslationManager
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.serializer.dxcontent import SerializeToJson
+from udala.tablon.annotations.document import get_document_by_uid_and_lang
+from udala.tablon.annotations.document import get_documents
+from udala.tablon.annotations.file import get_file
+from udala.tablon.annotations.resolve import resolve_plone_uid
 from udala.tablon.content.documento_tablon import IDocumentoTablon
-from udala.tablon.file_utils import get_file
 from udala.tablon.interfaces import IUdalaTablonLayer
 from udala.tablon.subscribers.utils import is_pam_enabled
-from udala.tablon.utils import get_document_by_uid_and_lang
-from udala.tablon.utils import get_documents
 from udala.tablon.utils import get_file_contents
-from udala.tablon.utils import resolve_plone_uid
 from zope.component import adapter
 from zope.interface import implementer
 

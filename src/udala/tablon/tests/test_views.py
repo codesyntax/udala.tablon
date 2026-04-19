@@ -4,9 +4,9 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.dexterity.utils import createContentInContainer
 from plone.testing.z2 import Browser
-from udala.tablon.file_utils import register_file
+from udala.tablon.annotations.document import register_documents
+from udala.tablon.annotations.file import register_file
 from udala.tablon.testing import UDALA_TABLON_FUNCTIONAL_TESTING
-from udala.tablon.utils import register_documents
 from zExceptions import NotFound
 from zope.component import getMultiAdapter
 from zope.globalrequest import getRequest

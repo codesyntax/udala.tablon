@@ -3,9 +3,10 @@ from plone import api
 from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
-from udala.tablon.file_utils import get_file
-from udala.tablon.subscriber import get_publication_accreditation
-from udala.tablon.utils import get_documents
+from udala.tablon.accreditation import get_publication_accreditation
+from udala.tablon.annotations.document import get_documents
+from udala.tablon.annotations.file import get_file
+from udala.tablon.annotations.resolve import resolve_plone_uid
 from zope.component import getMultiAdapter
 from zope.i18n import translate
 from zope.interface import alsoProvides
@@ -38,18 +39,22 @@ class TablonGet(Service):
             raise Exception("Must supply exactly one parameter (doc id)")
         return self.params[1]
 
-    def reply(self):
+    def reply(self):  # noqa: C901
         if len(self.params) == 1:
             doc_id = self._get_doc_id
             document = get_documents(doc_id)
 
             if document:
-                eu_uid = document.get("eu")
-                eu_document = api.content.get(UID=eu_uid)
+                plone_uid = resolve_plone_uid(document, self.request)
+                if not plone_uid:
+                    raise NotFound(self.context, "", self.request)
 
-                adapter = getMultiAdapter((eu_document, self.request), ISerializeToJson)
-
-                return adapter()
+                plone_document = api.content.get(UID=plone_uid)
+                if plone_document is not None:
+                    adapter = getMultiAdapter(
+                        (plone_document, self.request), ISerializeToJson
+                    )
+                    return adapter()
 
         elif len(self.params) == 2:
             doc_id = self._get_doc_id
@@ -59,9 +64,7 @@ class TablonGet(Service):
             file = get_file(file_id)
 
             if documents and file:
-                file_uid = file.get("eu")
-                if file_uid is None:
-                    file_uid = file.get("es")
+                file_uid = resolve_plone_uid(file, self.request)
 
                 if file_uid is None:
                     raise NotFound(self.context, "", self.request)
@@ -77,9 +80,8 @@ class TablonGet(Service):
         elif len(self.params) == 3 and self.params[2] == "get_external_accreditation":
             file_id = self._get_file_id
             file = get_file(file_id)
-            file_uid = file.get("eu")
-            if file_uid is None:
-                file_uid = file.get("es")
+
+            file_uid = resolve_plone_uid(file, self.request)
 
             if file_uid is None:
                 self.request.response.setStatus(404)
@@ -107,13 +109,12 @@ class TablonExpiredGet(Service):
     def reply(self):
 
         date = self.request.get("date", None)
-        if date is None:
-            date = DateTime()
-        else:
-            date = DateTime(date, fmt="international")
+        date = DateTime() if date is None else DateTime(date, fmt="international")
 
+        # Query "all" languages so we don't miss documents if the requested
+        # language happens to lack a translation. The serializer automatically
+        # embeds all available translations for a given Shared UID.
         brains = api.content.find(
-            Language="eu",
             portal_type="DocumentoTablon",
             expires={
                 "query": (date.earliestTime(), date.latestTime()),
@@ -122,10 +123,26 @@ class TablonExpiredGet(Service):
         )
 
         result = []
+        seen_uids = set()
+
+        from udala.tablon.annotations.document import get_document_by_uid_and_lang
+
         for brain in brains:
-            adapter = getMultiAdapter(
-                (brain.getObject(), self.request), ISerializeToJson
-            )
+            obj = brain.getObject()
+
+            # The serializer groups all translations under one Shared UID.
+            # To avoid returning duplicate JSON objects when multiple translations
+            # of the same document expire on the same day, we deduplicate by Shared UID.
+            shared_uid = get_document_by_uid_and_lang(obj.UID(), obj.Language())
+            if not shared_uid:
+                continue
+
+            if shared_uid in seen_uids:
+                continue
+
+            seen_uids.add(shared_uid)
+
+            adapter = getMultiAdapter((obj, self.request), ISerializeToJson)
 
             item = adapter()
             result.append(item)

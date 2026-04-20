@@ -1,0 +1,1 @@
+Fixed missing `record_number` field in the `@tablon` GET API endpoint responses. The serializer now properly exposes the record number alongside the correct documentation examples. Cleaned up remaining module misimports.

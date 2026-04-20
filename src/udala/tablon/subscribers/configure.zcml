@@ -1,18 +1,33 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    i18n_domain="udala.tablon">
+    i18n_domain="udala.tablon"
+    >
 
- <!-- -*- extra stuff goes here -*- -->
+  <!-- -*- extra stuff goes here -*- -->
 
-  <subscriber for="udala.tablon.content.documento_tablon.IDocumentoTablon
-                   zope.lifecycleevent.interfaces.IObjectAddedEvent"
-              handler=".register_document.handler"
-              />
+  <subscriber
+      for="udala.tablon.content.documento_tablon.IDocumentoTablon
+           zope.lifecycleevent.interfaces.IObjectAddedEvent"
+      handler=".register_document.handler"
+      />
 
-  <subscriber for="udala.tablon.content.acredited_file.IAcreditedFile
-                   zope.lifecycleevent.interfaces.IObjectAddedEvent"
-              handler=".register_file.handler"
-              />
+  <subscriber
+      for="udala.tablon.content.documento_tablon.IDocumentoTablon
+           zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+      handler=".register_document.handler"
+      />
+
+  <subscriber
+      for="udala.tablon.content.acredited_file.IAcreditedFile
+           zope.lifecycleevent.interfaces.IObjectAddedEvent"
+      handler=".register_file.handler"
+      />
+
+  <subscriber
+      for="udala.tablon.content.acredited_file.IAcreditedFile
+           zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+      handler=".register_file.handler"
+      />
 
 
 </configure>

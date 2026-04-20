@@ -1,0 +1,1 @@
+Refactored the annotation storage system. Moved all annotation management and Shared UUID logic from `utils.py` and `file_utils.py` into a dedicated package structure (`src/udala/tablon/annotations/document.py`, `file.py`, and `resolve.py`) to improve maintainability and strictly enforce separation of concerns. `utils.py` now only contains true package-wide generic utilities.

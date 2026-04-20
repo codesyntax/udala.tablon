@@ -7,11 +7,11 @@ from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from udala.tablon import _
+from udala.tablon.accreditation import get_publication_accreditation
+from udala.tablon.annotations.file import get_file
 from udala.tablon.cache import purge_urls
 from udala.tablon.config import TASK_DEFAULT_DELAY
-from udala.tablon.file_utils import register_file
-from udala.tablon.subscriber import get_publication_accreditation
-from udala.tablon.utils import register_documents
+from udala.tablon.content.documento_tablon import OriginVocabulary
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import alsoProvides
@@ -29,13 +29,12 @@ except ImportError:
 
 
 OK = 1
-ACCEPTED_ORIGIN_VALUES = ["external", "internal"]
+ACCEPTED_ORIGIN_VALUES = [term.value for term in OriginVocabulary]
 
 
 def _validate_not_empty(value):
-    if value is not None:
-        if value.strip():
-            return OK
+    if value is not None and value.strip():
+        return OK
 
     return False
 
@@ -77,59 +76,10 @@ def _validate_date_end(value):
 
 
 def _validate_origin(value):
-    if _validate_not_empty(value) is OK:
-        if value in ACCEPTED_ORIGIN_VALUES:
-            return OK
+    if _validate_not_empty(value) is OK and value in ACCEPTED_ORIGIN_VALUES:
+        return OK
 
     return translate(_("The field origin is mandatory"), context=getRequest())
-
-
-def _validate_origin_department_eu(value):
-    if _validate_not_empty(value) is OK:
-        return OK
-
-    return translate(
-        _("The field origin_department_eu is mandatory"), context=getRequest()
-    )
-
-
-def _validate_origin_department_es(value):
-    if _validate_not_empty(value) is OK:
-        return OK
-
-    return translate(
-        _("The field origin_department_es is mandatory"), context=getRequest()
-    )
-
-
-def _validate_origin_details_eu(value):
-    if _validate_not_empty(value) is OK:
-        return OK
-
-    return translate(_("The field origin_details_eu mandatory"), context=getRequest())
-
-
-def _validate_origin_details_es(value):
-    if _validate_not_empty(value) is OK:
-        return OK
-
-    return translate(
-        _("The field origin_details_es is mandatory"), context=getRequest()
-    )
-
-
-def _validate_description_eu(value):
-    if _validate_not_empty(value) is OK:
-        return OK
-
-    return translate(_("The field description_eu is mandatory"), context=getRequest())
-
-
-def _validate_description_es(value):
-    if _validate_not_empty(value) is OK:
-        return OK
-
-    return translate(_("The field description_es is mandatory"), context=getRequest())
 
 
 def _validate_url(value):
@@ -142,89 +92,87 @@ def _validate_url(value):
     return False
 
 
-def _validate_publication_url_eu(value):
-    if _validate_url(value) is OK:
-        return OK
+def _validate_translations(value):
+    if not value or not isinstance(value, dict):
+        return translate(
+            _("The field translations is mandatory and must be an object"),
+            context=getRequest(),
+        )
 
-    return translate(
-        _("The format of the field publication_url_eu is not correct"),
-        context=getRequest(),
-    )
+    for lang, data in value.items():
+        if not isinstance(data, dict):
+            return translate(
+                _("The translation data for language must be an object"),
+                context=getRequest(),
+            )
 
+        if _validate_not_empty(data.get("origin_department")) is not OK:
+            return translate(
+                _(f"The field origin_department is mandatory for language {lang}"),
+                context=getRequest(),
+            )
 
-def _validate_publication_url_es(value):
-    if _validate_url(value) is OK:
-        return OK
+        if _validate_not_empty(data.get("origin_details")) is not OK:
+            return translate(
+                _(f"The field origin_details is mandatory for language {lang}"),
+                context=getRequest(),
+            )
 
-    return translate(
-        _("The format of the field publication_url_es is not correct"),
-        context=getRequest(),
-    )
+        if _validate_not_empty(data.get("description")) is not OK:
+            return translate(
+                _(f"The field description is mandatory for language {lang}"),
+                context=getRequest(),
+            )
 
+        pub_url = data.get("publication_url")
+        if pub_url and _validate_url(pub_url) is not OK:
+            return translate(
+                _(
+                    f"The format of the field publication_url is not correct for language {lang}"  # noqa: E501
+                ),
+                context=getRequest(),
+            )
 
-def _validate_document(value):
-    if value:
-        for field, function in DOCUMENT_FIELD_VALIDATION.items():
-            validation_result = function(value.get(field))
-            if validation_result != OK:
-                return validation_result
-
-        return OK
-
-    return translate(
-        _("The value of a single document is not correct"),
-        context=getRequest(),
-    )
-
-
-def _validate_documents(value):
-    if value:
-        if isinstance(value, list):
-            for item in value:
-                result = _validate_document(item)
-                if result is not OK:
-                    return result
-    return True
-
-
-def _validate_name_es(value):
-    if _validate_not_empty(value):
-        return OK
-
-    return translate(
-        _("The value of name_es in a single document is mandatory"),
-        context=getRequest(),
-    )
+    return OK
 
 
-def _validate_name_eu(value):
-    if _validate_not_empty(value):
-        return OK
+def _validate_documents_payload(value):
+    if value and isinstance(value, list):
+        for item in value:
+            if not isinstance(item, dict):
+                return translate(
+                    _("The value of a single document is not correct"),
+                    context=getRequest(),
+                )
 
-    return translate(
-        _("The value of name_eu in a single document is mandatory"),
-        context=getRequest(),
-    )
+            if _validate_not_empty(item.get("contents")) is not OK:
+                return translate(
+                    _("The value of contents in a single document is mandatory"),
+                    context=getRequest(),
+                )
 
+            if _validate_not_empty(item.get("filename")) is not OK:
+                return translate(
+                    _("The value of filename in a single document is mandatory"),
+                    context=getRequest(),
+                )
 
-def _validate_contents(value):
-    if _validate_not_empty(value):
-        return OK
+            titles = item.get("titles")
+            if not titles or not isinstance(titles, dict):
+                return translate(
+                    _("The field titles in a single document is mandatory"),
+                    context=getRequest(),
+                )
 
-    return translate(
-        _("The value of contents in a single document is mandatory"),
-        context=getRequest(),
-    )
-
-
-def _validate_filename(value):
-    if _validate_not_empty(value):
-        return OK
-
-    return translate(
-        _("The value of filename in a single document is mandatory"),
-        context=getRequest(),
-    )
+            for lang, title in titles.items():
+                if _validate_not_empty(title) is not OK:
+                    return translate(
+                        _(
+                            f"The title in a single document is mandatory for language {lang}"  # noqa: E501
+                        ),
+                        context=getRequest(),
+                    )
+    return OK
 
 
 def set_dates(content_item, effective, expiration):
@@ -243,55 +191,56 @@ def get_accreditation(document_id, file_id):
     if TASK_QUEUE:
         schedule_browser_view_with_traversal.schedule(
             delay=TASK_DEFAULT_DELAY,
-            kwargs=dict(
-                view_name="@tablon",
-                context_path="/".join(api.portal.get().getPhysicalPath()),
-                site_path="/".join(api.portal.get().getPhysicalPath()),
-                username=api.user.get_current().getId(),
-                params={},
-                traversal=f"{document_id}/{file_id}/get_external_accreditation",
-            ),
+            kwargs={
+                "view_name": "@tablon",
+                "context_path": "/".join(api.portal.get().getPhysicalPath()),
+                "site_path": "/".join(api.portal.get().getPhysicalPath()),
+                "username": api.user.get_current().getId(),
+                "params": {},
+                "traversal": f"{document_id}/{file_id}/get_external_accreditation",
+            },
         )
     else:
         alsoProvides(getRequest(), IDisableCSRFProtection)
-        file_object = api.content.get(UID=file_id)
-        get_publication_accreditation(file_object)
+        file_data = get_file(file_id)
+        if file_data:
+            from udala.tablon.annotations.resolve import resolve_plone_uid
+
+            file_uid = resolve_plone_uid(file_data, getRequest())
+            if file_uid:
+                file_object = api.content.get(UID=file_uid)
+                if file_object is not None:
+                    get_publication_accreditation(file_object)
     return 1
 
-
-DOCUMENT_FIELD_VALIDATION = {
-    "name_es": _validate_name_es,
-    "name_eu": _validate_name_eu,
-    "contents": _validate_contents,
-    "filename": _validate_filename,
-}
 
 FIELD_VALIDATION = {
     "record_number": _validate_record_number,
     "date_start": _validate_date_start,
     "date_end": _validate_date_end,
     "origin": _validate_origin,
-    "origin_department_eu": _validate_origin_department_eu,
-    "origin_department_es": _validate_origin_department_es,
-    "origin_details_eu": _validate_origin_details_eu,
-    "origin_details_es": _validate_origin_details_es,
-    "description_eu": _validate_description_eu,
-    "description_es": _validate_description_es,
-    "publication_url_eu": _validate_publication_url_eu,
-    "publication_url_es": _validate_publication_url_es,
-    "documents": _validate_documents,
+    "translations": _validate_translations,
+    "documents": _validate_documents_payload,
 }
 
 
 class TablonPost(Service):
-    def get_tablon(self, lang="eu"):
+    def get_tablon(self, lang=None):
         portal = api.portal.get()
-        brains = api.content.find(context=portal, Language="eu", portal_type="Tablon")
+        query = {"portal_type": "Tablon"}
+        if lang:
+            query["Language"] = lang
+        brains = api.content.find(context=portal, **query)
         for brain in brains:
             return brain.getObject()
+
+        brains = api.content.find(context=portal, portal_type="Tablon")
+        for brain in brains:
+            return brain.getObject()
+
         return None
 
-    def reply(self):
+    def reply(self):  # noqa: C901
         alsoProvides(self.request, IDisableCSRFProtection)
         data = json_body(self.request)
 
@@ -314,23 +263,24 @@ class TablonPost(Service):
         date_start = data.get("date_start")
         date_end = data.get("date_end")
 
-        # We get UTC time zones, so when creating python datetime objects
-        # it is not enough to do it using `fromisoformat` because that would
-        # create naive datetimes, so we first create these naive datetime
-        # objects and then replace its timezone using UTC
         date_start = datetime.fromisoformat(date_start)
         date_end = datetime.fromisoformat(date_end)
 
         date_start = date_start.replace(tzinfo=pytz.timezone("UTC"))
         date_end = date_end.replace(tzinfo=pytz.timezone("UTC"))
 
-        # Now that we have proper datetimes with timezones, we change its
-        # timezone to be that from Madrid
         date_start = date_start.astimezone(pytz.timezone("Europe/Madrid"))
         date_end = date_end.astimezone(pytz.timezone("Europe/Madrid"))
 
-        tablon_eu = self.get_tablon(lang="eu")
-        if not tablon_eu:
+        translations_data = data.get("translations", {})
+        languages = list(translations_data.keys())
+
+        base_lang = api.portal.get_default_language()
+        if base_lang not in languages and languages:
+            base_lang = languages[0]
+
+        tablon_base = self.get_tablon(lang=base_lang)
+        if not tablon_base:
             self.request.response.setStatus(500)
             return {
                 "error": {
@@ -342,155 +292,165 @@ class TablonPost(Service):
                 }
             }
 
-        documento_eu = api.content.create(
-            container=tablon_eu,
+        created_docs = {}
+
+        # Create base document
+        base_trans_data = translations_data[base_lang]
+        documento_base = api.content.create(
+            container=tablon_base,
             type="DocumentoTablon",
             title=data.get("record_number"),
             origin=data.get("origin"),
-            origin_department=data.get("origin_department_eu"),
-            origin_details=data.get("origin_details_eu"),
-            publication_url=data.get("publication_url_eu"),
-            description=data.get("description_eu"),
-            # effective=date_start,
-            # expires=date_end,
+            origin_department=base_trans_data.get("origin_department"),
+            origin_details=base_trans_data.get("origin_details"),
+            publication_url=base_trans_data.get("publication_url"),
+            description=base_trans_data.get("description"),
         )
-        set_dates(documento_eu, date_start, date_end)
-        documento_eu.reindexObject()
+        set_dates(documento_base, date_start, date_end)
+        documento_base.reindexObject()
+        api.content.transition(obj=documento_base, transition="publish")
+        created_docs[base_lang] = documento_base
 
-        api.content.transition(obj=documento_eu, transition="publish")
+        from udala.tablon.utils import is_pam_enabled
 
-        ITranslationManager(documento_eu).add_translation("es")
-        documento_es = ITranslationManager(documento_eu).get_translation("es")
+        if is_pam_enabled(documento_base):
+            for lang in languages:
+                if lang == base_lang:
+                    continue
 
-        documento_es.title = data.get("record_number")
-        documento_es.origin = data.get("origin")
-        documento_es.origin_department = data.get("origin_department_es")
-        documento_es.origin_details = data.get("origin_details_es")
-        documento_es.publication_url = data.get("publication_url_es")
-        documento_es.description = data.get("description_es")
-        documento_es.effectiveDate = date_start
-        documento_es.expirationDate = date_end
-        # documento_es = documento_eu.addTranslation(
-        #     language="es",
-        #     title=data.get("record_number"),
-        #     origin=data.get("origin"),
-        #     origin_department=data.get("origin_department_es"),
-        #     origin_details=data.get("origin_details_es"),
-        #     publication_url=data.get("publication_url_es"),
-        #     description=data.get("description_es"),
-        #     effectiveDate=date_start,
-        #     expirationDate=date_end,
-        # )
-
-        set_dates(documento_es, date_start, date_end)
-        documento_es.reindexObject()
-
-        api.content.transition(obj=documento_es, transition="publish")
-
-        eu_files = []
-        es_files = []
-
-        for file in data.get("documents", []):
-            file_language = file.get("language")
-            if file_language is None:
-                # The file is bilingual
-
-                # Create EU
-                file_eu = api.content.create(
-                    container=documento_eu,
-                    type="AcreditedFile",
-                    title=file.get("name_eu"),
-                    # effective=date_start,
-                    # expires=date_end,
-                )
-                file_eu.file = NamedBlobFile(
-                    base64.urlsafe_b64decode(file.get("contents")),
-                    filename=file.get("filename"),
+                trans_data = translations_data[lang]
+                ITranslationManager(documento_base).add_translation(lang)
+                documento_trans = ITranslationManager(documento_base).get_translation(
+                    lang
                 )
 
-                set_dates(file_eu, date_start, date_end)
-                file_eu.reindexObject()
-                # api.content.transition(obj=file_eu, transition="publish")
+                documento_trans.title = data.get("record_number")
+                documento_trans.origin = data.get("origin")
+                documento_trans.origin_department = trans_data.get("origin_department")
+                documento_trans.origin_details = trans_data.get("origin_details")
+                documento_trans.publication_url = trans_data.get("publication_url")
+                documento_trans.description = trans_data.get("description")
 
-                # Translate into ES
-                ITranslationManager(file_eu).add_translation("es")
-                file_es = ITranslationManager(file_eu).get_translation("es")
-                file_es.title = file.get("name_es")
+                set_dates(documento_trans, date_start, date_end)
+                documento_trans.reindexObject()
+                api.content.transition(obj=documento_trans, transition="publish")
 
-                set_dates(file_es, date_start, date_end)
-                file_es.reindexObject()
+                created_docs[lang] = documento_trans
 
-                # api.content.transition(obj=file_es, transition="publish")
+        file_shared_uids = []
 
-                file_eu_id = register_file(file_eu.UID(), file_es.UID())
-                eu_files.append(file_eu_id)
-                es_files.append(file_eu_id)
+        for file_data in data.get("documents", []):
+            file_lang = file_data.get("language")
+            titles = file_data.get("titles", {})
 
-            elif file_language in ["eu"]:
-                # EU
-                file_eu = api.content.create(
-                    container=documento_eu,
-                    type="AcreditedFile",
-                    title=file.get("name_eu"),
-                    # effective=date_start,
-                    # expires=date_end,
+            file_shared_uid = None
+
+            if file_lang is None:
+                # Bilingual / Multilingual file
+                base_file_created = False
+                base_file_obj = None
+                for lang, doc in created_docs.items():
+                    title = titles.get(lang, file_data.get("filename"))
+
+                    if not base_file_created:
+                        file_obj = api.content.create(
+                            container=doc,
+                            type="AcreditedFile",
+                            title=title,
+                        )
+                        file_obj.file = NamedBlobFile(
+                            base64.urlsafe_b64decode(file_data.get("contents")),
+                            filename=file_data.get("filename"),
+                        )
+                        set_dates(file_obj, date_start, date_end)
+                        file_obj.reindexObject()
+                        base_file_obj = file_obj
+                        base_file_created = True
+                    else:
+                        if is_pam_enabled(base_file_obj):
+                            ITranslationManager(base_file_obj).add_translation(lang)
+                            file_obj = ITranslationManager(
+                                base_file_obj
+                            ).get_translation(lang)
+                            file_obj.title = title
+                            set_dates(file_obj, date_start, date_end)
+                            file_obj.reindexObject()
+
+                    # Wait for PAM translations, then let subscribers do their job
+                    from zope.event import notify
+                    from zope.lifecycleevent import ObjectModifiedEvent
+
+                    notify(ObjectModifiedEvent(file_obj))
+
+                    from udala.tablon.annotations.file import get_file_by_uid_and_lang
+
+                    f_uid = get_file_by_uid_and_lang(uid=file_obj.UID(), language=lang)
+                    if f_uid:
+                        file_shared_uid = f_uid
+
+                if file_shared_uid:
+                    file_shared_uids.append(file_shared_uid)
+
+            else:
+                # Single language file
+                doc = created_docs.get(file_lang)
+                if doc:
+                    title = titles.get(file_lang, file_data.get("filename"))
+                    file_obj = api.content.create(
+                        container=doc,
+                        type="AcreditedFile",
+                        title=title,
+                    )
+                    file_obj.file = NamedBlobFile(
+                        base64.urlsafe_b64decode(file_data.get("contents")),
+                        filename=file_data.get("filename"),
+                    )
+                    set_dates(file_obj, date_start, date_end)
+                    file_obj.reindexObject()
+
+                    # Subscribe handles registration, we just look it up.
+                    from udala.tablon.annotations.file import get_file_by_uid_and_lang
+
+                    f_uid = get_file_by_uid_and_lang(
+                        uid=file_obj.UID(), language=file_lang
+                    )
+                    if f_uid:
+                        file_shared_uids.append(f_uid)
+
+        document_shared_uid = None
+        response_urls = {}
+        tablons_to_purge = set()
+
+        from udala.tablon.annotations.document import get_document_by_uid_and_lang
+
+        for lang, doc in created_docs.items():
+            response_urls[f"url_{lang}"] = doc.absolute_url()
+            # Fire an ObjectModifiedEvent in case linking was delayed
+            from zope.event import notify
+            from zope.lifecycleevent import ObjectModifiedEvent
+
+            notify(ObjectModifiedEvent(doc))
+
+            if not document_shared_uid:
+                document_shared_uid = get_document_by_uid_and_lang(
+                    uid=doc.UID(),
+                    language=lang,
                 )
-                set_dates(file_eu, date_start, date_end)
+            tablons_to_purge.add(doc.__parent__.absolute_url())
 
-                file_eu.file = NamedBlobFile(
-                    base64.urlsafe_b64decode(file.get("contents")),
-                    filename=file.get("filename"),
-                )
-                file_eu.reindexObject()
-                # api.content.transition(obj=file_eu, transition="publish")
-
-                file_eu_id = register_file(file_eu.UID(), None)
-                eu_files.append(file_eu_id)
-
-            elif file_language in ["es"]:
-                # ES
-                file_es = api.content.create(
-                    container=documento_es,
-                    type="AcreditedFile",
-                    title=file.get("name_es"),
-                    # effective=date_start,
-                    # expires=date_end,
-                )
-                set_dates(file_es, date_start, date_end)
-
-                file_es.file = NamedBlobFile(
-                    base64.urlsafe_b64decode(file.get("contents")),
-                    filename=file.get("filename"),
-                )
-                # api.content.transition(obj=file_es, transition="publish")
-                file_es.reindexObject()
-
-                file_es_id = register_file(None, file_es.UID())
-                es_files.append(file_es_id)
-
-        document_id = register_documents(
-            documento_eu.UID(), documento_es.UID(), eu_files, es_files
-        )
-
-        for file_id in set(eu_files + es_files):
-            get_accreditation(document_id, file_id)
+        for file_id in set(file_shared_uids):
+            get_accreditation(document_shared_uid, file_id)
 
         portal_url = api.portal.get().absolute_url()
-        document_uri = f"{portal_url}/@tablon/{document_id}"
+        document_uri = f"{portal_url}/@tablon/{document_shared_uid}"
         self.request.response.setStatus(201)
         self.request.response.setHeader("Location", document_uri)
 
-        tablon_es = ITranslationManager(tablon_eu).get_translation("es")
-        purge_urls(
-            [
-                tablon_eu.absolute_url(),
-                tablon_es.absolute_url(),
-            ]
-        )
+        purge_urls(list(tablons_to_purge))
 
-        return {
+        result = {
             "@id": document_uri,
-            "uuid": document_id,
-            "url_eu": documento_eu.absolute_url(),
-            "url_es": documento_es.absolute_url(),
+            "uuid": document_shared_uid,
         }
+        result.update(response_urls)
+        return result

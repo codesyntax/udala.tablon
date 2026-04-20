@@ -9,7 +9,9 @@
   <body>
 
     <metal:custom_title fill-slot="content-title">
-      <h1 class="documentFirstHeading mb-3" tal:replace="structure context/@@description"></h1>
+      <h1 class="documentFirstHeading mb-3"
+          tal:replace="structure context/@@description"
+      ></h1>
     </metal:custom_title>
 
     <metal:custom_description fill-slot="content-description">
@@ -26,30 +28,48 @@
              "
         >
           <dl class="row mb-0">
-            <dt class="col-sm-3 text-secondary fw-semibold mb-2" i18n:translate="">record number</dt>
-            <dd class="col-sm-9 text-dark fw-bold mb-3" tal:content="context/Title">origin</dd>
+            <dt class="col-sm-3 text-secondary fw-semibold mb-2"
+                i18n:translate=""
+            >record number</dt>
+            <dd class="col-sm-9 text-dark fw-bold mb-3"
+                tal:content="context/Title"
+            >origin</dd>
 
-            <dt class="col-sm-3 text-secondary fw-semibold mb-2" i18n:translate="">Publication start</dt>
+            <dt class="col-sm-3 text-secondary fw-semibold mb-2"
+                i18n:translate=""
+            >Publication start</dt>
             <dd class="col-sm-9 text-dark mb-3">
               <span class="badge bg-white text-dark border shadow-sm px-2 py-1 fw-normal">
-                <span class="me-1 text-primary d-inline-flex align-items-center" tal:content="structure python:icons.tag('calendar')"></span>
+                <span class="me-1 text-primary d-inline-flex align-items-center"
+                      tal:content="structure python:icons.tag('calendar')"
+                ></span>
                 <span tal:content="python:plone.toLocalizedTime(context.effective_date)">origin_department</span>
               </span>
             </dd>
 
-            <dt class="col-sm-3 text-secondary fw-semibold mb-2" i18n:translate="">Publication end</dt>
+            <dt class="col-sm-3 text-secondary fw-semibold mb-2"
+                i18n:translate=""
+            >Publication end</dt>
             <dd class="col-sm-9 text-dark mb-3">
               <span class="badge bg-white text-dark border shadow-sm px-2 py-1 fw-normal">
-                <span class="me-1 text-primary d-inline-flex align-items-center" tal:content="structure python:icons.tag('calendar-x')"></span>
+                <span class="me-1 text-primary d-inline-flex align-items-center"
+                      tal:content="structure python:icons.tag('calendar-x')"
+                ></span>
                 <span tal:content="python:plone.toLocalizedTime(context.expiration_date)">origin_department</span>
               </span>
             </dd>
 
-            <dt class="col-sm-3 text-secondary fw-semibold mb-2" i18n:translate="">origin_department</dt>
+            <dt class="col-sm-3 text-secondary fw-semibold mb-2"
+                i18n:translate=""
+            >origin_department</dt>
             <dd class="col-sm-9 text-dark mb-3">
-              <span class="fw-medium text-dark" tal:content="context/origin_department"></span>
+              <span class="fw-medium text-dark"
+                    tal:content="context/origin_department"
+              ></span>
                -
-              <span class="text-secondary" tal:content="context/origin_details"></span>
+              <span class="text-secondary"
+                    tal:content="context/origin_details"
+              ></span>
             </dd>
 
             <tal:files define="
@@ -57,18 +77,24 @@
                        "
                        condition="files"
             >
-              <dt class="col-sm-3 text-secondary fw-semibold mb-2 pt-3 border-top" i18n:translate="files">files</dt>
+              <dt class="col-sm-3 text-secondary fw-semibold mb-2 pt-3 border-top"
+                  i18n:translate="files"
+              >files</dt>
 
               <dd class="col-sm-9 pt-3 border-top">
                 <ul class="list-unstyled mb-0 d-flex flex-column gap-3">
-                  <li class="d-flex flex-wrap align-items-center gap-2" tal:repeat="file files">
+                  <li class="d-flex flex-wrap align-items-center gap-2"
+                      tal:repeat="file files"
+                  >
                     <a class="btn btn-outline-primary d-inline-flex align-items-center gap-1 rounded-pill px-3 shadow-sm"
                        href=""
                        tal:attributes="
                          href file/url;
                        "
                     >
-                      <span class="d-flex align-items-center" tal:content="structure python:icons.tag('download')"></span>
+                      <span class="d-flex align-items-center"
+                            tal:content="structure python:icons.tag('download')"
+                      ></span>
                       <span tal:content="file/file_title">title</span>
                     </a>
 
@@ -79,7 +105,9 @@
                          href file/file_accreditation_url;
                        "
                     >
-                      <span class="d-flex align-items-center" tal:content="structure python:icons.tag('shield-check')"></span>
+                      <span class="d-flex align-items-center"
+                            tal:content="structure python:icons.tag('shield-check')"
+                      ></span>
                       <span i18n:translate="">Publication accreditation by IZENPE</span>
                     </a>
 
@@ -90,7 +118,9 @@
                            href string:${file/url}/get_external_accreditation;
                          "
                       >
-                        <span class="d-flex align-items-center" tal:content="structure python:icons.tag('shield-exclamation')"></span>
+                        <span class="d-flex align-items-center"
+                              tal:content="structure python:icons.tag('shield-exclamation')"
+                        ></span>
                         <span i18n:translate="">Get accreditation from IZENPE</span>
                       </a>
                     </tal:notaccredited>

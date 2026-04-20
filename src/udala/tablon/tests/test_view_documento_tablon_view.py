@@ -11,18 +11,20 @@ import unittest
 
 
 class ViewsIntegrationTest(unittest.TestCase):
-
     layer = UDALA_TABLON_INTEGRATION_TESTING
 
     def setUp(self):
         self.portal = self.layer["portal"]
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
-        api.content.create(self.portal, "DocumentoTablon", "other-folder")
+        self.tablon = api.content.create(self.portal, "Tablon", "tablon-folder")
+        api.content.create(self.tablon, "DocumentoTablon", "other-folder")
         api.content.create(self.portal, "Document", "front-page")
 
     def test_view_is_registered(self):
-        view = getMultiAdapter(
-            (self.portal["other-folder"], self.portal.REQUEST), name="view"
+        view = api.content.get_view(
+            name="view",
+            context=self.tablon["other-folder"],
+            request=self.portal.REQUEST,
         )
         self.assertTrue(IDocumentoTablonView.providedBy(view))
 
@@ -40,7 +42,6 @@ class ViewsIntegrationTest(unittest.TestCase):
 
 
 class ViewsFunctionalTest(unittest.TestCase):
-
     layer = UDALA_TABLON_FUNCTIONAL_TESTING
 
     def setUp(self):

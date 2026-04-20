@@ -1,140 +1,73 @@
-from plone.app.multilingual.interfaces import ITranslationManager
 from plone.app.testing import login
 from plone.app.testing import SITE_OWNER_NAME
-from plone.dexterity.utils import createContentInContainer
-from udala.tablon.file_utils import ANNOTATION_KEY
-from udala.tablon.file_utils import delete_file
-from udala.tablon.file_utils import get_file
-from udala.tablon.file_utils import get_file_by_uid_and_lang
-from udala.tablon.file_utils import register_file
+from udala.tablon.annotations.file import ANNOTATION_KEY
+from udala.tablon.annotations.file import delete_file
+from udala.tablon.annotations.file import get_file
+from udala.tablon.annotations.file import get_file_by_uid_and_lang
+from udala.tablon.annotations.file import register_file
 from udala.tablon.testing import UDALA_TABLON_INTEGRATION_TESTING
 from zope.annotation.interfaces import IAnnotations
 
 import unittest
-import uuid
 
 
-class TestAnnotationUtils(unittest.TestCase):
-
+class TestFileAnnotationUtils(unittest.TestCase):
     layer = UDALA_TABLON_INTEGRATION_TESTING
 
     def setUp(self):
         self.portal = self.layer["portal"]
-
         login(self.portal, SITE_OWNER_NAME)
 
-        self.eu_tablon = createContentInContainer(
-            self.portal.eu, "Tablon", title="Iragarki Ohola"
-        )
-        self.es_tablon = createContentInContainer(
-            self.portal.es, "Tablon", title="Tablón de Anuncios"
-        )
-        ITranslationManager(self.eu_tablon).register_translation("es", self.es_tablon)
+        # Wipe annotations just in case
+        annotated = IAnnotations(self.portal)
+        if ANNOTATION_KEY in annotated:
+            del annotated[ANNOTATION_KEY]
 
-        for doc in ["doc1", "doc2"]:
-            mydoc_eu = createContentInContainer(
-                self.eu_tablon, "DocumentoTablon", title=doc
-            )
-
-            file_eu = createContentInContainer(
-                mydoc_eu,
-                "AcreditedFile",
-                title=f"file_{doc}",
-            )
-            mydoc_es = createContentInContainer(
-                self.es_tablon, "DocumentoTablon", title=doc
-            )
-            file_es = createContentInContainer(
-                mydoc_es,
-                "AcreditedFile",
-                title=f"file_{doc}",
-            )
-
-            ITranslationManager(mydoc_eu).register_translation("es", mydoc_es)
-            ITranslationManager(file_eu).register_translation("es", file_es)
-
-    def test_register_document_to_annotation(self):
-
-        created_uuid = register_file(
-            self.eu_tablon.doc1.file_doc1.UID(),
-            self.es_tablon.doc1.file_doc1.UID(),
-        )
+    def test_register_single_language_file(self):
+        created_uuid = register_file(uid="file_plone_1", language="eu")
 
         annotated = IAnnotations(self.portal)
         annotations = annotated.get(ANNOTATION_KEY)
+
         self.assertIn(created_uuid, annotations)
+        data = annotations[created_uuid]
 
-    def test_get_registered_document(self):
+        self.assertEqual(data["translations"]["eu"], "file_plone_1")
+        self.assertTrue("date" in data)
 
-        created_uuid = register_file(
-            self.eu_tablon.doc1.file_doc1.UID(),
-            self.es_tablon.doc1.file_doc1.UID(),
-        )
+    def test_append_translation_to_existing_file(self):
+        shared_id = register_file(uid="file_plone_1", language="eu")
+        register_file(uid="file_plone_2", language="es", shared_uid=shared_id)
 
-        documents = get_file(created_uuid)
+        data = get_file(shared_id)
 
-        self.assertTrue(isinstance(documents, dict))
+        self.assertEqual(data["translations"]["eu"], "file_plone_1")
+        self.assertEqual(data["translations"]["es"], "file_plone_2")
 
-        self.assertTrue(documents["eu"], self.eu_tablon.doc1.file_doc1.UID())
-        self.assertTrue(documents["es"], self.es_tablon.doc1.file_doc1.UID())
+    def test_get_file_by_uid_and_lang_safe_handling(self):
+        # 1. Null handling
+        self.assertIsNone(get_file_by_uid_and_lang(None, "eu"))
 
-    def test_get_inexistent_file(self):
-        document1 = get_file_by_uid_and_lang(uuid.uuid4().hex, "eu")
-        self.assertEqual(document1, None)
+        # Setup data
+        shared_id = register_file(uid="file_plone_1", language="eu")
 
-        document2 = get_file_by_uid_and_lang(uuid.uuid4().hex, "es")
-        self.assertEqual(document2, None)
+        # 2. Valid UID, wrong language
+        self.assertIsNone(get_file_by_uid_and_lang("file_plone_1", "es"))
 
-    def test_get_inexistent_language(self):
-        document1 = get_file_by_uid_and_lang(uuid.uuid4().hex, "fr")
-        self.assertEqual(document1, None)
-
-        document2 = get_file_by_uid_and_lang(uuid.uuid4().hex, "en")
-        self.assertEqual(document2, None)
-
-    def test_get_existing_file_in_inexisting_language(self):
-        register_file(
-            self.eu_tablon.doc1.file_doc1.UID(),
-            self.es_tablon.doc1.file_doc1.UID(),
-        )
-
-        eu_document = get_file_by_uid_and_lang(
-            self.eu_tablon.doc1.file_doc1.UID(), "fr"
-        )
-        self.assertEqual(eu_document, None)
-
-    def test_get_file_by_uid_and_lang(self):
-        created_uuid = register_file(
-            self.eu_tablon.doc1.file_doc1.UID(),
-            self.es_tablon.doc1.file_doc1.UID(),
-        )
-
-        eu_document = get_file_by_uid_and_lang(
-            self.eu_tablon.doc1.file_doc1.UID(), "eu"
-        )
-        self.assertEqual(eu_document, created_uuid)
-
-        es_document = get_file_by_uid_and_lang(
-            self.es_tablon.doc1.file_doc1.UID(), "es"
-        )
-        self.assertEqual(es_document, created_uuid)
-
-    def test_delete_unexisting_file(self):
-        generated_uuid = uuid.uuid4().hex
-
-        result_delete = delete_file(generated_uuid)
-        self.assertFalse(result_delete)
+        # 3. Valid UID, correct language
+        self.assertEqual(get_file_by_uid_and_lang("file_plone_1", "eu"), shared_id)
 
     def test_delete_file(self):
-        created_uuid = register_file(
-            self.eu_tablon.doc1.file_doc1.UID(),
-            self.es_tablon.doc1.file_doc1.UID(),
-        )
+        shared_id = register_file(uid="file_plone_1", language="eu")
 
-        result_delete = delete_file(created_uuid)
+        # Exists before deletion
+        self.assertIsNotNone(get_file(shared_id))
+
+        result_delete = delete_file(shared_id)
         self.assertTrue(result_delete)
 
-        annotated = IAnnotations(self.portal)
-        annotations = annotated.get(ANNOTATION_KEY, [])
-        self.assertNotIn(created_uuid, annotations)
-        self.assertEqual(len(annotations), 0)
+        # Does not exist after
+        self.assertIsNone(get_file(shared_id))
+
+        # Double delete returns False
+        self.assertFalse(delete_file(shared_id))

@@ -9,11 +9,15 @@
   <body>
 
     <metal:custom_title fill-slot="content-title">
-      <h1 class="documentFirstHeading mb-4" tal:replace="structure context/@@title"></h1>
+      <h1 class="documentFirstHeading mb-4"
+          tal:replace="structure context/@@title"
+      ></h1>
     </metal:custom_title>
 
     <metal:custom_description fill-slot="content-description">
-      <div class="documentDescription lead text-secondary mb-4 pb-3 border-bottom" tal:replace="structure context/@@description"></div>
+      <div class="documentDescription lead text-secondary mb-4 pb-3 border-bottom"
+           tal:replace="structure context/@@description"
+      ></div>
     </metal:custom_description>
 
     <metal:content-core fill-slot="content-core">
@@ -39,7 +43,7 @@
                        batch python:Batch(results, b_size, b_start);
                        icons python:context.restrictedTraverse('@@iconresolver');
                      ">
-          
+
           <div class="card shadow-sm border-0 mb-4"
                tal:condition="batch"
           >
@@ -52,11 +56,21 @@
               >
                 <thead class="table-light text-secondary">
                   <tr>
-                    <th i18n:translate="" class="fw-semibold border-bottom-0 py-3 ps-4">Document number</th>
-                    <th i18n:translate="" class="fw-semibold border-bottom-0 py-3">Description</th>
-                    <th i18n:translate="" class="fw-semibold border-bottom-0 py-3">Origin</th>
-                    <th i18n:translate="" class="fw-semibold border-bottom-0 py-3">Publication date</th>
-                    <th i18n:translate="" class="fw-semibold border-bottom-0 py-3 pe-4">Expiration date</th>
+                    <th class="fw-semibold border-bottom-0 py-3 ps-4"
+                        i18n:translate=""
+                    >Document number</th>
+                    <th class="fw-semibold border-bottom-0 py-3"
+                        i18n:translate=""
+                    >Description</th>
+                    <th class="fw-semibold border-bottom-0 py-3"
+                        i18n:translate=""
+                    >Origin</th>
+                    <th class="fw-semibold border-bottom-0 py-3"
+                        i18n:translate=""
+                    >Publication date</th>
+                    <th class="fw-semibold border-bottom-0 py-3 pe-4"
+                        i18n:translate=""
+                    >Expiration date</th>
                   </tr>
                 </thead>
                 <tbody class="border-top-0">
@@ -81,13 +95,17 @@
                       </td>
                       <td class="text-secondary">
                         <span class="badge bg-light text-dark border shadow-sm px-2 py-1 fw-normal">
-                          <span class="me-1 text-primary d-inline-flex align-items-center" tal:content="structure python:icons.tag('calendar')"></span>
+                          <span class="me-1 text-primary d-inline-flex align-items-center"
+                                tal:content="structure python:icons.tag('calendar')"
+                          ></span>
                           <span tal:replace="python:toLocalizedTime(obj.effective_date)"></span>
                         </span>
                       </td>
                       <td class="pe-4 text-secondary">
                         <span class="badge bg-light text-dark border shadow-sm px-2 py-1 fw-normal">
-                          <span class="me-1 text-primary d-inline-flex align-items-center" tal:content="structure python:icons.tag('calendar-x')"></span>
+                          <span class="me-1 text-primary d-inline-flex align-items-center"
+                                tal:content="structure python:icons.tag('calendar-x')"
+                          ></span>
                           <span tal:replace="python:toLocalizedTime(obj.expiration_date)"></span>
                         </span>
                       </td>
@@ -98,12 +116,16 @@
 
             </div>
           </div>
-          
+
           <div class="alert alert-info d-flex align-items-center shadow-sm my-4"
                tal:condition="not:batch"
           >
-             <span class="fs-4 me-3 d-flex align-items-center text-info" tal:content="structure python:icons.tag('info-circle')"></span>
-             <p class="mb-0" i18n:translate="">There is no data</p>
+            <span class="fs-4 me-3 d-flex align-items-center text-info"
+                  tal:content="structure python:icons.tag('info-circle')"
+            ></span>
+            <p class="mb-0"
+               i18n:translate=""
+            >There is no data</p>
           </div>
 
           <div metal:use-macro="context/batch_macros/macros/navigation"></div>

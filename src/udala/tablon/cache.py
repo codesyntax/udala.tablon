@@ -8,7 +8,7 @@ from zope.component import getUtility
 from zope.globalrequest import getRequest
 
 
-def purge_urls(urls):
+def purge_urls(urls):  # noqa: C901
     request = getRequest()
     sync = True
     purger = getUtility(IPurger)
@@ -34,8 +34,11 @@ def purge_urls(urls):
     portal = api.portal.get()
     portalPath = portal.getPhysicalPath()
     registry = getUtility(IRegistry)
-    purgingSettings = registry.forInterface(ICachePurgingSettings)
-    proxies = purgingSettings.cachingProxies
+    try:
+        purgingSettings = registry.forInterface(ICachePurgingSettings)
+        proxies = purgingSettings.cachingProxies
+    except KeyError:
+        return []
 
     for inputURL in urls:
         if not inputURL.startswith(serverURL):  # not in the site
@@ -57,7 +60,7 @@ def purge_urls(urls):
             purge(inputURL)
             continue
 
-        relativePath = physicalPath[len(portalPath) :]  # noqa: E203
+        relativePath = physicalPath[len(portalPath) :]
         if not relativePath:
             purge(inputURL)
             continue

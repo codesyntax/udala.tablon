@@ -1,0 +1,1 @@
+Reimplemented the `@tablon` POST endpoint API signature. The endpoint now uses a dynamic `translations` dictionary allowing robust creation of documents in any number of languages without hardcoding `eu` or `es` suffixes at the root payload level. Validations and file creation gracefully loop through provided translation data natively.

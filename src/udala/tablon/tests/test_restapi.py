@@ -23,9 +23,9 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.testing import RelativeSession
-from udala.tablon.file_utils import register_file
+from udala.tablon.annotations.document import register_documents
+from udala.tablon.annotations.file import register_file
 from udala.tablon.testing import UDALA_TABLON_FUNCTIONAL_TESTING
-from udala.tablon.utils import register_documents
 
 import transaction
 import unittest
@@ -79,22 +79,25 @@ class TestRESTAPIEndpoints(unittest.TestCase):
                 effective=EFFECTIVE_DATE,
                 expires=EXPIRATION_DATE,
             )
+            ITranslationManager(mydoc_eu).register_translation("es", mydoc_es)
+            from zope.event import notify
+            from zope.lifecycleevent import ObjectModifiedEvent
+
+            notify(ObjectModifiedEvent(mydoc_es))
+            notify(ObjectModifiedEvent(mydoc_eu))
             file_es = createContentInContainer(
                 mydoc_es,
                 "AcreditedFile",
                 title=f"file_{doc}",
             )
-
-            ITranslationManager(mydoc_eu).register_translation("es", mydoc_es)
             ITranslationManager(file_eu).register_translation("es", file_es)
+            notify(ObjectModifiedEvent(file_es))
+            notify(ObjectModifiedEvent(file_eu))
 
-            file_key = register_file(file_eu.UID(), file_es.UID())
+            file_key = register_file(file_eu.UID(), "eu")
 
             key = register_documents(
-                mydoc_eu.UID(),
-                mydoc_es.UID(),
-                [file_key],
-                [file_key],
+                uid=mydoc_eu.UID(), language="eu", file_uids=[file_key]
             )
             self.document_data.append(key)
             self.file_annotation_ids.append(file_key)
@@ -139,6 +142,8 @@ class TestRESTAPIEndpoints(unittest.TestCase):
 
     def test_get_document(self):
         response = self.api_session.get(f"/@tablon/{self.document_data[0]}")
+        if response.status_code != 200:
+            print(response.content)
         self.assertEqual(response.status_code, 200)
 
     def test_get_file_in_document(self):
@@ -195,6 +200,8 @@ class TestRESTAPIEndpoints(unittest.TestCase):
     def test_post_document_without_urls(self):
         response = self.api_session.post("/@tablon", json=correct_document_no_urls)
 
+        if response.status_code != 201:
+            print(response.content)
         self.assertEqual(response.status_code, 201)
         response_json = response.json()
         generated_uuid = response_json.get("uuid")
@@ -317,8 +324,39 @@ class TestRESTAPIEndpoints(unittest.TestCase):
         response = self.api_session.get("/@tablon-expired")
         self.assertEqual(response.status_code, 200)
 
+    def test_serializer_outputs_same_json_for_translated_documents(self):
+        doc_eu = self.eu_tablon["doc1"]
+        doc_es = self.es_tablon["doc1"]
+
+        doc_eu_url = doc_eu.absolute_url_path()
+        doc_es_url = doc_es.absolute_url_path()
+
+        # Plone testing URL paths typically prefix with '/plone' so we need to trim it for api_session
+        if doc_eu_url.startswith("/plone/"):
+            doc_eu_url = doc_eu_url.replace("/plone/", "/", 1)
+        if doc_es_url.startswith("/plone/"):
+            doc_es_url = doc_es_url.replace("/plone/", "/", 1)
+
+        response_eu = self.api_session.get(
+            doc_eu_url, headers={"Accept": "application/json"}
+        )
+        response_es = self.api_session.get(
+            doc_es_url, headers={"Accept": "application/json"}
+        )
+
+        self.assertEqual(response_eu.status_code, 200)
+        self.assertEqual(response_es.status_code, 200)
+
+        json_eu = response_eu.json()
+        json_es = response_es.json()
+
+        self.assertEqual(json_eu["@id"], json_es["@id"])
+        self.assertEqual(json_eu["translations"], json_es["translations"])
+
     def test_get_expired_in_a_given_day(self):
-        response = self.api_session.get("/@tablon-expired?date=1995-10-31")
+        response = self.api_session.get(
+            "/@tablon-expired?date=1995-10-31", headers={"Accept-Language": "eu"}
+        )
 
         self.assertEqual(response.status_code, 200)
         response_json = response.json()

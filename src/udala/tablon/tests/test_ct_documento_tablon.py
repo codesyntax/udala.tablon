@@ -2,8 +2,8 @@ from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.dexterity.interfaces import IDexterityFTI
-from udala.tablon.content.documento_tablon import IDocumentoTablon  # NOQA E501
-from udala.tablon.testing import UDALA_TABLON_INTEGRATION_TESTING  # noqa
+from udala.tablon.content.documento_tablon import IDocumentoTablon
+from udala.tablon.testing import UDALA_TABLON_INTEGRATION_TESTING
 from zope.component import createObject
 from zope.component import queryUtility
 
@@ -11,7 +11,6 @@ import unittest
 
 
 class DocumentoTablonIntegrationTest(unittest.TestCase):
-
     layer = UDALA_TABLON_INTEGRATION_TESTING
 
     def setUp(self):
@@ -36,24 +35,28 @@ class DocumentoTablonIntegrationTest(unittest.TestCase):
 
         self.assertTrue(
             IDocumentoTablon.providedBy(obj),
-            "IDocumentoTablon not provided by {}!".format(
-                obj,
-            ),
+            f"IDocumentoTablon not provided by {obj}!",
         )
 
     def test_ct_documento_tablon_adding(self):
         setRoles(self.portal, TEST_USER_ID, ["Contributor"])
-        obj = api.content.create(
+
+        # Create Tablon parent first since DocumentoTablon is not globally addable
+        tablon = api.content.create(
             container=self.portal,
+            type="Tablon",
+            id="tablon_container",
+        )
+
+        obj = api.content.create(
+            container=tablon,
             type="DocumentoTablon",
             id="documento_tablon",
         )
 
         self.assertTrue(
             IDocumentoTablon.providedBy(obj),
-            "IDocumentoTablon not provided by {}!".format(
-                obj.id,
-            ),
+            f"IDocumentoTablon not provided by {obj.id}!",
         )
 
         parent = obj.__parent__
@@ -66,9 +69,9 @@ class DocumentoTablonIntegrationTest(unittest.TestCase):
     def test_ct_documento_tablon_globally_addable(self):
         setRoles(self.portal, TEST_USER_ID, ["Contributor"])
         fti = queryUtility(IDexterityFTI, name="DocumentoTablon")
-        self.assertTrue(fti.global_allow, f"{fti.id} is not globally addable!")
+        self.assertFalse(fti.global_allow, f"{fti.id} should NOT be globally addable!")
 
-    def test_ct_documento_tablon_filter_content_type_false(self):
+    def test_ct_documento_tablon_filter_content_type_true(self):
         setRoles(self.portal, TEST_USER_ID, ["Contributor"])
         fti = queryUtility(IDexterityFTI, name="DocumentoTablon")
         portal_types = self.portal.portal_types
@@ -79,9 +82,19 @@ class DocumentoTablonIntegrationTest(unittest.TestCase):
             title="DocumentoTablon container",
         )
         self.parent = self.portal[parent_id]
+
         obj = api.content.create(
             container=self.parent,
-            type="Document",
-            title="My Content",
+            type="AcreditedFile",
+            title="My Acredited File",
         )
         self.assertTrue(obj, f"Cannot add {obj.id} to {fti.id} container!")
+
+        from plone.api.exc import InvalidParameterError
+
+        with self.assertRaises(InvalidParameterError):
+            api.content.create(
+                container=self.parent,
+                type="Document",
+                title="My Content",
+            )

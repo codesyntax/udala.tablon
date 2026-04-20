@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-04-15 07:03+0000\n"
+"POT-Creation-Date: 2026-04-19 17:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,207 +14,187 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: DOMAIN\n"
 
-#: ../content/acredited_file.py:16
+#: udala/tablon/content/acredited_file.py:16
 msgid "Accreditation URL"
 msgstr "Egiaztapenaren URLa"
 
-#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:14
+#: udala/tablon/controlpanels/udala_tablon_control_panel/controlpanel.py:14
 msgid "Accrediter endpoint URL"
 msgstr "Egiaztatzailearen zerbitzuaren URLa"
 
-#: ../profiles/default/types/AcreditedFile.xml
+#: udala/tablon/profiles/default/types/AcreditedFile.xml
 msgid "AcreditedFile"
 msgstr "Egiaztatutako fitxategia"
 
-#: ../views/tablon_view.pt:56
+#: udala/tablon/views/tablon_view.pt:62
 msgid "Description"
 msgstr "Deskribapena"
 
-#: ../content/documento_tablon.py:25
+#: udala/tablon/content/documento_tablon.py:32
 msgid "Details about the origin of the document"
 msgstr "Dokumentuaren jatorriari buruzko xehetasunak"
 
-#: ../views/tablon_view.pt:55
+#: udala/tablon/views/tablon_view.pt:59
 msgid "Document number"
 msgstr "Dokumentu zenbakia"
 
-#: ../content/documento_tablon.py:29
+#: udala/tablon/content/documento_tablon.py:36
 msgid "Document publication URL"
 msgstr "Dokumentua argitaratuta dagoen URLa"
 
-#: ../profiles/default/types/DocumentoTablon.xml
+#: udala/tablon/profiles/default/types/DocumentoTablon.xml
 msgid "DocumentoTablon"
 msgstr "Iragarki oholeko dokumentua"
 
-#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:58
+#: udala/tablon/controlpanels/udala_tablon_control_panel/controlpanel.py:58
 msgid "Email address where accreditation notifications will be sent"
 msgstr "Egiaztapenaren mezuak bidaliko diren eposta helbidea"
 
-#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:47
+#: udala/tablon/controlpanels/udala_tablon_control_panel/controlpanel.py:47
 msgid "Enter the full domain (with https) of the site. "
 msgstr "Atariaren URLa idatzi, http eta guzti"
 
-#: ../views/tablon_view.pt:59
+#: udala/tablon/views/tablon_view.pt:71
 msgid "Expiration date"
 msgstr "Iraungitze-data"
 
-#: ../views/documento_tablon_view.pt:94
+#: udala/tablon/content/documento_tablon.py:13
+msgid "External"
+msgstr "Kanpokoa"
+
+#: udala/tablon/views/documento_tablon_view.pt:124
 msgid "Get accreditation from IZENPE"
 msgstr "Lortu egiaztapena IZENPE erabiliz"
 
-#: ../configure.zcml:26
+#: udala/tablon/configure.zcml:26
 msgid "Installs the udala.tablon add-on."
 msgstr "udala.tablon instalatu"
 
-#: ../views/tablon_view.pt:57
+#: udala/tablon/content/documento_tablon.py:14
+msgid "Internal"
+msgstr "Barnekoa"
+
+#: udala/tablon/views/tablon_view.pt:65
 msgid "Origin"
 msgstr "Jatorria"
 
-#: ../content/documento_tablon.py:21
+#: udala/tablon/content/documento_tablon.py:28
 msgid "Origin department of the document"
 msgstr "Dokumentuaren jatorrizko saila"
 
-#: ../content/documento_tablon.py:18
+#: udala/tablon/content/documento_tablon.py:22
 msgid "Origin of the document"
 msgstr "Dokumentuaren jatorria"
 
-#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:36
+#: udala/tablon/controlpanels/udala_tablon_control_panel/controlpanel.py:36
 msgid "Password of the pkcs12 file"
 msgstr "pkcs12 fitxategiaren pasahitza"
 
-#: ../views/documento_tablon_view.pt:83
+#: udala/tablon/views/documento_tablon_view.pt:111
 msgid "Publication accreditation by IZENPE"
 msgstr "IZENPEk egindako egiaztapena"
 
-#: ../views/tablon_view.pt:58
+#: udala/tablon/views/tablon_view.pt:68
 msgid "Publication date"
 msgstr "Argitaratze-data"
 
-#: ../views/documento_tablon_view.pt:40
+#: udala/tablon/views/documento_tablon_view.pt:50
 msgid "Publication end"
 msgstr "Argitaratze-dataren bukaera"
 
-#: ../views/documento_tablon_view.pt:32
+#: udala/tablon/views/documento_tablon_view.pt:38
 msgid "Publication start"
 msgstr "Argitaratze-data"
 
-#: ../content/tablon.py:19
+#: udala/tablon/content/tablon.py:19
 msgid "Sponsors"
 msgstr "Babesleak"
 
-#: ../profiles/default/types/Tablon.xml
+#: udala/tablon/profiles/default/types/Tablon.xml
 msgid "Tablon"
 msgstr "Iragarki ohola"
 
-#: ../content/documento_tablon.py:30
+#: udala/tablon/content/documento_tablon.py:37
 msgid "The document can be external, thus you can provide its URL here"
 msgstr "Dokumentua kanpokoa izan daiteke, hemen bere URLa idatzi"
 
-#: ../restapi/tablon_service/post.py:132
-msgid "The field description_es is mandatory"
-msgstr "description_es eremua derrigorrezkoa da"
-
-#: ../restapi/tablon_service/post.py:125
-msgid "The field description_eu is mandatory"
-msgstr "description_eu eremua derrigorrezkoa da"
-
-#: ../restapi/tablon_service/post.py:84
+#: udala/tablon/restapi/tablon_service/post.py:84
 msgid "The field origin is mandatory"
 msgstr "origin eremua derrigorrezkoa da"
 
-#: ../restapi/tablon_service/post.py:101
-msgid "The field origin_department_es is mandatory"
-msgstr "origin_department_es eremua derrigorrezkoa da"
-
-#: ../restapi/tablon_service/post.py:92
-msgid "The field origin_department_eu is mandatory"
-msgstr "origin_department_eu eremua derrigorrezkoa da"
-
-#: ../restapi/tablon_service/post.py:117
-msgid "The field origin_details_es is mandatory"
-msgstr "origin_details_es eremua derrigorrezkoa da"
-
-#: ../restapi/tablon_service/post.py:109
-msgid "The field origin_details_eu mandatory"
-msgstr "origin_details_eu eremua derrigorrezkoa da"
-
-#: ../restapi/tablon_service/post.py:47
+#: udala/tablon/restapi/tablon_service/post.py:48
 msgid "The field record_number is mandatory"
 msgstr "record_number eremua derrigorrezkoa da"
 
-#: ../restapi/tablon_service/post.py:75
+#: udala/tablon/restapi/tablon_service/post.py:165
+msgid "The field titles in a single document is mandatory"
+msgstr "Fitxategiko titles eremua derrigorrezkoa da"
+
+#: udala/tablon/restapi/tablon_service/post.py:100
+msgid "The field translations is mandatory and must be an object"
+msgstr "translations eremua derrigorrezkoa da eta objektu bat izan behar da"
+
+#: udala/tablon/restapi/tablon_service/post.py:76
 msgid "The format of field date_end is not correct"
 msgstr "date_end eremuaren formatua ez da zuzena"
 
-#: ../restapi/tablon_service/post.py:65
+#: udala/tablon/restapi/tablon_service/post.py:66
 msgid "The format of field date_start is not correct"
 msgstr "date_start eremuaren formatua ez da zuzena"
 
-#: ../restapi/tablon_service/post.py:160
-msgid "The format of the field publication_url_es is not correct"
-msgstr "publication_url_es eremuaren formatua ez da zuzena"
+#: udala/tablon/restapi/tablon_service/post.py:107
+msgid "The translation data for language must be an object"
+msgstr "Hizkuntzaren itzulpen datuek objektu bat izan behar dute"
 
-#: ../restapi/tablon_service/post.py:150
-msgid "The format of the field publication_url_eu is not correct"
-msgstr "publication_url_eu eremuaren formatua ez da zuzena"
-
-#: ../restapi/tablon_service/post.py:175
+#: udala/tablon/restapi/tablon_service/post.py:146
 msgid "The value of a single document is not correct"
 msgstr "Bidalitako fitxategiaren datuak ez dira zuzenak"
 
-#: ../restapi/tablon_service/post.py:215
+#: udala/tablon/restapi/tablon_service/post.py:152
 msgid "The value of contents in a single document is mandatory"
 msgstr "Fitxategiaren edukia derrigorrezkoa da"
 
-#: ../restapi/tablon_service/post.py:225
+#: udala/tablon/restapi/tablon_service/post.py:158
 msgid "The value of filename in a single document is mandatory"
 msgstr "Fitxategiaren izena derrigorrezko da"
 
-#: ../restapi/tablon_service/post.py:195
-msgid "The value of name_es in a single document is mandatory"
-msgstr "Fitxategiaren name_es balioa derrigorrezkoa da"
-
-#: ../restapi/tablon_service/post.py:205
-msgid "The value of name_eu in a single document is mandatory"
-msgstr "Fitxategiaren name_eu balioa derrigorrezkoa da"
-
-#: ../views/tablon_view.pt:106
+#: udala/tablon/views/tablon_view.pt:126
 msgid "There is no data"
 msgstr "Ez dago daturik"
 
-#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:73
-#: ../profiles/default/controlpanel.xml
+#: udala/tablon/controlpanels/udala_tablon_control_panel/controlpanel.py:73
+#: udala/tablon/profiles/default/controlpanel.xml
 msgid "Udala Tablon Control Panel"
 msgstr "Iragarki oholaren Kontrol Panela"
 
-#: ../configure.zcml:35
+#: udala/tablon/configure.zcml:35
 msgid "Uninstalls the udala.tablon add-on."
 msgstr "udala.tablon kendu"
 
-#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:50
+#: udala/tablon/controlpanels/udala_tablon_control_panel/controlpanel.py:50
 msgid "We need to pass this as a configuration item because when running async processes we do not have access to the real URL of the object"
 msgstr "Balio hau beharrezkoa da Izenperen egiaztapena atzeko planoan exekutatzen delako, eta hori egitean webgunearen URLari buruzko informaziorik ez dugulako"
 
-#: ../controlpanels/udala_tablon_control_panel/controlpanel.py:25
+#: udala/tablon/controlpanels/udala_tablon_control_panel/controlpanel.py:25
 msgid "base64 encoded pkcs12 file"
 msgstr "pkcs12 fitxategia base64 formatuan kodetuta"
 
-#: ../views/documento_tablon_view.pt:60
+#: udala/tablon/views/documento_tablon_view.pt:80
 msgid "files"
 msgstr "Fitxategiak"
 
-#: ../views/documento_tablon_view.pt:48
+#: udala/tablon/views/documento_tablon_view.pt:62
 msgid "origin_department"
 msgstr "Jatorrizko sailak"
 
-#: ../views/documento_tablon_view.pt:29
+#: udala/tablon/views/documento_tablon_view.pt:31
 msgid "record number"
 msgstr "Dokumentu zenbakia"
 
-#: ../configure.zcml:26
+#: udala/tablon/configure.zcml:26
 msgid "udala.tablon"
 msgstr "udala.tablon"
 
-#: ../configure.zcml:35
+#: udala/tablon/configure.zcml:35
 msgid "udala.tablon (uninstall)"
 msgstr "udala.tablon (uninstall)"

@@ -39,7 +39,6 @@ def set_available_languages():
 
 
 class UdalaTablonLayer(PloneSandboxLayer):
-
     defaultBases = (PLONE_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):

@@ -1,7 +1,8 @@
 from plone import api
 from plone.restapi.services import Service
-from udala.tablon.utils import delete_document
-from udala.tablon.utils import get_documents
+from udala.tablon.annotations.document import delete_document
+from udala.tablon.annotations.document import get_documents
+from udala.tablon.annotations.file import delete_file
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
@@ -35,13 +36,15 @@ class TablonDelete(Service):
         if document is None:
             raise NotFound(self.context, "", self.request)
 
-        eu_uid = document.get("eu", None)
-        es_uid = document.get("es", None)
-        for uid in [eu_uid, es_uid]:
+        translations = document.get("translations", {})
+        for uid in translations.values():
             if uid is not None:
                 real_document = api.content.get(UID=uid)
                 if real_document is not None:
                     api.content.delete(real_document)
+
+        for file_id in document.get("files", []):
+            delete_file(file_id)
 
         result = delete_document(doc_id)
 
